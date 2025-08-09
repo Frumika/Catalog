@@ -1,0 +1,32 @@
+# IntelliJ / Android Studio
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+*/build/
+
+# Local configuration
+local.properties
+
+# Android specific
+*.apk
+*.ap_
+*.aab
+.cxx/
+.externalNativeBuild/
+
+# Logs
+*.log
+
+# Keystore files (не хранить в репозитории)
+*.jks
+*.keystore
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Captures
+captures/
