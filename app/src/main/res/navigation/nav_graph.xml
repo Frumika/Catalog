@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/placeholderFragment">
+    app:startDestination="@id/startFragment">
 
     <fragment
-        android:id="@+id/placeholderFragment"
-        android:name="com.example.catalog.core.PlaceholderFragment"
-        android:label="Placeholder"
-        tools:layout="@layout/fragment_placeholder" />
+        android:id="@+id/startFragment"
+        android:name="com.example.catalog.start.StartFragment"
+        android:label="Start"
+        tools:layout="@layout/fragment_start" />
+
 
 </navigation>
