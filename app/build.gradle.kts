@@ -32,11 +32,19 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+
+    // Navigation Component — используем нашу версию
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+
+    // Lifecycle — используем нашу версию
+    implementation(libs.lifecycle.viewmodel)
+    implementation(libs.lifecycle.livedata)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
