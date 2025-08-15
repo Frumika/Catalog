@@ -5,20 +5,20 @@
     android:layout_height="match_parent">
 
     <Button
-        android:id="@+id/button_login"
+        android:id="@+id/start_button__login"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:text="Авторизоваться"
 
-        app:layout_constraintBottom_toTopOf="@id/button_register"
+        app:layout_constraintBottom_toTopOf="@id/start_button__register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
     <Button
-        android:id="@+id/button_register"
+        android:id="@+id/start_button__register"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
@@ -28,6 +28,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/button_login" />
+        app:layout_constraintTop_toBottomOf="@id/start_button__login" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

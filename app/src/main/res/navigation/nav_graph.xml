@@ -11,5 +11,11 @@
         android:label="Start"
         tools:layout="@layout/fragment_start" />
 
+    <fragment
+        android:id="@+id/authFragment"
+        android:name="com.example.catalog.auth.AuthFragment"
+        android:label="Authorization"
+        tools:layout="@layout/fragment_auth" />
+
 
 </navigation>

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.catalog.R;
+import com.example.catalog.auth.AuthFragment;
 
 public class StartFragment extends Fragment {
     @Nullable
@@ -27,11 +28,17 @@ public class StartFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        Button loginButton = view.findViewById(R.id.button_login);
-        Button registerButton = view.findViewById(R.id.button_register);
+        Button loginButton = view.findViewById(R.id.start_button__login);
+        Button registerButton = view.findViewById(R.id.start_button__register);
 
         loginButton.setOnClickListener(v -> {
                     Log.d("StartFragment", "Нажата кнопка Авторизоваться");
+
+                    requireActivity().getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.nav_host_fragment, new AuthFragment())
+                            .addToBackStack(null)
+                            .commit();
                 }
         );
 
