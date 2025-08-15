@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Почта -->
+    <EditText
+        android:id="@+id/register_editText__email"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:autofillHints="emailAddress"
+        android:hint="Введите почту"
+        android:inputType="textEmailAddress"
+
+        app:layout_constraintBottom_toTopOf="@id/register_editText__login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <!-- Логин -->
+    <EditText
+        android:id="@+id/register_editText__login"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="username"
+        android:hint="Введите логин"
+        android:inputType="text"
+
+        app:layout_constraintBottom_toTopOf="@id/register_editText__password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_editText__email"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <!-- Пароль -->
+    <EditText
+        android:id="@+id/register_editText__password"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password"
+        android:hint="Введите пароль"
+        android:inputType="textPassword"
+
+        app:layout_constraintBottom_toTopOf="@id/register_editText__confirmPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_editText__login" />
+
+    <!-- Подтверждение Пароля -->
+    <EditText
+        android:id="@+id/register_editText__confirmPassword"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="16dp"
+        android:autofillHints="password"
+        android:hint="Подтвердите пароль"
+        android:inputType="textPassword"
+
+        app:layout_constraintBottom_toTopOf="@id/register_button__register"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_editText__password" />
+
+    <!-- Кнопка Регистрации -->
+    <Button
+        android:id="@+id/register_button__register"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:layout_marginTop="24dp"
+        android:text="Зарегистрироваться"
+
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/register_editText__confirmPassword" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

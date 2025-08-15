@@ -1,7 +1,6 @@
 package com.example.catalog.start;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.catalog.R;
 import com.example.catalog.auth.AuthFragment;
+import com.example.catalog.register.RegFragment;
 
 public class StartFragment extends Fragment {
     @Nullable
@@ -31,20 +31,20 @@ public class StartFragment extends Fragment {
         Button loginButton = view.findViewById(R.id.start_button__login);
         Button registerButton = view.findViewById(R.id.start_button__register);
 
-        loginButton.setOnClickListener(v -> {
-                    Log.d("StartFragment", "Нажата кнопка Авторизоваться");
-
-                    requireActivity().getSupportFragmentManager()
-                            .beginTransaction()
-                            .replace(R.id.nav_host_fragment, new AuthFragment())
-                            .addToBackStack(null)
-                            .commit();
-                }
+        loginButton.setOnClickListener(v ->
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.nav_host_fragment, new AuthFragment())
+                        .addToBackStack(null)
+                        .commit()
         );
 
-        registerButton.setOnClickListener(v -> {
-                    Log.d("StartFragment", "Нажата кнопка Зарегистрироваться");
-                }
+        registerButton.setOnClickListener(v ->
+                requireActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.nav_host_fragment, new RegFragment())
+                        .addToBackStack(null)
+                        .commit()
         );
     }
 }

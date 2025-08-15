@@ -17,5 +17,10 @@
         android:label="Authorization"
         tools:layout="@layout/fragment_auth" />
 
+    <fragment
+        android:id="@+id/regFragment"
+        android:name="com.example.catalog.register.RegFragment"
+        android:label="Registration"
+        tools:layout="@layout/fragment_register" />
 
 </navigation>
