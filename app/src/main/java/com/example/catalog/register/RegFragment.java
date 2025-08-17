@@ -13,6 +13,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.catalog.R;
+import com.example.catalog.core.ValidationUtils;
 
 public class RegFragment extends Fragment {
 
@@ -40,15 +41,34 @@ public class RegFragment extends Fragment {
         registerButton = view.findViewById(R.id.register_button__register);
         confirmPasswordEditText = view.findViewById(R.id.register_editText__confirmPassword);
 
-        registerButton.setOnClickListener(v -> {
-            String email = emailEditText.getText().toString();
-            String login = loginEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-            String confirmPassword = confirmPasswordEditText.getText().toString();
-
-            Log.d("RegFragment", "Логин: " + login + ", Пароль: " + password);
-        });
+        registerButton.setOnClickListener(v -> OnButtonClick());
 
         Log.d("RegFragment", "onViewCreated");
+    }
+
+    private void OnButtonClick() {
+        String email = emailEditText.getText().toString();
+        String login = loginEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        String confirmPassword = confirmPasswordEditText.getText().toString();
+
+        boolean isPasswordEquals = password.equals(confirmPassword);
+        boolean isUserDataValid = VerifyUserData(email, login, password);
+
+        if (isUserDataValid && isPasswordEquals) {
+            Log.d("RegFragment", "User data is valid: " + "Email: " + email + ", Login: " + login + ", Password: " + password);
+        } else {
+            Log.d("RegFragment", "User data is not valid");
+        }
+
+
+    }
+
+    private boolean VerifyUserData(String email, String login, String password) {
+        boolean isValidEmail = ValidationUtils.isValidEmail(email);
+        boolean isValidLogin = ValidationUtils.isValidLogin(login);
+        boolean isValidPassword = ValidationUtils.isValidPassword(password);
+
+        return isValidEmail && isValidLogin && isValidPassword;
     }
 }
