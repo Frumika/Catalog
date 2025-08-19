@@ -12,8 +12,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.catalog.MyApp;
 import com.example.catalog.R;
 import com.example.catalog.core.ValidationUtils;
+import com.example.catalog.database.UserDao;
 
 public class RegFragment extends Fragment {
 
@@ -21,11 +23,15 @@ public class RegFragment extends Fragment {
     private EditText loginEditText;
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
+    private UserDao userDao;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+        userDao = ((MyApp) requireActivity().getApplication()).getUserDao();
 
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
@@ -55,7 +61,11 @@ public class RegFragment extends Fragment {
         boolean isUserDataValid = VerifyUserData(email, login, password);
 
         if (isUserDataValid && isPasswordEquals) {
-            Log.d("RegFragment", "User data is valid: " + "Email: " + email + ", Login: " + login + ", Password: " + password);
+            try {
+                userDao.addUser(email, login, password);
+            } catch (Exception e) {
+                Log.d("RegFragment", "Error: " + e.getMessage());
+            }
         } else {
             Log.d("RegFragment", "User data is not valid");
         }

@@ -5,14 +5,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class UsersDbHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_NAME = "UsersData.db";
-    private static final int DATABASE_VERSION = 1;
+    public static final String DATABASE_NAME = "UsersData.db";
+    public static final int DATABASE_VERSION = 1;
 
-    private static final String TABLE_NAME = "Users";
-    private static final String COLUMN_ID = "id";
-    private static final String COLUMN_EMAIL = "email";
-    private static final String COLUMN_LOGIN = "login";
-    private static final String COLUMN_PASSWORD = "password";
+    public static final String TABLE_NAME = "Users";
+    public static final String COLUMN_ID = "id";
+    public static final String COLUMN_EMAIL = "email";
+    public static final String COLUMN_LOGIN = "login";
+    public static final String COLUMN_PASSWORD = "password";
 
 
     public UsersDbHelper(Context context) {
