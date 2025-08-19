@@ -7,18 +7,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 
 import com.example.catalog.R;
+import com.example.catalog.database.UserDao;
+import com.example.catalog.database.UsersDbHelper;
 
 public class MainActivity extends AppCompatActivity {
-
-    private MainViewModel mainViewModel;
+    private final UsersDbHelper dbHelper = new UsersDbHelper(this);
+    private final UserDao userDao = new UserDao(dbHelper);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
-        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
-
     }
 }

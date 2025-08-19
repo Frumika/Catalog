@@ -21,7 +21,6 @@ public class RegFragment extends Fragment {
     private EditText loginEditText;
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
-    private Button registerButton;
 
     @Nullable
     @Override
@@ -38,9 +37,9 @@ public class RegFragment extends Fragment {
         emailEditText = view.findViewById(R.id.register_editText__email);
         loginEditText = view.findViewById(R.id.register_editText__login);
         passwordEditText = view.findViewById(R.id.register_editText__password);
-        registerButton = view.findViewById(R.id.register_button__register);
         confirmPasswordEditText = view.findViewById(R.id.register_editText__confirmPassword);
 
+        Button registerButton = view.findViewById(R.id.register_button__register);
         registerButton.setOnClickListener(v -> OnButtonClick());
 
         Log.d("RegFragment", "onViewCreated");
