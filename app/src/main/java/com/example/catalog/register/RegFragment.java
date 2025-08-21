@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.catalog.MyApp;
 import com.example.catalog.R;
+import com.example.catalog.core.FieldType;
 import com.example.catalog.core.ValidationUtils;
 import com.example.catalog.database.UserDao;
 
@@ -60,17 +61,23 @@ public class RegFragment extends Fragment {
         boolean isPasswordEquals = password.equals(confirmPassword);
         boolean isUserDataValid = VerifyUserData(email, login, password);
 
-        if (isUserDataValid && isPasswordEquals) {
+        if (!isPasswordEquals) {
+            Log.d("RegFragment", "Error: Пароли не совпадают");
+            clearFields(FieldType.combine(FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
+            return;
+        }
+
+        if (isUserDataValid) {
             try {
                 userDao.addUser(email, login, password);
             } catch (Exception e) {
                 Log.d("RegFragment", "Error: " + e.getMessage());
+                clearFields(FieldType.combine(FieldType.EMAIL, FieldType.LOGIN, FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
             }
         } else {
-            Log.d("RegFragment", "User data is not valid");
+            Log.d("RegFragment", "Error: Данные пользователя некорректны");
+            clearFields(FieldType.combine(FieldType.EMAIL, FieldType.LOGIN, FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
         }
-
-
     }
 
     private boolean VerifyUserData(String email, String login, String password) {
@@ -79,5 +86,20 @@ public class RegFragment extends Fragment {
         boolean isValidPassword = ValidationUtils.isValidPassword(password);
 
         return isValidEmail && isValidLogin && isValidPassword;
+    }
+
+    private void clearFields(int fieldTypes) {
+        if (FieldType.hasFlag(fieldTypes, FieldType.EMAIL)) {
+            emailEditText.setText("");
+        }
+        if (FieldType.hasFlag(fieldTypes, FieldType.LOGIN)) {
+            loginEditText.setText("");
+        }
+        if (FieldType.hasFlag(fieldTypes, FieldType.PASSWORD)) {
+            passwordEditText.setText("");
+        }
+        if (FieldType.hasFlag(fieldTypes, FieldType.CONFIRM_PASSWORD)) {
+            confirmPasswordEditText.setText("");
+        }
     }
 }
