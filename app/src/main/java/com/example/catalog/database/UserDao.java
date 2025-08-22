@@ -12,7 +12,7 @@ public class UserDao {
     }
 
     public void addUser(String email, String login, String password) throws Exception {
-        if (checkUser(email, login)) {
+        if (isCheckUser(login)) {
             throw new Exception("Пользователь с таким логином или почтой уже существует");
         }
 
@@ -30,11 +30,11 @@ public class UserDao {
         }
     }
 
-    public boolean checkUser(String email, String login) {
+    public boolean isCheckUser(String login) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String sql = "SELECT EXISTS(SELECT 1 FROM " + UsersDbHelper.TABLE_NAME +
                 " WHERE " + UsersDbHelper.COLUMN_LOGIN + " = ? )";
-        Cursor cursor = db.rawQuery(sql, new String[]{login, email});
+        Cursor cursor = db.rawQuery(sql, new String[]{login});
 
         boolean exist = false;
         if (cursor.moveToFirst()) {
@@ -45,8 +45,26 @@ public class UserDao {
         return exist;
     }
 
+    public boolean isValidUser(String login, String password) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String sql = "SELECT EXISTS(SELECT 1 FROM " + UsersDbHelper.TABLE_NAME +
+                " WHERE " + UsersDbHelper.COLUMN_LOGIN + " = ?" +
+                " AND " + UsersDbHelper.COLUMN_PASSWORD + " = ?)";
+
+        Cursor cursor = db.rawQuery(sql, new String[]{login, password});
+
+        boolean exist = false;
+        if (cursor.moveToFirst()) {
+            exist = cursor.getInt(0) == 1;
+        }
+
+        cursor.close();
+
+        return exist;
+    }
+
     public void clearDatabase() {
         dbHelper.clearDatabase();
     }
-
 }

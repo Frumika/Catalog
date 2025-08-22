@@ -12,7 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.catalog.MyApp;
 import com.example.catalog.R;
+import com.example.catalog.database.UserDao;
 
 public class AuthFragment extends Fragment {
 
@@ -20,10 +22,13 @@ public class AuthFragment extends Fragment {
     private EditText passwordEditText;
     private Button loginButton;
 
+    private UserDao userDao;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        userDao = ((MyApp) requireActivity().getApplication()).getUserDao();
 
         return inflater.inflate(R.layout.fragment_auth, container, false);
     }
@@ -36,13 +41,23 @@ public class AuthFragment extends Fragment {
         passwordEditText = view.findViewById(R.id.auth_editText__password);
         loginButton = view.findViewById(R.id.auth_button__login);
 
-        loginButton.setOnClickListener(v -> {
-            String login = loginEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-
-            Log.d("AuthFragment", "Логин: " + login + ", Пароль: " + password);
-        });
+        loginButton.setOnClickListener(v -> OnButtonClick());
 
         Log.d("AuthFragment", "onViewCreated");
     }
+
+    private void OnButtonClick() {
+        String login = loginEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        boolean isUserDataValid = userDao.isValidUser(login, password);
+
+        if (isUserDataValid) {
+            Log.d("AuthFragment", "Вход выполнен успешно");
+        } else {
+            Log.d("AuthFragment", "Ошибка входа");
+        }
+    }
+
+
 }
