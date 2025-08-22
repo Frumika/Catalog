@@ -23,4 +23,10 @@
         android:label="Registration"
         tools:layout="@layout/fragment_register" />
 
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.example.catalog.main.MainFragment"
+        android:label="Main"
+        tools:layout="@layout/fragment_main" />
+
 </navigation>

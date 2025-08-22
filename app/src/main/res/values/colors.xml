@@ -6,4 +6,8 @@
     <color name="normal_button">#3B82F6</color>
     <color name="pressed_button">#1D4ED8</color>
 
+    <color name="product_background">#EDEDED</color>
+    <color name="productInfo_background">#FFFFFF</color>
+    <color name="productCost_foreground">#4D4949</color>"
+
 </resources>

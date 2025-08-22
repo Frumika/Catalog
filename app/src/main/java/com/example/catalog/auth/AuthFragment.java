@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.catalog.MyApp;
 import com.example.catalog.R;
 import com.example.catalog.database.UserDao;
+import com.example.catalog.main.MainFragment;
 
 public class AuthFragment extends Fragment {
 
@@ -53,7 +54,11 @@ public class AuthFragment extends Fragment {
         boolean isUserDataValid = userDao.isValidUser(login, password);
 
         if (isUserDataValid) {
-            Log.d("AuthFragment", "Вход выполнен успешно");
+            requireActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.nav_host_fragment, new MainFragment())
+                    .addToBackStack(null)
+                    .commit();
         } else {
             Log.d("AuthFragment", "Ошибка входа");
         }
