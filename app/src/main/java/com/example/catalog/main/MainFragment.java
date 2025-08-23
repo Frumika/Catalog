@@ -25,7 +25,7 @@ public class MainFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = view.findViewById(R.id.main_recyclerView);
 
         List<Product> products = new ArrayList<>();
         products.add(new Product(ProductType.MOBILE, "Samsung Galaxy S21", 120_000, R.drawable.ic_launcher_foreground));
