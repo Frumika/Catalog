@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -20,97 +21,120 @@ import com.example.catalog.R;
 import java.util.ArrayList;
 import java.util.List;
 
-    public class MainFragment extends Fragment {
+public class MainFragment extends Fragment {
 
-        private Spinner spinner;
-        private RecyclerView recyclerView;
-        private ProductAdapter adapter;
-        private List<Product> products;
-
-        @Nullable
-        @Override
-        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                                 @Nullable Bundle savedInstanceState) {
-            View view = inflater.inflate(R.layout.fragment_main, container, false);
-
-            products = createProducts();
-
-            recyclerView = view.findViewById(R.id.main_recyclerView);
-            spinner = view.findViewById(R.id.main_spinner__categories);
-
-            setupRecyclerView();
-            setupSpinner();
-
-            return view;
-        }
+    private Spinner spinner;
+    private RecyclerView recyclerView;
+    private TextView textViewCount;
+    private ProductAdapter adapter;
+    private List<Product> productList;
+    private List<Product> cartProducts;
 
 
-        private List<Product> createProducts() {
-            List<Product> list = new ArrayList<>();
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-            list.add(new Product(ProductType.MOBILE, "Samsung Galaxy S21", 120_000, R.drawable.ic_launcher_foreground));
-            list.add(new Product(ProductType.MOBILE, "iPhone 13", 100_000, R.drawable.ic_launcher_foreground));
-            list.add(new Product(ProductType.MOBILE, "Xiaomi 14", 80_000, R.drawable.ic_launcher_foreground));
-            list.add(new Product(ProductType.MOBILE, "OnePlus 9", 35_000, R.drawable.ic_launcher_foreground));
+        productList = createProducts();
 
-            list.add(new Product(ProductType.LAPTOP, "MacBook Pro", 150_000, R.drawable.ic_launcher_foreground));
-            list.add(new Product(ProductType.LAPTOP, "Huawei MateBool D16", 71_000, R.drawable.ic_launcher_foreground));
-            list.add(new Product(ProductType.LAPTOP, "Lenovo ThinkPad X1 Carbon", 120_000, R.drawable.ic_launcher_foreground));
+        recyclerView = view.findViewById(R.id.main_recyclerView);
+        spinner = view.findViewById(R.id.main_spinner__categories);
+        textViewCount = view.findViewById(R.id.main_textView__count);
 
-            list.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Nvidia RTX 5090", 250_000, R.drawable.ic_launcher_foreground));
-            list.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Intel Core i9-14900K", 30_000, R.drawable.ic_launcher_foreground));
+        setupRecyclerView();
+        setupSpinner();
+        setupListener();
 
-            return list;
-        }
+        return view;
+    }
 
-        private void setupRecyclerView() {
-            adapter = new ProductAdapter(products);
-            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-            recyclerView.setAdapter(adapter);
-        }
 
-        private void setupSpinner() {
-            String[] categories = ProductType.getProductTypes();
+    private List<Product> createProducts() {
+        List<Product> list = new ArrayList<>();
 
-            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
-                    requireContext(),
-                    android.R.layout.simple_spinner_item,
-                    categories
-            );
-            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            spinner.setAdapter(spinnerAdapter);
+        list.add(new Product(ProductType.MOBILE, "Samsung Galaxy S21", 120_000, R.drawable.ic_launcher_foreground));
+        list.add(new Product(ProductType.MOBILE, "iPhone 13", 100_000, R.drawable.ic_launcher_foreground));
+        list.add(new Product(ProductType.MOBILE, "Xiaomi 14", 80_000, R.drawable.ic_launcher_foreground));
+        list.add(new Product(ProductType.MOBILE, "OnePlus 9", 35_000, R.drawable.ic_launcher_foreground));
 
-            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    filterProducts(categories[position]);
-                }
+        list.add(new Product(ProductType.LAPTOP, "MacBook Pro", 150_000, R.drawable.ic_launcher_foreground));
+        list.add(new Product(ProductType.LAPTOP, "Huawei MateBool D16", 71_000, R.drawable.ic_launcher_foreground));
+        list.add(new Product(ProductType.LAPTOP, "Lenovo ThinkPad X1 Carbon", 120_000, R.drawable.ic_launcher_foreground));
 
-                @Override
-                public void onNothingSelected(AdapterView<?> parent) {
-                    // ничего не делаем
-                }
-            });
-        }
+        list.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Nvidia RTX 5090", 250_000, R.drawable.ic_launcher_foreground));
+        list.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Intel Core i9-14900K", 30_000, R.drawable.ic_launcher_foreground));
 
-        private void filterProducts(String selectedCategory) {
-            ProductType type = ProductType.fromDisplayName(selectedCategory);
+        return list;
+    }
 
-            if (type == ProductType.ALL) {
-                adapter.setProductList(products);
-            } else {
-                List<Product> filtered = new ArrayList<>();
-                for (Product p : products) {
-                    if (p.getProductType() == type) {
-                        filtered.add(p);
-                    }
-                }
+    private void setupRecyclerView() {
+        adapter = new ProductAdapter(productList);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(adapter);
+    }
 
-                for (Product p : filtered) {
-                    Log.d("MainFragment: FilteredProducts", p.getName());
-                }
+    private void setupSpinner() {
+        String[] categories = ProductType.getProductTypes();
 
-                adapter.setProductList(filtered);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                categories
+        );
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                filterProducts(categories[position]);
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // ничего не делаем
+            }
+        });
+    }
+
+    private void setupListener() {
+        cartProducts = new ArrayList<>();
+
+        adapter.setOnProductCheckedChangeListener((product, isChecked) -> {
+            if (isChecked) {
+                cartProducts.add(product);
+            } else {
+                cartProducts.remove(product);
+            }
+
+            updateCount();
+        });
+    }
+
+    private void filterProducts(String selectedCategory) {
+        ProductType type = ProductType.fromDisplayName(selectedCategory);
+
+        if (type == ProductType.ALL) {
+            adapter.setProductList(productList);
+        } else {
+            List<Product> filtered = new ArrayList<>();
+            for (Product p : productList) {
+                if (p.getProductType() == type) {
+                    filtered.add(p);
+                }
+            }
+
+            for (Product p : filtered) {
+                Log.d("MainFragment: FilteredProducts", p.getName());
+            }
+
+            adapter.setProductList(filtered);
         }
     }
+
+    private void updateCount() {
+        textViewCount.setText(String.valueOf(cartProducts.size()));
+    }
+}

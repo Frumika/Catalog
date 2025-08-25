@@ -18,12 +18,21 @@ import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
+    public interface OnProductCheckedChangeListener {
+        void onProductChecked(Product product, boolean isChecked);
+    }
+
     private final List<Product> productList = new ArrayList<>();
+    private OnProductCheckedChangeListener listener;
 
     public ProductAdapter(List<Product> productList) {
         if (productList != null) {
             this.productList.addAll(productList);
         }
+    }
+
+    public void setOnProductCheckedChangeListener(OnProductCheckedChangeListener listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -40,6 +49,16 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.imageProduct.setImageResource(product.getImageResId());
         holder.textProductName.setText(product.getName());
         holder.textProductPrice.setText(product.getPrice() + " ₽");
+
+        holder.checkBoxProduct.setOnCheckedChangeListener(null);
+        holder.checkBoxProduct.setChecked(product.isChecked());
+
+        holder.checkBoxProduct.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            product.setChecked(isChecked);
+            if (listener != null) {
+                listener.onProductChecked(product, isChecked);
+            }
+        });
     }
 
     @Override
