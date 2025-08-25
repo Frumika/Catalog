@@ -1,5 +1,6 @@
 package com.example.catalog.main;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.catalog.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
 
-    private final List<Product> productList;
+    private final List<Product> productList = new ArrayList<>();
 
     public ProductAdapter(List<Product> productList) {
-        this.productList = productList;
+        if (productList != null) {
+            this.productList.addAll(productList);
+        }
     }
 
     @NonNull
@@ -58,5 +62,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             textProductPriceLabel = itemView.findViewById(R.id.textProductPrice__label);
             textProductPrice = itemView.findViewById(R.id.textProductPrice);
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setProductList(List<Product> productList) {
+        this.productList.clear();
+        if (productList != null) {
+            this.productList.addAll(new ArrayList<>(productList));
+        }
+        notifyDataSetChanged();
     }
 }

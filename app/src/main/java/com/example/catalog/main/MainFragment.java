@@ -1,9 +1,13 @@
 package com.example.catalog.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,35 +20,97 @@ import com.example.catalog.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainFragment extends Fragment {
+    public class MainFragment extends Fragment {
 
-    @Nullable
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+        private Spinner spinner;
+        private RecyclerView recyclerView;
+        private ProductAdapter adapter;
+        private List<Product> products;
 
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+        @Nullable
+        @Override
+        public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                                 @Nullable Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.main_recyclerView);
+            products = createProducts();
 
-        List<Product> products = new ArrayList<>();
-        products.add(new Product(ProductType.MOBILE, "Samsung Galaxy S21", 120_000, R.drawable.ic_launcher_foreground));
-        products.add(new Product(ProductType.MOBILE, "iPhone 13", 100_000, R.drawable.ic_launcher_foreground));
-        products.add(new Product(ProductType.MOBILE, "Xiaomi 14", 80_000, R.drawable.ic_launcher_foreground));
-        products.add(new Product(ProductType.MOBILE, "OnePlus 9", 35_000, R.drawable.ic_launcher_foreground));
+            recyclerView = view.findViewById(R.id.main_recyclerView);
+            spinner = view.findViewById(R.id.main_spinner__categories);
 
-        products.add(new Product(ProductType.LAPTOP, "MacBook Pro", 150_000, R.drawable.ic_launcher_foreground));
-        products.add(new Product(ProductType.LAPTOP, "Huawei MateBool D16", 71_000, R.drawable.ic_launcher_foreground));
-        products.add(new Product(ProductType.LAPTOP, "Lenovo ThinkPad X1 Carbon", 120_000, R.drawable.ic_launcher_foreground));
+            setupRecyclerView();
+            setupSpinner();
 
-        products.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Nvidia RTX 5090", 250_000, R.drawable.ic_launcher_foreground));
-        products.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Intel Core i9-14900K", 30_000, R.drawable.ic_launcher_foreground));
+            return view;
+        }
 
-        ProductAdapter adapter = new ProductAdapter(products);
-        recyclerView.setAdapter(adapter);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        private List<Product> createProducts() {
+            List<Product> list = new ArrayList<>();
 
-        return view;
+            list.add(new Product(ProductType.MOBILE, "Samsung Galaxy S21", 120_000, R.drawable.ic_launcher_foreground));
+            list.add(new Product(ProductType.MOBILE, "iPhone 13", 100_000, R.drawable.ic_launcher_foreground));
+            list.add(new Product(ProductType.MOBILE, "Xiaomi 14", 80_000, R.drawable.ic_launcher_foreground));
+            list.add(new Product(ProductType.MOBILE, "OnePlus 9", 35_000, R.drawable.ic_launcher_foreground));
+
+            list.add(new Product(ProductType.LAPTOP, "MacBook Pro", 150_000, R.drawable.ic_launcher_foreground));
+            list.add(new Product(ProductType.LAPTOP, "Huawei MateBool D16", 71_000, R.drawable.ic_launcher_foreground));
+            list.add(new Product(ProductType.LAPTOP, "Lenovo ThinkPad X1 Carbon", 120_000, R.drawable.ic_launcher_foreground));
+
+            list.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Nvidia RTX 5090", 250_000, R.drawable.ic_launcher_foreground));
+            list.add(new Product(ProductType.COMPUTER_EQUIPMENTS, "Intel Core i9-14900K", 30_000, R.drawable.ic_launcher_foreground));
+
+            return list;
+        }
+
+        private void setupRecyclerView() {
+            adapter = new ProductAdapter(products);
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            recyclerView.setAdapter(adapter);
+        }
+
+        private void setupSpinner() {
+            String[] categories = ProductType.getProductTypes();
+
+            ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                    requireContext(),
+                    android.R.layout.simple_spinner_item,
+                    categories
+            );
+            spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinner.setAdapter(spinnerAdapter);
+
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    filterProducts(categories[position]);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    // ничего не делаем
+                }
+            });
+        }
+
+        private void filterProducts(String selectedCategory) {
+            ProductType type = ProductType.fromDisplayName(selectedCategory);
+
+            if (type == ProductType.ALL) {
+                adapter.setProductList(products);
+            } else {
+                List<Product> filtered = new ArrayList<>();
+                for (Product p : products) {
+                    if (p.getProductType() == type) {
+                        filtered.add(p);
+                    }
+                }
+
+                for (Product p : filtered) {
+                    Log.d("MainFragment: FilteredProducts", p.getName());
+                }
+
+                adapter.setProductList(filtered);
+            }
+        }
     }
-}
