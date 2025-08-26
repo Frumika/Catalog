@@ -94,7 +94,6 @@ public class MainFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                // ничего не делаем
             }
         });
     }
@@ -125,11 +124,6 @@ public class MainFragment extends Fragment {
                     filtered.add(p);
                 }
             }
-
-            for (Product p : filtered) {
-                Log.d("MainFragment: FilteredProducts", p.getName());
-            }
-
             adapter.setProductList(filtered);
         }
     }
