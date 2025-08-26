@@ -86,14 +86,10 @@ public class MainFragment extends Fragment {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
 
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener(new SimpleOnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 filterProducts(categories[position]);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
     }
@@ -101,15 +97,17 @@ public class MainFragment extends Fragment {
     private void setupListener() {
         cartProducts = new ArrayList<>();
 
-        adapter.setOnProductCheckedChangeListener((product, isChecked) -> {
-            if (isChecked) {
-                cartProducts.add(product);
-            } else {
-                cartProducts.remove(product);
-            }
+        adapter.setOnProductCheckedChangeListener(this::onProductChecked);
+    }
 
-            updateCount();
-        });
+    private void onProductChecked(Product product, boolean isChecked) {
+        if (isChecked) {
+            cartProducts.add(product);
+        } else {
+            cartProducts.remove(product);
+        }
+
+        updateCount();
     }
 
     private void filterProducts(String selectedCategory) {
