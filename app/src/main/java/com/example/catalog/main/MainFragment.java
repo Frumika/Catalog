@@ -1,7 +1,6 @@
 package com.example.catalog.main;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.catalog.R;
+import com.example.catalog.core.Product;
+import com.example.catalog.core.ProductType;
 
 import java.util.ArrayList;
 import java.util.List;

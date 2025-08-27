@@ -1,4 +1,4 @@
-package com.example.catalog.main;
+package com.example.catalog.core;
 
 public enum ProductType {
     ALL("Все"),

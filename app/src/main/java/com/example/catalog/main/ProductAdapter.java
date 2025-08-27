@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.catalog.R;
+import com.example.catalog.core.Product;
 
 import java.util.ArrayList;
 import java.util.List;

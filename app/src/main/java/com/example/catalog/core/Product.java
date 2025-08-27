@@ -1,4 +1,4 @@
-package com.example.catalog.main;
+package com.example.catalog.core;
 
 public class Product {
     private final int imageResId;
