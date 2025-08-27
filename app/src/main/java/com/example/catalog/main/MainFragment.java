@@ -35,7 +35,13 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
+
+        return inflater.inflate(R.layout.fragment_main, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         productList = createProducts();
 
@@ -46,10 +52,7 @@ public class MainFragment extends Fragment {
         setupRecyclerView();
         setupSpinner();
         setupListener();
-
-        return view;
     }
-
 
     private List<Product> createProducts() {
         List<Product> list = new ArrayList<>();
