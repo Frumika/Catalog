@@ -1,6 +1,8 @@
 package com.example.catalog.core;
 
-public class Product {
+import java.io.Serializable;
+
+public class Product implements Serializable {
     private final int imageResId;
     private final String name;
     private final double price;

@@ -15,16 +15,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.catalog.R;
 import com.example.catalog.core.Product;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class CartFragment extends Fragment {
 
+    public static final String ARG_CART_PRODUCTS = "cart_products";
     private TextView textViewCount;
     private RecyclerView recyclerView;
     private TextView textViewTotalSum;
     private Button buttonToPay;
     private List<Product> cartProducts;
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            cartProducts = (List<Product>) getArguments().getSerializable(ARG_CART_PRODUCTS);
+        }
+    }
 
     @Nullable
     @Override
@@ -42,6 +54,16 @@ public class CartFragment extends Fragment {
         textViewTotalSum = view.findViewById(R.id.cart_textView__totalSum);
         buttonToPay = view.findViewById(R.id.cart_button__toPay);
 
+    }
+
+    public static CartFragment newInstance(List<Product> cartProducts) {
+        CartFragment fragment = new CartFragment();
+        Bundle args = new Bundle();
+
+        args.putSerializable(ARG_CART_PRODUCTS, (Serializable) cartProducts);
+        fragment.setArguments(args);
+
+        return fragment;
     }
 
     private void setupRecyclerView() {

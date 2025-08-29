@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.catalog.R;
+import com.example.catalog.cart.CartFragment;
 import com.example.catalog.core.Product;
 import com.example.catalog.core.ProductType;
 
@@ -28,6 +30,7 @@ public class MainFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView textViewCount;
     private ProductAdapter adapter;
+    private ImageView cartView;
     private List<Product> productList;
     private List<Product> cartProducts;
 
@@ -49,7 +52,9 @@ public class MainFragment extends Fragment {
         recyclerView = view.findViewById(R.id.main_recyclerView);
         spinner = view.findViewById(R.id.main_spinner__categories);
         textViewCount = view.findViewById(R.id.main_textView__count);
+        cartView = view.findViewById(R.id.main_imageView__cart);
 
+        setupCartView();
         setupRecyclerView();
         setupSpinner();
         setupListener();
@@ -102,6 +107,20 @@ public class MainFragment extends Fragment {
         cartProducts = new ArrayList<>();
 
         adapter.setOnProductCheckedChangeListener(this::onProductChecked);
+    }
+
+    private void setupCartView() {
+        cartView.setOnClickListener(v -> onCartClicked());
+    }
+
+    private void onCartClicked() {
+        CartFragment cartFragment = CartFragment.newInstance(cartProducts);
+
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.nav_host_fragment, cartFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     private void onProductChecked(Product product, boolean isChecked) {
