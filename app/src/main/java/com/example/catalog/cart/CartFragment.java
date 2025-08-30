@@ -1,6 +1,8 @@
 package com.example.catalog.cart;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,13 +12,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.catalog.R;
 import com.example.catalog.core.Product;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class CartFragment extends Fragment {
@@ -26,7 +28,8 @@ public class CartFragment extends Fragment {
     private RecyclerView recyclerView;
     private TextView textViewTotalSum;
     private Button buttonToPay;
-    private List<Product> cartProducts;
+    private List<Product> cartList;
+    private CartProductAdapter adapter;
 
 
     @Override
@@ -34,7 +37,7 @@ public class CartFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (getArguments() != null) {
-            cartProducts = (List<Product>) getArguments().getSerializable(ARG_CART_PRODUCTS);
+            cartList = (List<Product>) getArguments().getSerializable(ARG_CART_PRODUCTS);
         }
     }
 
@@ -54,6 +57,11 @@ public class CartFragment extends Fragment {
         textViewTotalSum = view.findViewById(R.id.cart_textView__totalSum);
         buttonToPay = view.findViewById(R.id.cart_button__toPay);
 
+        setupRecyclerView();
+        setupButtonToPay();
+
+        updateCount();
+        updateTotalProductsPrice();
     }
 
     public static CartFragment newInstance(List<Product> cartProducts) {
@@ -67,6 +75,43 @@ public class CartFragment extends Fragment {
     }
 
     private void setupRecyclerView() {
-        // Todo: Написать реализацию установки RecyclerView
+        adapter = new CartProductAdapter(cartList);
+        adapter.setOnProductRemoveListener(this::onProductRemove);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void setupButtonToPay() {
+        buttonToPay.setOnClickListener(v -> onButtonToPayClick());
+    }
+
+    private void onButtonToPayClick() {
+        // Здесь можно добавить логику для перехода к оплате
+
+        Log.d("CartFragment", "onButtonToPayClick");
+    }
+
+
+
+    @SuppressLint("NotifyDataSetChanged")
+    private void onProductRemove(int position) {
+        cartList.remove(position);
+        adapter.notifyItemRemoved(position);
+
+        updateCount();
+        updateTotalProductsPrice();
+    }
+
+    private void updateCount() {
+        textViewCount.setText(String.valueOf(cartList.size()));
+    }
+
+    private void updateTotalProductsPrice() {
+        double totalSum = 0;
+        for (Product product : cartList) {
+            totalSum += product.getPrice();
+        }
+        textViewTotalSum.setText(totalSum + " ₽");
     }
 }

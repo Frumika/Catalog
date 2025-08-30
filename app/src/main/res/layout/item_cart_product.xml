@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imageProduct"
+            android:id="@+id/cartItem_imageProduct__image"
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:scaleType="centerCrop"
@@ -35,7 +35,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textProductName"
+                    android:id="@+id/cartItem_textView__productName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
@@ -53,7 +53,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/textProductPrice__label"
+                        android:id="@+id/cartItem_textView__productPriceLabel"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="2dp"
@@ -65,7 +65,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/textProductPrice"
+                        android:id="@+id/cartItem_textView__productPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="100 ₽"
@@ -75,17 +75,15 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/main_imageView__trash"
+                android:id="@+id/cartItem_imageView__trashImage"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
-
                 android:clickable="true"
                 android:contentDescription="Удалить из корзины"
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_trash" />
-
         </LinearLayout>
     </LinearLayout>
 
