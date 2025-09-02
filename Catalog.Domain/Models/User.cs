@@ -1,4 +1,4 @@
-﻿namespace Catalog.DataAccess.Models;
+﻿namespace Catalog.Domain.Models;
 
 public class User
 {

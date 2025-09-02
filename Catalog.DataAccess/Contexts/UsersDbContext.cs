@@ -1,4 +1,4 @@
-﻿using Catalog.DataAccess.Models;
+﻿using Catalog.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.DataAccess.Contexts;
