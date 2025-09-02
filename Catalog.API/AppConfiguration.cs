@@ -1,4 +1,4 @@
-﻿namespace CatalogApi;
+﻿namespace Catalog.API;
 
 public class AppConfiguration
 {

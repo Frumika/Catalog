@@ -1,4 +1,4 @@
-﻿namespace CatalogApi.Extensions;
+﻿namespace Catalog.API.Extensions;
 
 public static class ApplicationBuilderExtensions
 {

@@ -1,5 +1,5 @@
-using CatalogApi;
-using CatalogApi.Extensions;
+using Catalog.API;
+using Catalog.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
