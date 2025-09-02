@@ -2,6 +2,8 @@
 
 public class AppConfiguration
 {
+    private const string ConnectionString = "Host=localhost;Database=Users;Username=postgres;Password=1234";
+
     public IConfiguration Configuration { get; set; }
     public IWebHostEnvironment Environment { get; set; }
 
@@ -11,9 +13,8 @@ public class AppConfiguration
         Environment = environment;
     }
 
-    public string GetConnectionString(string name)
+    public string GetConnectionString(string? name = null)
     {
-        return Configuration.GetConnectionString(name) ?? string.Empty;
+        return ConnectionString;
     }
-
 }
