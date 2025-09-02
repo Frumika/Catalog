@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidCatalogServer", "AndroidCatalogServer\AndroidCatalogServer.csproj", "{CEA27EF0-8870-4B39-ABC9-8B0C8C5A8787}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CatalogApi", "CatalogApi\CatalogApi.csproj", "{CEA27EF0-8870-4B39-ABC9-8B0C8C5A8787}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
