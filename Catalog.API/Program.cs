@@ -10,5 +10,6 @@ builder.Services.AddApplicationServices(configuration);
 var app = builder.Build();
 
 app.UseApplicationPipeline(configuration);
+app.WarmupDatabase(configuration);
 
 app.Run();
