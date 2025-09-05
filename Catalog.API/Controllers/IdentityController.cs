@@ -1,4 +1,4 @@
-﻿using static Catalog.Application.Enums.UserResponseCode;
+﻿using static Catalog.Application.Enums.UserStatusCode;
 using Catalog.Application.DTO;
 using Catalog.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;

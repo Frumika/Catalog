@@ -1,6 +1,6 @@
 ﻿namespace Catalog.Application.Enums;
 
-public enum UserResponseCode
+public enum UserStatusCode
 {
     Logged,
     Registered,
