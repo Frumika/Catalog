@@ -4,6 +4,6 @@ namespace Catalog.Application.Interfaces;
 
 public interface IUserService
 {
-    Task<UserDbResponse> RegisterAsync(RegisterRequest request);
-    Task<UserDbResponse> LoginAsync(LoginRequest request);
+    Task<UserResponse> RegisterAsync(RegisterRequest request);
+    Task<UserResponse> LoginAsync(LoginRequest request);
 }

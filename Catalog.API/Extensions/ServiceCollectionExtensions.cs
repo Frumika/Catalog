@@ -1,4 +1,6 @@
-﻿using Catalog.Application.Interfaces;
+﻿using System.Text.Json;
+using System.Text.Json.Serialization;
+using Catalog.Application.Interfaces;
 using Catalog.Application.Services;
 using Catalog.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
@@ -9,21 +11,22 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, AppConfiguration config)
     {
-        ConnectPostgres(services, config);
-        AddCors(services);
-        AddServices(services);
-
-        services.AddControllers();
+        services
+            .ConnectPostgres(config)
+            .AddCorsPolicy()
+            .AddApplicationServices()
+            .AddApplicationControllers();
 
         return services;
     }
 
-    private static void ConnectPostgres(IServiceCollection services, AppConfiguration config)
+    private static IServiceCollection ConnectPostgres(this IServiceCollection services, AppConfiguration config)
     {
         services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(config.GetConnectionString()));
+        return services;
     }
 
-    private static void AddCors(IServiceCollection services)
+    private static IServiceCollection AddCorsPolicy(this IServiceCollection services)
     {
         services.AddCors(options =>
         {
@@ -32,10 +35,22 @@ public static class ServiceCollectionExtensions
                     .AllowAnyMethod()
                     .AllowAnyHeader());
         });
+        return services;
     }
 
-    private static void AddServices(IServiceCollection services)
+    private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
+        return services;
+    }
+
+    private static IServiceCollection AddApplicationControllers(this IServiceCollection services)
+    {
+        services.AddControllers().AddJsonOptions(options =>
+        {
+            options.JsonSerializerOptions.Converters.Add(
+                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        });
+        return services;
     }
 }

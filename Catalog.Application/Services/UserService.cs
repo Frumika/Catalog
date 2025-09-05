@@ -1,4 +1,5 @@
-﻿using Catalog.Application.DTO;
+﻿using static Catalog.Application.Enums.UserResponseCode;
+using Catalog.Application.DTO;
 using Catalog.Application.Interfaces;
 using Catalog.DataAccess.Contexts;
 using Catalog.Domain.Models;
@@ -15,13 +16,14 @@ public class UserService : IUserService
         _dbContext = dbContext;
     }
 
-    public async Task<UserDbResponse> LoginAsync(LoginRequest request)
+    public async Task<UserResponse> LoginAsync(LoginRequest request)
     {
         User? user = null;
-        UserDbResponse response = new()
+        UserResponse response = new()
         {
             IsSuccess = true,
-            Message = "User logged in"
+            Message = "User logged in",
+            Code = Logged
         };
 
         try
@@ -32,32 +34,36 @@ public class UserService : IUserService
         {
             response.IsSuccess = false;
             response.Message = e.Message;
+            response.Code = UnknownError;
         }
 
         if (user is null)
         {
             response.IsSuccess = false;
             response.Message = "User not found";
+            response.Code = UserNotFound;
         }
 
         else if (!IsPasswordsEquals(user.Password, request.Password))
         {
             response.IsSuccess = false;
             response.Message = "Password is incorrect";
+            response.Code = InvalidCredentials;
         }
 
         return response;
     }
 
 
-    public async Task<UserDbResponse> RegisterAsync(RegisterRequest request)
+    public async Task<UserResponse> RegisterAsync(RegisterRequest request)
     {
         bool isUserExist = false;
 
-        UserDbResponse response = new()
+        UserResponse response = new()
         {
             IsSuccess = true,
-            Message = "User registered"
+            Message = "User registered",
+            Code = Registered
         };
 
         try
@@ -70,12 +76,14 @@ public class UserService : IUserService
         {
             response.IsSuccess = false;
             response.Message = e.Message;
+            response.Code = UnknownError;
         }
 
         if (isUserExist)
         {
             response.IsSuccess = false;
             response.Message = "User already exists";
+            response.Code = UserAlreadyExists;
             return response;
         }
 
@@ -95,6 +103,7 @@ public class UserService : IUserService
         {
             response.IsSuccess = false;
             response.Message = e.Message;
+            response.Code = UnknownError;
         }
 
 
