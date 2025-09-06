@@ -1,6 +1,7 @@
 ﻿using static Catalog.Application.Enums.UserStatusCode;
 using Catalog.Application.DTO;
 using Catalog.Application.Interfaces;
+using Catalog.Application.Logic;
 using Catalog.DataAccess.Contexts;
 using Catalog.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -84,6 +85,30 @@ public class UserService : IUserService
             response.IsSuccess = false;
             response.Message = "User already exists";
             response.Code = UserAlreadyExists;
+            return response;
+        }
+
+        if (!UserValidator.IsValidEmail(request.Email))
+        {
+            response.IsSuccess = false;
+            response.Message = "Incorrect email";
+            response.Code = InvalidCredentials;
+            return response;
+        }
+
+        if (!UserValidator.IsValidLogin(request.Login))
+        {
+            response.IsSuccess = false;
+            response.Message = "Incorrect login";
+            response.Code = InvalidCredentials;
+            return response;
+        }
+
+        if (!UserValidator.IsValidPassword(request.Password))
+        {
+            response.IsSuccess = false;
+            response.Message = "Incorrect password";
+            response.Code = InvalidCredentials;
             return response;
         }
 
