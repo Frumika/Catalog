@@ -45,7 +45,7 @@ public class UserService : IUserService
             response.Code = UserNotFound;
         }
 
-        else if (!IsPasswordsEquals(user.Password, request.Password))
+        else if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
         {
             response.IsSuccess = false;
             response.Message = "Password is incorrect";
@@ -58,6 +58,8 @@ public class UserService : IUserService
 
     public async Task<UserResponse> RegisterAsync(RegisterRequest request)
     {
+        Console.WriteLine(request);
+
         bool isUserExist = false;
 
         UserResponse response = new()
@@ -116,7 +118,7 @@ public class UserService : IUserService
         {
             Email = request.Email,
             Login = request.Login,
-            Password = request.Password
+            HashPassword = Argon2Hasher.HashPassword(request.Password)
         };
         _dbContext.Add(user);
 

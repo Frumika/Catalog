@@ -4,9 +4,9 @@ namespace Catalog.Application.Logic;
 
 public static class UserValidator
 {
-    private const string EmailRegexTemplate = @"^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
-    private const string LoginRegexTemplate = @"^[A-Za-z0-9_.!@#$%^&*(){}-]+$";
-    private const string PasswordRegexTemplate = @"^[A-Za-z0-9_.!@#$%^&*(){}-]+$";
+    private const string EmailRegexTemplate = @"^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$";
+    private const string LoginRegexTemplate = @"^[A-Za-z0-9_.!@#$%^&*(){}\-]+$";
+    private const string PasswordRegexTemplate = @"^[A-Za-z0-9_.!@#$%^&*(){}\-]+$";
 
     private static readonly Regex EmailRegex = new(EmailRegexTemplate, RegexOptions.Compiled);
     private static readonly Regex LoginRegex = new(LoginRegexTemplate, RegexOptions.Compiled);

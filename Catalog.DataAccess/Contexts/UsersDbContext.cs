@@ -37,7 +37,7 @@ public class UsersDbContext : DbContext
             entity.Property(user => user.Email).HasMaxLength(StringLength);
             entity.HasIndex(user => user.Email).IsUnique();
 
-            entity.Property(user => user.Password).HasMaxLength(StringLength);
+            entity.Property(user => user.HashPassword).HasMaxLength(StringLength);
         });
     }
 }

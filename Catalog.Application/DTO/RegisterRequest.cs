@@ -12,4 +12,9 @@ public class RegisterRequest
 
     [Required(ErrorMessage = "Password is required")]
     public string Password { get; set; } = string.Empty;
+
+    public override string ToString()
+    {
+        return $"Email: {Email}, Login: {Login}, Password: {Password}";
+    }
 }
