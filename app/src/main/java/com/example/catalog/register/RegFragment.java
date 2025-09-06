@@ -16,7 +16,7 @@ import com.example.catalog.MyApp;
 import com.example.catalog.R;
 import com.example.catalog.core.FieldType;
 import com.example.catalog.core.ValidationUtils;
-import com.example.catalog.database.UserDao;
+
 
 public class RegFragment extends Fragment {
 
@@ -24,15 +24,12 @@ public class RegFragment extends Fragment {
     private EditText loginEditText;
     private EditText passwordEditText;
     private EditText confirmPasswordEditText;
-    private UserDao userDao;
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        userDao = ((MyApp) requireActivity().getApplication()).getUserDao();
 
         return inflater.inflate(R.layout.fragment_register, container, false);
     }
@@ -69,7 +66,7 @@ public class RegFragment extends Fragment {
 
         if (isUserDataValid) {
             try {
-                userDao.addUser(email, login, password);
+
             } catch (Exception e) {
                 Log.d("RegFragment", "Error: " + e.getMessage());
                 clearFields(FieldType.combine(FieldType.EMAIL, FieldType.LOGIN, FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
