@@ -16,6 +16,15 @@ import com.example.catalog.MyApp;
 import com.example.catalog.R;
 import com.example.catalog.core.FieldType;
 import com.example.catalog.core.ValidationUtils;
+import com.example.catalog.database.ApiClient;
+import com.example.catalog.database.AuthApi;
+import com.example.catalog.database.AuthRequest;
+import com.example.catalog.database.AuthResponse;
+import com.example.catalog.main.MainFragment;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class RegFragment extends Fragment {
@@ -64,17 +73,45 @@ public class RegFragment extends Fragment {
             return;
         }
 
-        if (isUserDataValid) {
-            try {
-
-            } catch (Exception e) {
-                Log.d("RegFragment", "Error: " + e.getMessage());
-                clearFields(FieldType.combine(FieldType.EMAIL, FieldType.LOGIN, FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
-            }
-        } else {
+        if (!isUserDataValid) {
             Log.d("RegFragment", "Error: Данные пользователя некорректны");
             clearFields(FieldType.combine(FieldType.EMAIL, FieldType.LOGIN, FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
+            return;
         }
+
+        AuthApi api = ApiClient.getAuthApi();
+        AuthRequest request = new AuthRequest(email, login, password);
+
+        Call<AuthResponse> call = api.register(request);
+
+        call.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    AuthResponse authResponse = response.body();
+
+                    if (authResponse.isSuccess()) {
+                        Log.d("RegFragment", "Успешная регистрация, token = " + authResponse.getCode());
+
+                        requireActivity().getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.nav_host_fragment, new MainFragment())
+                                .addToBackStack(null)
+                                .commit();
+                    } else {
+                        Log.d("RegFragment", "Ошибка: " + authResponse.getMessage());
+                    }
+                } else {
+                    Log.d("RegFragment", "Ошибка ответа сервера");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                Log.e("AuthFragment", "Ошибка сети: " + t.getMessage());
+            }
+        });
+
     }
 
     private boolean VerifyUserData(String email, String login, String password) {
