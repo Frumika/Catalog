@@ -17,122 +17,83 @@ public class UserService : IUserService
         _dbContext = dbContext;
     }
 
+
     public async Task<UserResponse> LoginAsync(LoginRequest request)
     {
-        User? user = null;
-        UserResponse response = new()
-        {
-            IsSuccess = true,
-            Message = "User logged in",
-            Code = Success
-        };
+        var validationResult = ValidateLoginRequest(request);
+        if (validationResult is not null) return validationResult;
 
         try
         {
-            user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Login == request.Login);
+            var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Login == request.Login);
+
+            if (user is null)
+                return UserResponse.Fail(UserNotFound, "User not found");
+
+            if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
+                return UserResponse.Fail(InvalidPassword, "Password is incorrect");
         }
         catch (Exception e)
         {
-            response.IsSuccess = false;
-            response.Message = e.Message;
-            response.Code = UnknownError;
+            return UserResponse.Fail(UnknownError, e.Message);
         }
 
-        if (user is null)
-        {
-            response.IsSuccess = false;
-            response.Message = "User not found";
-            response.Code = UserNotFound;
-        }
-
-        else if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
-        {
-            response.IsSuccess = false;
-            response.Message = "Password is incorrect";
-            response.Code = InvalidPassword;
-        }
-
-        return response;
+        return UserResponse.Success("User logged in");
     }
-
 
     public async Task<UserResponse> RegisterAsync(RegisterRequest request)
     {
-        Console.WriteLine(request);
-
-        bool isUserExist = false;
-
-        UserResponse response = new()
-        {
-            IsSuccess = true,
-            Message = "User registered",
-            Code = Success
-        };
-
+        var validationResult = ValidateRegisterRequest(request);
+        if (validationResult is not null) return validationResult;
+        
         try
         {
-            isUserExist = await _dbContext.Users
+            bool isUserExist = await _dbContext.Users
                 .AsNoTracking()
                 .AnyAsync(user => user.Login == request.Login || user.Email == request.Email);
-        }
-        catch (Exception e)
-        {
-            response.IsSuccess = false;
-            response.Message = e.Message;
-            response.Code = UnknownError;
-        }
 
-        if (isUserExist)
-        {
-            response.IsSuccess = false;
-            response.Message = "User already exists";
-            response.Code = UserAlreadyExists;
-            return response;
-        }
+            if (isUserExist) return UserResponse.Fail(UserAlreadyExists, "User already exists");
 
-        if (!UserValidator.IsValidEmail(request.Email))
-        {
-            response.IsSuccess = false;
-            response.Message = "Incorrect email";
-            response.Code = InvalidEmail;
-            return response;
-        }
+            User user = new()
+            {
+                Email = request.Email,
+                Login = request.Login,
+                HashPassword = Argon2Hasher.HashPassword(request.Password)
+            };
+            _dbContext.Add(user);
 
-        if (!UserValidator.IsValidLogin(request.Login))
-        {
-            response.IsSuccess = false;
-            response.Message = "Incorrect login";
-            response.Code = InvalidLogin;
-            return response;
-        }
-
-        if (!UserValidator.IsValidPassword(request.Password))
-        {
-            response.IsSuccess = false;
-            response.Message = "Incorrect password";
-            response.Code = InvalidPassword;
-            return response;
-        }
-
-        User user = new()
-        {
-            Email = request.Email,
-            Login = request.Login,
-            HashPassword = Argon2Hasher.HashPassword(request.Password)
-        };
-        _dbContext.Add(user);
-
-        try
-        {
             await _dbContext.SaveChangesAsync();
         }
         catch (Exception e)
         {
-            response.IsSuccess = false;
-            response.Message = e.Message;
-            response.Code = UnknownError;
+            return UserResponse.Fail(UnknownError, e.Message);
         }
 
-        return response;
+        return UserResponse.Success("User registered");
+    }
+
+    private UserResponse? ValidateLoginRequest(LoginRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Login))
+            return UserResponse.Fail(InvalidLogin, "Empty login");
+
+        if (string.IsNullOrWhiteSpace(request.Password))
+            return UserResponse.Fail(InvalidPassword, "Empty password");
+
+        return null;
+    }
+
+    private UserResponse? ValidateRegisterRequest(RegisterRequest request)
+    {
+        if (!UserValidator.IsValidEmail(request.Email))
+            return UserResponse.Fail(InvalidEmail, "Incorrect email");
+
+        if (!UserValidator.IsValidLogin(request.Login))
+            return UserResponse.Fail(InvalidLogin, "Incorrect login");
+
+        if (!UserValidator.IsValidPassword(request.Password))
+            return UserResponse.Fail(InvalidPassword, "Incorrect password");
+
+        return null;
     }
 }
