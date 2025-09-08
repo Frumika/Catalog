@@ -2,13 +2,13 @@
 
 namespace Catalog.Application.DTO;
 
-public class UserResponse
+public class IdentityResponse
 {
     public bool IsSuccess { get; set; }
     public string? Message { get; set; } = string.Empty;
     public IdentityResultCode? Code { get; set; }
 
-    public static UserResponse Success(string? message = null)
+    public static IdentityResponse Success(string? message = null)
     {
         return new()
         {
@@ -18,7 +18,7 @@ public class UserResponse
         };
     }
 
-    public static UserResponse Fail(IdentityResultCode code, string? message = null)
+    public static IdentityResponse Fail(IdentityResultCode code, string? message = null)
     {
         return new()
         {

@@ -8,17 +8,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Catalog.Application.Services;
 
-public class UserService : IUserService
+public class IdentityService : IIdentityService
 {
     private readonly UsersDbContext _dbContext;
 
-    public UserService(UsersDbContext dbContext)
+    public IdentityService(UsersDbContext dbContext)
     {
         _dbContext = dbContext;
     }
 
 
-    public async Task<UserResponse> LoginAsync(LoginRequest request)
+    public async Task<IdentityResponse> LoginAsync(LoginRequest request)
     {
         var validationResult = ValidateLoginRequest(request);
         if (validationResult is not null) return validationResult;
@@ -28,20 +28,20 @@ public class UserService : IUserService
             var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Login == request.Login);
 
             if (user is null)
-                return UserResponse.Fail(UserNotFound, "User not found");
+                return IdentityResponse.Fail(UserNotFound, "User not found");
 
             if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
-                return UserResponse.Fail(InvalidPassword, "Password is incorrect");
+                return IdentityResponse.Fail(InvalidPassword, "Password is incorrect");
         }
         catch (Exception e)
         {
-            return UserResponse.Fail(UnknownError, e.Message);
+            return IdentityResponse.Fail(UnknownError, e.Message);
         }
 
-        return UserResponse.Success("User logged in");
+        return IdentityResponse.Success("User logged in");
     }
 
-    public async Task<UserResponse> RegisterAsync(RegisterRequest request)
+    public async Task<IdentityResponse> RegisterAsync(RegisterRequest request)
     {
         var validationResult = ValidateRegisterRequest(request);
         if (validationResult is not null) return validationResult;
@@ -52,7 +52,7 @@ public class UserService : IUserService
                 .AsNoTracking()
                 .AnyAsync(user => user.Login == request.Login || user.Email == request.Email);
 
-            if (isUserExist) return UserResponse.Fail(UserAlreadyExists, "User already exists");
+            if (isUserExist) return IdentityResponse.Fail(UserAlreadyExists, "User already exists");
 
             User user = new()
             {
@@ -66,33 +66,33 @@ public class UserService : IUserService
         }
         catch (Exception e)
         {
-            return UserResponse.Fail(UnknownError, e.Message);
+            return IdentityResponse.Fail(UnknownError, e.Message);
         }
 
-        return UserResponse.Success("User registered");
+        return IdentityResponse.Success("User registered");
     }
 
-    private UserResponse? ValidateLoginRequest(LoginRequest request)
+    private IdentityResponse? ValidateLoginRequest(LoginRequest request)
     {
         if (string.IsNullOrWhiteSpace(request.Login))
-            return UserResponse.Fail(InvalidLogin, "Empty login");
+            return IdentityResponse.Fail(InvalidLogin, "Empty login");
 
         if (string.IsNullOrWhiteSpace(request.Password))
-            return UserResponse.Fail(InvalidPassword, "Empty password");
+            return IdentityResponse.Fail(InvalidPassword, "Empty password");
 
         return null;
     }
 
-    private UserResponse? ValidateRegisterRequest(RegisterRequest request)
+    private IdentityResponse? ValidateRegisterRequest(RegisterRequest request)
     {
-        if (!UserValidator.IsValidEmail(request.Email))
-            return UserResponse.Fail(InvalidEmail, "Incorrect email");
+        if (!IdentityValidator.IsValidEmail(request.Email))
+            return IdentityResponse.Fail(InvalidEmail, "Incorrect email");
 
-        if (!UserValidator.IsValidLogin(request.Login))
-            return UserResponse.Fail(InvalidLogin, "Incorrect login");
+        if (!IdentityValidator.IsValidLogin(request.Login))
+            return IdentityResponse.Fail(InvalidLogin, "Incorrect login");
 
-        if (!UserValidator.IsValidPassword(request.Password))
-            return UserResponse.Fail(InvalidPassword, "Incorrect password");
+        if (!IdentityValidator.IsValidPassword(request.Password))
+            return IdentityResponse.Fail(InvalidPassword, "Incorrect password");
 
         return null;
     }

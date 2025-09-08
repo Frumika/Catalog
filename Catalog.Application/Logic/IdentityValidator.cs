@@ -2,7 +2,7 @@
 
 namespace Catalog.Application.Logic;
 
-public static class UserValidator
+public static class IdentityValidator
 {
     private const string EmailRegexTemplate = @"^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,6}$";
     private const string LoginRegexTemplate = @"^[A-Za-z0-9_.!@#$%^&*(){}\-]+$";

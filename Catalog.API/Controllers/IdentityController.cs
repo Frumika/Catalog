@@ -9,31 +9,31 @@ namespace Catalog.API.Controllers;
 [Route("api/identity")]
 public class IdentityController : ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly IIdentityService _identityService;
 
 
-    public IdentityController(IUserService userService)
+    public IdentityController(IIdentityService identityService)
     {
-        _userService = userService;
+        _identityService = identityService;
     }
 
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var response = await _userService.LoginAsync(request);
+        var response = await _identityService.LoginAsync(request);
         return GetHttpCode(response);
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var response = await _userService.RegisterAsync(request);
+        var response = await _identityService.RegisterAsync(request);
         return GetHttpCode(response);
     }
 
 
-    private IActionResult GetHttpCode(UserResponse response)
+    private IActionResult GetHttpCode(IdentityResponse response)
     {
         return response.Code switch
         {
