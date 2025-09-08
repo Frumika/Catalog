@@ -12,10 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.catalog.MyApp;
 import com.example.catalog.R;
 import com.example.catalog.core.FieldType;
-import com.example.catalog.core.ValidationUtils;
 import com.example.catalog.database.ApiClient;
 import com.example.catalog.database.AuthApi;
 import com.example.catalog.database.AuthRequest;
@@ -64,20 +62,6 @@ public class RegFragment extends Fragment {
         String password = passwordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
 
-        boolean isPasswordEquals = password.equals(confirmPassword);
-        boolean isUserDataValid = VerifyUserData(email, login, password);
-
-        if (!isPasswordEquals) {
-            Log.d("RegFragment", "Error: Пароли не совпадают");
-            clearFields(FieldType.combine(FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
-            return;
-        }
-
-        if (!isUserDataValid) {
-            Log.d("RegFragment", "Error: Данные пользователя некорректны");
-            clearFields(FieldType.combine(FieldType.EMAIL, FieldType.LOGIN, FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
-            return;
-        }
 
         AuthApi api = ApiClient.getAuthApi();
         AuthRequest request = new AuthRequest(email, login, password);
@@ -114,13 +98,6 @@ public class RegFragment extends Fragment {
 
     }
 
-    private boolean VerifyUserData(String email, String login, String password) {
-        boolean isValidEmail = ValidationUtils.isValidEmail(email);
-        boolean isValidLogin = ValidationUtils.isValidLogin(login);
-        boolean isValidPassword = ValidationUtils.isValidPassword(password);
-
-        return isValidEmail && isValidLogin && isValidPassword;
-    }
 
     private void clearFields(int fieldTypes) {
         if (FieldType.hasFlag(fieldTypes, FieldType.EMAIL)) {

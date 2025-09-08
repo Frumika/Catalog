@@ -56,11 +56,6 @@ public class AuthFragment extends Fragment {
         String login = loginEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        if (login.isEmpty() || password.isEmpty()) {
-            Log.d("AuthFragment", "Ошибка входа");
-            return;
-        }
-
         AuthApi api = ApiClient.getAuthApi();
         AuthRequest request = new AuthRequest(login, password);
 
