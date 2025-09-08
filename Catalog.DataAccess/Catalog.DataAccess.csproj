@@ -20,4 +20,9 @@
         <ProjectReference Include="..\Catalog.Domain\Catalog.Domain.csproj"/>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\Products\" />
+      <Folder Include="Migrations\Users\" />
+    </ItemGroup>
+
 </Project>

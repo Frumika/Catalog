@@ -8,11 +8,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Catalog.DataAccess.Migrations
+namespace Catalog.DataAccess.Migrations.Users
 {
     [DbContext(typeof(UsersDbContext))]
-    [Migration("20250906211440_Update_Column_Name")]
-    partial class Update_Column_Name
+    [Migration("20250908145841_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
