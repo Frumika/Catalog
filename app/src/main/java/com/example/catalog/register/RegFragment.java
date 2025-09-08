@@ -62,6 +62,11 @@ public class RegFragment extends Fragment {
         String password = passwordEditText.getText().toString();
         String confirmPassword = confirmPasswordEditText.getText().toString();
 
+        if (!password.equals(confirmPassword)) {
+            Log.d("RegFragment", "Пароли не совпадают");
+            clearFields(FieldType.combine(FieldType.PASSWORD, FieldType.CONFIRM_PASSWORD));
+            return;
+        }
 
         AuthApi api = ApiClient.getAuthApi();
         AuthRequest request = new AuthRequest(email, login, password);
