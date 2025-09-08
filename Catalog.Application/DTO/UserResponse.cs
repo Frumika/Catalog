@@ -6,5 +6,5 @@ public class UserResponse
 {
     public bool IsSuccess { get; set; }
     public string? Message { get; set; } = string.Empty;
-    public UserStatusCode? Code { get; set; }
+    public IdentityResultCode? Code { get; set; }
 }

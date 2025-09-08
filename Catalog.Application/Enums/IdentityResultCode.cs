@@ -1,10 +1,11 @@
 ﻿namespace Catalog.Application.Enums;
 
-public enum UserStatusCode
+public enum IdentityResultCode
 {
-    Logged,
-    Registered,
-    InvalidCredentials,
+    Success,
+    InvalidLogin,
+    InvalidPassword,
+    InvalidEmail,
     UserAlreadyExists,
     UserNotFound,
     UnknownError

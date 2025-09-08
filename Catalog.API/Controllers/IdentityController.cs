@@ -1,4 +1,4 @@
-﻿using static Catalog.Application.Enums.UserStatusCode;
+﻿using static Catalog.Application.Enums.IdentityResultCode;
 using Catalog.Application.DTO;
 using Catalog.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
@@ -37,11 +37,10 @@ public class IdentityController : ControllerBase
     {
         return response.Code switch
         {
-            Logged => Ok(response),
-            Registered => StatusCode(StatusCodes.Status201Created, response),
+            Success => Ok(response),
             UserAlreadyExists => Conflict(response),
             UserNotFound => NotFound(response),
-            InvalidCredentials => Unauthorized(response),
+            InvalidEmail or InvalidLogin or InvalidPassword => Unauthorized(response),
             UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
             _ => BadRequest(response)
         };

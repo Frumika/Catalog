@@ -1,4 +1,4 @@
-﻿using static Catalog.Application.Enums.UserStatusCode;
+﻿using static Catalog.Application.Enums.IdentityResultCode;
 using Catalog.Application.DTO;
 using Catalog.Application.Interfaces;
 using Catalog.Application.Logic;
@@ -24,7 +24,7 @@ public class UserService : IUserService
         {
             IsSuccess = true,
             Message = "User logged in",
-            Code = Logged
+            Code = Success
         };
 
         try
@@ -49,7 +49,7 @@ public class UserService : IUserService
         {
             response.IsSuccess = false;
             response.Message = "Password is incorrect";
-            response.Code = InvalidCredentials;
+            response.Code = InvalidPassword;
         }
 
         return response;
@@ -66,7 +66,7 @@ public class UserService : IUserService
         {
             IsSuccess = true,
             Message = "User registered",
-            Code = Registered
+            Code = Success
         };
 
         try
@@ -94,7 +94,7 @@ public class UserService : IUserService
         {
             response.IsSuccess = false;
             response.Message = "Incorrect email";
-            response.Code = InvalidCredentials;
+            response.Code = InvalidEmail;
             return response;
         }
 
@@ -102,7 +102,7 @@ public class UserService : IUserService
         {
             response.IsSuccess = false;
             response.Message = "Incorrect login";
-            response.Code = InvalidCredentials;
+            response.Code = InvalidLogin;
             return response;
         }
 
@@ -110,7 +110,7 @@ public class UserService : IUserService
         {
             response.IsSuccess = false;
             response.Message = "Incorrect password";
-            response.Code = InvalidCredentials;
+            response.Code = InvalidPassword;
             return response;
         }
 
@@ -133,10 +133,6 @@ public class UserService : IUserService
             response.Code = UnknownError;
         }
 
-
         return response;
     }
-
-    private bool IsPasswordsEquals(string firstPassword, string secondPassword) =>
-        string.Equals(firstPassword, secondPassword);
 }
