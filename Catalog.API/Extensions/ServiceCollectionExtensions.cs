@@ -22,7 +22,12 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection ConnectPostgres(this IServiceCollection services, AppConfiguration config)
     {
-        services.AddDbContext<UsersDbContext>(options => options.UseNpgsql(config.GetConnectionString()));
+        services.AddDbContext<UsersDbContext>(options =>
+            options.UseNpgsql(config.GetConnectionString("UsersDatabase")));
+        
+        services.AddDbContext<ProductsDbContext>(options =>
+            options.UseNpgsql(config.GetConnectionString("ProductsDatabase")));
+        
         return services;
     }
 

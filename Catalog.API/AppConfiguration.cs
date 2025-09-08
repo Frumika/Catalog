@@ -13,8 +13,5 @@ public class AppConfiguration
         Environment = environment;
     }
 
-    public string GetConnectionString(string? name = null)
-    {
-        return ConnectionString;
-    }
+    public string? GetConnectionString(string name) => Configuration.GetConnectionString(name);
 }
