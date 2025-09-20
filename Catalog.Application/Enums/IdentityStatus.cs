@@ -1,6 +1,6 @@
 ﻿namespace Catalog.Application.Enums;
 
-public enum IdentityResultCode
+public enum IdentityStatus
 {
     Success,
     InvalidLogin,

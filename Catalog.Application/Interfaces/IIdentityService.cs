@@ -1,4 +1,5 @@
-﻿using Catalog.Application.DTO;
+﻿using Catalog.Application.DTO.Requests;
+using Catalog.Application.DTO.Responses;
 
 namespace Catalog.Application.Interfaces;
 

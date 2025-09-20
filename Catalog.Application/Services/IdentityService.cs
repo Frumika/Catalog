@@ -1,5 +1,6 @@
-﻿using static Catalog.Application.Enums.IdentityResultCode;
-using Catalog.Application.DTO;
+﻿using static Catalog.Application.Enums.IdentityStatus;
+using Catalog.Application.DTO.Requests;
+using Catalog.Application.DTO.Responses;
 using Catalog.Application.Interfaces;
 using Catalog.Application.Logic;
 using Catalog.DataAccess.Contexts;

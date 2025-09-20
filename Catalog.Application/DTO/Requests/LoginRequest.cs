@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Catalog.Application.DTO;
+﻿namespace Catalog.Application.DTO.Requests;
 
 public class LoginRequest
 {
