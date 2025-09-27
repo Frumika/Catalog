@@ -6,6 +6,7 @@ namespace Catalog.Application.DTO.Responses;
 public class GetProductsResponse : BaseResponse<GetProductsStatus>
 {
     public List<ProductDto>? Products { get; set; }
+    public int TotalCount { get; set; }
 
     public static GetProductsResponse Success(IEnumerable<ProductDto> products, string? message = null)
     {
