@@ -17,8 +17,7 @@ public class IdentityService : IIdentityService
     {
         _dbContext = dbContext;
     }
-
-
+    
     public async Task<IdentityResponse> LoginAsync(LoginRequest request)
     {
         var validationResult = ValidateLoginRequest(request);
@@ -34,9 +33,9 @@ public class IdentityService : IIdentityService
             if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
                 return IdentityResponse.Fail(InvalidPassword, "Password is incorrect");
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            return IdentityResponse.Fail(UnknownError, e.Message);
+            return IdentityResponse.Fail(UnknownError, "Internal server error");
         }
 
         return IdentityResponse.Success("User logged in");
@@ -65,9 +64,9 @@ public class IdentityService : IIdentityService
 
             await _dbContext.SaveChangesAsync();
         }
-        catch (Exception e)
+        catch (Exception)
         {
-            return IdentityResponse.Fail(UnknownError, e.Message);
+            return IdentityResponse.Fail(UnknownError,"Internal server error");
         }
 
         return IdentityResponse.Success("User registered");

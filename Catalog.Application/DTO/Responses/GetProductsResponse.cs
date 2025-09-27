@@ -8,14 +8,15 @@ public class GetProductsResponse : BaseResponse<GetProductsStatus>
     public List<ProductDto>? Products { get; set; }
     public int TotalCount { get; set; }
 
-    public static GetProductsResponse Success(IEnumerable<ProductDto> products, string? message = null)
+    public static GetProductsResponse Success(IEnumerable<ProductDto> products, int? totalCount = null, string? message = null)
     {
         return new()
         {
             IsSuccess = true,
             Message = message,
             Code = GetProductsStatus.Success,
-            Products = products.ToList()
+            Products = products.ToList(),
+            TotalCount = totalCount ?? 0
         };
     }
 
@@ -26,7 +27,8 @@ public class GetProductsResponse : BaseResponse<GetProductsStatus>
             IsSuccess = false,
             Message = message,
             Code = code,
-            Products = null
+            Products = null,
+            TotalCount = 0
         };
     }
 }

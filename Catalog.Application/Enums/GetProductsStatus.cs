@@ -3,8 +3,9 @@
 
 public enum GetProductsStatus
 {
-    None,
     Success,
-    NotFound,
+    EmptyList,
+    WrongCategory,
+    InvalidValue,
     UnknownError
 }

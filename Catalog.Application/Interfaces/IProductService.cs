@@ -6,4 +6,5 @@ namespace Catalog.Application.Interfaces;
 public interface IProductService
 {
     Task<GetProductsResponse> GetProductsAsync(GetProductsRequest request);
+    Task<GetCategoriesResponse> GetAllCategoriesAsync();
 }
