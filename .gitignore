@@ -29,6 +29,3 @@ Thumbs.db
 *.dotCover
 *.dotTrace
 *.dotMemory
-
-# Secrets (например, строки подключения, если вдруг попадут в локальный файл)
-appsettings.Development.json

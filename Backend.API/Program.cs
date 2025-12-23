@@ -8,8 +8,9 @@ var configuration = new AppConfiguration(builder.Configuration, builder.Environm
 builder.Services.AddApplicationServices(configuration);
 
 var app = builder.Build();
-
+app.ApplyMigrations();
 app.UseApplicationPipeline(configuration);
+app.AddSwagger();
 app.WarmupDatabase(configuration);
 
 app.Run();
