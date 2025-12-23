@@ -29,3 +29,6 @@ Thumbs.db
 *.dotCover
 *.dotTrace
 *.dotMemory
+
+/Infrastructure
+/Resources

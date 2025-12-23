@@ -1,0 +1,25 @@
+﻿services:
+  backend.api:
+    image: backend.api
+    build:
+      context: .
+      dockerfile: Backend.API/Dockerfile
+
+  backend.application:
+    image: backend.application
+    build:
+      context: .
+      dockerfile: Backend.Application/Dockerfile
+
+  backend.dataaccess:
+    image: backend.dataaccess
+    build:
+      context: .
+      dockerfile: Backend.DataAccess/Dockerfile
+
+  backend.domain:
+    image: backend.domain
+    build:
+      context: .
+      dockerfile: Backend.Domain/Dockerfile
+
