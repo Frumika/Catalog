@@ -1,25 +1,35 @@
 ﻿services:
-  backend.api:
-    image: backend.api
+  backend:
     build:
-      context: .
-      dockerfile: Backend.API/Dockerfile
+      context: ./Backend/
+      dockerfile: Dockerfile
+    ports:
+      - "5777:5777"
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=http://0.0.0.0:5777
+    networks:
+      - app-network
+  
+  postgres:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: app_db
+    ports:
+      - "5778:5432"
+    networks:
+      - app-network
+    volumes:
+      - catalog-postgres-data:/var/lib/postgresql/data
 
-  backend.application:
-    image: backend.application
-    build:
-      context: .
-      dockerfile: Backend.Application/Dockerfile
 
-  backend.dataaccess:
-    image: backend.dataaccess
-    build:
-      context: .
-      dockerfile: Backend.DataAccess/Dockerfile
+networks:
+  app-network:
 
-  backend.domain:
-    image: backend.domain
-    build:
-      context: .
-      dockerfile: Backend.Domain/Dockerfile
-
+volumes:
+  catalog-postgres-data:

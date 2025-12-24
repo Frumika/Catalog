@@ -2,15 +2,13 @@ using Backend.API;
 using Backend.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var configuration = new AppConfiguration(builder.Configuration, builder.Environment);
-
-builder.Services.AddApplicationServices(configuration);
+builder.Services.AddApplicationServices(builder.Configuration);
 
 var app = builder.Build();
+
 app.ApplyMigrations();
-app.UseApplicationPipeline(configuration);
+app.UseApplicationPipeline();
 app.AddSwagger();
-app.WarmupDatabase(configuration);
+app.WarmupDatabase();
 
 app.Run();

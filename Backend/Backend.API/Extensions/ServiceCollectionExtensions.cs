@@ -1,5 +1,4 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Backend.Application.Interfaces;
 using Backend.Application.Services;
 using Backend.DataAccess.Contexts;
@@ -9,7 +8,7 @@ namespace Backend.API.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, AppConfiguration config)
+    public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config)
     {
         services
             .ConnectPostgres(config)
@@ -20,13 +19,10 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    private static IServiceCollection ConnectPostgres(this IServiceCollection services, AppConfiguration config)
+    private static IServiceCollection ConnectPostgres(this IServiceCollection services, IConfiguration config)
     {
         services.AddDbContext<UsersDbContext>(options =>
-            options.UseNpgsql(config.GetConnectionString("UsersDatabase")));
-        
-        services.AddDbContext<ProductsDbContext>(options =>
-            options.UseNpgsql(config.GetConnectionString("ProductsDatabase")));
+            options.UseNpgsql(config.GetConnectionString("Postgres:App")));
         
         return services;
     }
@@ -53,8 +49,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddControllers().AddJsonOptions(options =>
         {
-            options.JsonSerializerOptions.Converters.Add(
-                new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
         return services;
     }

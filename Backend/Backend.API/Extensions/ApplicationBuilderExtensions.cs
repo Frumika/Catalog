@@ -5,9 +5,8 @@ namespace Backend.API.Extensions;
 
 public static class ApplicationBuilderExtensions
 {
-    public static WebApplication UseApplicationPipeline(this WebApplication app, AppConfiguration config)
+    public static WebApplication UseApplicationPipeline(this WebApplication app)
     {
-        // app.UseHttpsRedirection();
         app.UseCors("AllowAllOrigins");
         app.MapControllers();
 
@@ -25,7 +24,7 @@ public static class ApplicationBuilderExtensions
         usersDb.Database.Migrate();
     }
 
-    public static void WarmupDatabase(this WebApplication app, AppConfiguration config)
+    public static void WarmupDatabase(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
