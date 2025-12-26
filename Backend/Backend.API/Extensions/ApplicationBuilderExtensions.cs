@@ -16,18 +16,14 @@ public static class ApplicationBuilderExtensions
     public static void ApplyMigrations(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-
-        var productsDb = scope.ServiceProvider.GetRequiredService<ProductsDbContext>();
-        var usersDb = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
-
-        productsDb.Database.Migrate();
-        usersDb.Database.Migrate();
+        var mainDb = scope.ServiceProvider.GetRequiredService<MainDbContext>();
+        mainDb.Database.Migrate();
     }
 
     public static void WarmupDatabase(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<UsersDbContext>();
+        var dbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
         _ = dbContext.Users.Any();
     }
     

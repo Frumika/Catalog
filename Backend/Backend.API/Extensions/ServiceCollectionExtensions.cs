@@ -21,9 +21,8 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection ConnectPostgres(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<UsersDbContext>(options =>
-            options.UseNpgsql(config.GetConnectionString("Postgres:App")));
-        
+        string? connectionString = config["Databases:Main"];
+        services.AddDbContext<MainDbContext>(options => options.UseNpgsql(connectionString));
         return services;
     }
 
@@ -51,6 +50,7 @@ public static class ServiceCollectionExtensions
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+        
         return services;
     }
 }

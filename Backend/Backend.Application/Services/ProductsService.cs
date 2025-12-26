@@ -11,11 +11,11 @@ namespace Backend.Application.Services;
 
 public class ProductsService : IProductService
 {
-    private readonly ProductsDbContext _productsDbContext;
+    private readonly MainDbContext _dbContext;
 
-    public ProductsService(ProductsDbContext productsDbContext)
+    public ProductsService(MainDbContext dbContext)
     {
-        _productsDbContext = productsDbContext;
+        _dbContext = dbContext;
     }
 
     public async Task<GetProductsResponse> GetProductsAsync(GetProductsRequest request)
@@ -23,7 +23,7 @@ public class ProductsService : IProductService
         var validationResult = ValidateGetProductsRequest(request);
         if (validationResult is not null) return validationResult;
 
-        var query = _productsDbContext.Products.AsNoTracking();
+        var query = _dbContext.Products.AsNoTracking();
         
         if (request.CategoryId is not null)
             query = query.Where(p => p.CategoryId == request.CategoryId.Value);
@@ -65,7 +65,7 @@ public class ProductsService : IProductService
     {
         try
         {
-            var categories = await _productsDbContext.Categories
+            var categories = await _dbContext.Categories
                 .AsNoTracking()
                 .OrderBy(c => c.Id)
                 .Select(c => new CategoryDto(c))

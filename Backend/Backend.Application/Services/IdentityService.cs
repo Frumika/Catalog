@@ -11,9 +11,9 @@ namespace Backend.Application.Services;
 
 public class IdentityService : IIdentityService
 {
-    private readonly UsersDbContext _dbContext;
+    private readonly MainDbContext _dbContext;
 
-    public IdentityService(UsersDbContext dbContext)
+    public IdentityService(MainDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -50,13 +50,12 @@ public class IdentityService : IIdentityService
         {
             bool isUserExist = await _dbContext.Users
                 .AsNoTracking()
-                .AnyAsync(user => user.Login == request.Login || user.Email == request.Email);
+                .AnyAsync(user => user.Login == request.Login);
 
             if (isUserExist) return IdentityResponse.Fail(UserAlreadyExists, "User already exists");
 
             User user = new()
             {
-                Email = request.Email,
                 Login = request.Login,
                 HashPassword = Argon2Hasher.HashPassword(request.Password)
             };
