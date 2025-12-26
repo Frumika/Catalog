@@ -14,7 +14,8 @@ public static class ServiceCollectionExtensions
             .ConnectPostgres(config)
             .AddCorsPolicy()
             .AddApplicationServices()
-            .AddApplicationControllers();
+            .AddApplicationControllers()
+            .AddSwaggerGen();
 
         return services;
     }
