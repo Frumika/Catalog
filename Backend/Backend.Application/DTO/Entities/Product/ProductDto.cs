@@ -1,6 +1,4 @@
-﻿using Backend.Domain.Models;
-
-namespace Backend.Application.DTO.Entities;
+﻿namespace Backend.Application.DTO.Entities.Product;
 
 public class ProductDto
 {
@@ -13,7 +11,7 @@ public class ProductDto
     {
     }
 
-    public ProductDto(Product product)
+    public ProductDto(Domain.Models.Product product)
     {
         Id = product.Id;
         Name = product.Name;

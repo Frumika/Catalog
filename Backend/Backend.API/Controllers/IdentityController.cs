@@ -1,7 +1,8 @@
-﻿using static Backend.Application.Enums.IdentityStatus;
+﻿using static Backend.Application.StatusCodes.UserStatusCode;
 using Backend.Application.DTO.Requests;
+using Backend.Application.DTO.Requests.User;
 using Backend.Application.DTO.Responses;
-using Backend.Application.Interfaces;
+using Backend.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.API.Controllers;
@@ -34,14 +35,14 @@ public class IdentityController : ControllerBase
     }
 
 
-    private IActionResult GetHttpCode(IdentityResponse response)
+    private IActionResult GetHttpCode(UserResponse response)
     {
         return response.Code switch
         {
             Success => Ok(response),
             UserAlreadyExists => Conflict(response),
             UserNotFound => NotFound(response),
-            InvalidEmail or InvalidLogin or InvalidPassword => Unauthorized(response),
+            InvalidLogin or InvalidPassword => Unauthorized(response),
             UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
             _ => BadRequest(response)
         };

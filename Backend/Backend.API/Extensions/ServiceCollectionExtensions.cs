@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using Backend.Application.Interfaces;
 using Backend.Application.Services;
+using Backend.Application.Services.Interfaces;
 using Backend.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -42,6 +42,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IProductService, ProductsService>();
         return services;
     }
 

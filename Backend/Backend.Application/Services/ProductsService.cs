@@ -1,11 +1,13 @@
-﻿using Backend.Application.DTO.Entities;
-using Backend.Application.DTO.Requests;
+﻿using Backend.Application.DTO.Entities.Product;
+using Backend.Application.DTO.Requests.Base;
+using Backend.Application.DTO.Requests.Product;
 using Backend.Application.DTO.Responses;
-using Backend.Application.Enums;
-using Backend.Application.Interfaces;
+using Backend.Application.Services.Interfaces;
+using Backend.Application.StatusCodes;
 using Backend.DataAccess.Contexts;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Backend.Application.Services;
 
@@ -18,74 +20,170 @@ public class ProductsService : IProductService
         _dbContext = dbContext;
     }
 
-    public async Task<GetProductsResponse> GetProductsAsync(GetProductsRequest request)
+    public async Task<ProductResponse> CreateProductAsync(CreateProductRequest request)
     {
-        var validationResult = ValidateGetProductsRequest(request);
-        if (validationResult is not null) return validationResult;
+        ValidationResult validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return ProductResponse.Fail(ProductStatusCode.BadRequest, validationResult.Message);
 
-        var query = _dbContext.Products.AsNoTracking();
-        
-        if (request.CategoryId is not null)
-            query = query.Where(p => p.CategoryId == request.CategoryId.Value);
-        
-        
         try
         {
-            var totalCount = await query.CountAsync();
-            if (totalCount == 0)
+            bool isCategoryExist = await _dbContext.Categories
+                .AsNoTracking()
+                .AnyAsync(category => category.Id == request.CategoryId);
+            if (!isCategoryExist)
+                return ProductResponse.Fail(ProductStatusCode.IncorrectCategory, "Category not found");
+
+            bool isMakerExist = await _dbContext.Makers
+                .AsNoTracking()
+                .AnyAsync(maker => maker.Id == request.MakerId);
+            if (!isMakerExist)
+                return ProductResponse.Fail(ProductStatusCode.IncorrectMaker, "Maker not found");
+
+            Product product = new Product
             {
-                var code = request.CategoryId is not null
-                    ? GetProductsStatus.WrongCategory
-                    : GetProductsStatus.EmptyList;
+                Name = request.Name,
+                Price = request.Price,
+                Count = request.Count,
+                Description = request.Description,
+                CategoryId = request.CategoryId,
+                MakerId = request.MakerId
+            };
 
-                var message = request.CategoryId is not null
-                    ? "There is no such category"
-                    : "The list of products is empty";
+            _dbContext.Products.Add(product);
+            await _dbContext.SaveChangesAsync();
 
-                return GetProductsResponse.Fail(code, message);
-            }
-
-
-            var products = await query
-                .OrderBy(p => p.Id)
-                .Skip((request.Page - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(p => new ProductDto(p))
-                .ToListAsync();
-
-            return GetProductsResponse.Success(products, totalCount);
+            return ProductResponse.Success(new ProductDto(product), "Product was created");
         }
         catch (Exception)
         {
-            return GetProductsResponse.Fail(GetProductsStatus.UnknownError, "Internal server error");
+            return ProductResponse.Fail(ProductStatusCode.UnknownError, "Internal server error");
         }
     }
 
-    public async Task<GetCategoriesResponse> GetAllCategoriesAsync()
+    public async Task<ProductResponse> GetProductByIdAsync(int id)
+    {
+        if (id <= 0) return ProductResponse.Fail(ProductStatusCode.BadRequest, "Id must be greater than 0");
+
+        try
+        {
+            Product? product = await _dbContext.Products
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == id);
+            if (product is null)
+                return ProductResponse.Fail(ProductStatusCode.NotFound, "Product not found");
+
+            return ProductResponse.Success(new ProductDto(product));
+        }
+        catch (Exception)
+        {
+            return ProductResponse.Fail(ProductStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+    public async Task<ProductResponse> GetProductListAsync(GetProductListRequest request)
+    {
+        ValidationResult validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return ProductResponse.Fail(ProductStatusCode.BadRequest, validationResult.Message);
+
+        try
+        {
+            IQueryable<Product> query = _dbContext.Products.AsNoTracking();
+
+            if (request.CategoryId is not null)
+            {
+                bool isCategoryExist = await _dbContext.Categories
+                    .AnyAsync(category => category.Id == request.CategoryId);
+
+                if (!isCategoryExist)
+                    return ProductResponse.Fail(ProductStatusCode.IncorrectCategory, "Category not found");
+
+                query = query.Where(product => product.CategoryId == request.CategoryId);
+            }
+
+            int totalCount = await query.CountAsync();
+
+            List<ProductDto> products = await query
+                .OrderBy(product => product.Id)
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(product => new ProductDto(product))
+                .ToListAsync();
+
+            return ProductResponse.Success(new ProductListDto(products, totalCount));
+        }
+        catch (Exception)
+        {
+            return ProductResponse.Fail(ProductStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+    public async Task<ProductResponse> UpdateProductAsync(UpdateProductRequest request)
+    {
+        ValidationResult validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return ProductResponse.Fail(ProductStatusCode.BadRequest, validationResult.Message);
+
+        try
+        {
+            Product? product = _dbContext.Products.FirstOrDefault(p => p.Id == request.Id);
+            if (product is null)
+                return ProductResponse.Fail(ProductStatusCode.NotFound, "Product not found");
+
+            product.Name = request.Name;
+            product.Price = request.Price;
+            product.Count = request.Count;
+            product.Description = request.Description;
+
+            _dbContext.Products.Update(product);
+            await _dbContext.SaveChangesAsync();
+
+            return ProductResponse.Success("Product was updated");
+        }
+        catch (Exception)
+        {
+            return ProductResponse.Fail(ProductStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+    public async Task<ProductResponse> DeleteProductAsync(int id)
+    {
+        if (id <= 0) return ProductResponse.Fail(ProductStatusCode.BadRequest, "Id must be greater than 0");
+
+        try
+        {
+            Product? product = _dbContext.Products.FirstOrDefault(p => p.Id == id);
+            if (product is null)
+                return ProductResponse.Fail(ProductStatusCode.NotFound, "Product not found");
+
+            _dbContext.Products.Remove(product);
+            await _dbContext.SaveChangesAsync();
+
+            return ProductResponse.Success("Product was deleted");
+        }
+        catch (Exception)
+        {
+            return ProductResponse.Fail(ProductStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+
+    public async Task<ProductResponse> GetAllCategoriesAsync()
     {
         try
         {
             var categories = await _dbContext.Categories
                 .AsNoTracking()
-                .OrderBy(c => c.Id)
-                .Select(c => new CategoryDto(c))
+                .OrderBy(category => category.Id)
+                .Select(category => new CategoryDto(category))
                 .ToListAsync();
 
-            return GetCategoriesResponse.Success(categories);
+            return ProductResponse.Success(new CategoryListDto(categories));
         }
         catch (Exception)
         {
-            return GetCategoriesResponse.Fail(GetCategoriesStatus.UnknownError, "Internal server error");
+            return ProductResponse.Fail(ProductStatusCode.UnknownError, "Internal server error");
         }
-    }
-
-    private GetProductsResponse? ValidateGetProductsRequest(GetProductsRequest request)
-    {
-        if (request.Page <= 0)
-            return GetProductsResponse.Fail(GetProductsStatus.InvalidValue, "Page must be greater than 0");
-
-        if (request.PageSize <= 0)
-            return GetProductsResponse.Fail(GetProductsStatus.InvalidValue, "PageSize must be greater than 0");
-        return null;
     }
 }

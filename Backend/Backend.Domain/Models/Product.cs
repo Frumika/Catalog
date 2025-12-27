@@ -11,6 +11,6 @@ public class Product
     public int Count { get; set; }
     public string ImageUrl { get; set; } = string.Empty;
 
-    public required Maker Maker { get; set; }
-    public required Category Category { get; set; }
+    public Maker Maker { get; set; } = null!;
+    public Category Category { get; set; } = null!;
 }

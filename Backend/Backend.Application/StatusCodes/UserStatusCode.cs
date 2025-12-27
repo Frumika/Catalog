@@ -1,11 +1,11 @@
-﻿namespace Backend.Application.Enums;
+﻿namespace Backend.Application.StatusCodes;
 
-public enum IdentityStatus
+public enum UserStatusCode
 {
     Success,
     InvalidLogin,
     InvalidPassword,
-    InvalidEmail,
+    IncorrectData,
     UserAlreadyExists,
     UserNotFound,
     UnknownError
