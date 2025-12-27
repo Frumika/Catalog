@@ -11,5 +11,4 @@ public interface IProductService
     Task<ProductResponse> GetProductListAsync(GetProductListRequest request);
     Task<ProductResponse> UpdateProductAsync(UpdateProductRequest request);
     Task<ProductResponse> DeleteProductAsync(int id);
-    Task<ProductResponse> GetAllCategoriesAsync();
 }

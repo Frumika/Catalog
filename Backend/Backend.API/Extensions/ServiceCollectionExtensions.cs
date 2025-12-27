@@ -42,7 +42,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<IIdentityService, IdentityService>();
-        services.AddScoped<IProductService, ProductsService>();
+        services.AddScoped<IProductService, ProductService>();
+        services.AddScoped<ICategoryService, CategoryService>();
         return services;
     }
 

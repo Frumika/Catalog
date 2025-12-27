@@ -1,4 +1,4 @@
-﻿namespace Backend.Application.DTO.Entities.Product;
+﻿namespace Backend.Application.DTO.Entities.Category;
 
 public class CategoryListDto
 {

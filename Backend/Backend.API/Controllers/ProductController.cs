@@ -9,11 +9,11 @@ namespace Backend.API.Controllers;
 
 [ApiController]
 [Route("api/products")]
-public class ProductsController : ControllerBase
+public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
 
-    public ProductsController(IProductService productService)
+    public ProductController(IProductService productService)
     {
         _productService = productService;
     }
@@ -50,13 +50,6 @@ public class ProductsController : ControllerBase
     public async Task<IActionResult> DeleteProduct([FromRoute] int id)
     {
         var response = await _productService.DeleteProductAsync(id);
-        return ToHttpResponse(response);
-    }
-
-    [HttpPost("categories/list")]
-    public async Task<IActionResult> GetCategoriesList()
-    {
-        var response = await _productService.GetAllCategoriesAsync();
         return ToHttpResponse(response);
     }
 

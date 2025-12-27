@@ -1,13 +1,11 @@
-﻿using Backend.Domain.Models;
-
-namespace Backend.Application.DTO.Entities.Product;
+﻿namespace Backend.Application.DTO.Entities.Category;
 
 public class CategoryDto
 {
     public int Id { get; set; }
     public string Name { get; set; }
     
-    public CategoryDto(Category category)
+    public CategoryDto(Domain.Models.Category category)
     {
         Id = category.Id;
         Name = category.Name;

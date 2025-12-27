@@ -11,11 +11,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Application.Services;
 
-public class ProductsService : IProductService
+public class ProductService : IProductService
 {
     private readonly MainDbContext _dbContext;
 
-    public ProductsService(MainDbContext dbContext)
+    public ProductService(MainDbContext dbContext)
     {
         _dbContext = dbContext;
     }
@@ -53,7 +53,7 @@ public class ProductsService : IProductService
             _dbContext.Products.Add(product);
             await _dbContext.SaveChangesAsync();
 
-            return ProductResponse.Success(new ProductDto(product), "Product was created");
+            return ProductResponse.Success("Product was created");
         }
         catch (Exception)
         {
@@ -161,25 +161,6 @@ public class ProductsService : IProductService
             await _dbContext.SaveChangesAsync();
 
             return ProductResponse.Success("Product was deleted");
-        }
-        catch (Exception)
-        {
-            return ProductResponse.Fail(ProductStatusCode.UnknownError, "Internal server error");
-        }
-    }
-
-
-    public async Task<ProductResponse> GetAllCategoriesAsync()
-    {
-        try
-        {
-            var categories = await _dbContext.Categories
-                .AsNoTracking()
-                .OrderBy(category => category.Id)
-                .Select(category => new CategoryDto(category))
-                .ToListAsync();
-
-            return ProductResponse.Success(new CategoryListDto(categories));
         }
         catch (Exception)
         {
