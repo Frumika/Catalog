@@ -4,6 +4,7 @@ using Backend.Application.Services.Interfaces;
 using Backend.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Backend.API.Extensions;
 
 public static class ServiceCollectionExtensions
@@ -41,7 +42,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<IUserService, UserService>();
         services.AddScoped<IProductService, ProductService>();
         services.AddScoped<ICategoryService, CategoryService>();
         return services;

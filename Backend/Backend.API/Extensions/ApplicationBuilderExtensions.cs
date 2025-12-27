@@ -1,6 +1,7 @@
 ﻿using Backend.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace Backend.API.Extensions;
 
 public static class ApplicationBuilderExtensions

@@ -1,36 +1,36 @@
 ﻿using static Backend.Application.StatusCodes.UserStatusCode;
-using Backend.Application.DTO.Requests;
 using Backend.Application.DTO.Requests.User;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
+
 namespace Backend.API.Controllers;
 
 [ApiController]
 [Route("api/identity")]
-public class IdentityController : ControllerBase
+public class UserController : ControllerBase
 {
-    private readonly IIdentityService _identityService;
+    private readonly IUserService _userService;
 
 
-    public IdentityController(IIdentityService identityService)
+    public UserController(IUserService userService)
     {
-        _identityService = identityService;
+        _userService = userService;
     }
 
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        var response = await _identityService.LoginAsync(request);
+        var response = await _userService.LoginAsync(request);
         return GetHttpCode(response);
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
-        var response = await _identityService.RegisterAsync(request);
+        var response = await _userService.RegisterAsync(request);
         return GetHttpCode(response);
     }
 

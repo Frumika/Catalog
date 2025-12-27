@@ -10,11 +10,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Application.Services;
 
-public class IdentityService : IIdentityService
+public class UserService : IUserService
 {
     private readonly MainDbContext _dbContext;
 
-    public IdentityService(MainDbContext dbContext)
+    public UserService(MainDbContext dbContext)
     {
         _dbContext = dbContext;
     }
