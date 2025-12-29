@@ -5,7 +5,7 @@ using Backend.Application.DTO.Requests.Product;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
-using Backend.DataAccess.Contexts;
+using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,9 +22,9 @@ public class CatalogService : ICatalogService
     }
 
 
-    public async Task<ProductResponse> GetProductByIdAsync(int id)
+    public async Task<CatalogResponse> GetProductByIdAsync(int id)
     {
-        if (id <= 0) return ProductResponse.Fail(CatalogStatusCode.BadRequest, "Id must be greater than 0");
+        if (id <= 0) return CatalogResponse.Fail(CatalogStatusCode.BadRequest, "Id must be greater than 0");
 
         try
         {
@@ -32,21 +32,21 @@ public class CatalogService : ICatalogService
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (product is null)
-                return ProductResponse.Fail(CatalogStatusCode.NotFound, "Product not found");
+                return CatalogResponse.Fail(CatalogStatusCode.NotFound, "Product not found");
 
-            return ProductResponse.Success(new ProductDto(product));
+            return CatalogResponse.Success(new ProductDto(product));
         }
         catch (Exception)
         {
-            return ProductResponse.Fail(CatalogStatusCode.UnknownError, "Internal server error");
+            return CatalogResponse.Fail(CatalogStatusCode.UnknownError, "Internal server error");
         }
     }
 
-    public async Task<ProductResponse> GetProductListAsync(GetProductListRequest request)
+    public async Task<CatalogResponse> GetProductListAsync(GetProductListRequest request)
     {
         ValidationResult validationResult = request.Validate();
         if (!validationResult.IsValid)
-            return ProductResponse.Fail(CatalogStatusCode.BadRequest, validationResult.Message);
+            return CatalogResponse.Fail(CatalogStatusCode.BadRequest, validationResult.Message);
 
         try
         {
@@ -58,7 +58,7 @@ public class CatalogService : ICatalogService
                     .AnyAsync(category => category.Id == request.CategoryId);
 
                 if (!isCategoryExist)
-                    return ProductResponse.Fail(CatalogStatusCode.IncorrectCategory, "Category not found");
+                    return CatalogResponse.Fail(CatalogStatusCode.IncorrectCategory, "Category not found");
 
                 query = query.Where(product => product.CategoryId == request.CategoryId);
             }
@@ -72,15 +72,15 @@ public class CatalogService : ICatalogService
                 .Select(product => new ProductDto(product))
                 .ToListAsync();
 
-            return ProductResponse.Success(new ProductListDto(products, totalCount));
+            return CatalogResponse.Success(new ProductListDto(products, totalCount));
         }
         catch (Exception)
         {
-            return ProductResponse.Fail(CatalogStatusCode.UnknownError, "Internal server error");
+            return CatalogResponse.Fail(CatalogStatusCode.UnknownError, "Internal server error");
         }
     }
 
-    public async Task<ProductResponse> GetCategoryListAsync()
+    public async Task<CatalogResponse> GetCategoryListAsync()
     {
         try
         {
@@ -90,11 +90,11 @@ public class CatalogService : ICatalogService
                 .Select(category => new CategoryDto(category))
                 .ToListAsync();
 
-            return ProductResponse.Success(new CategoryListDto(categories));
+            return CatalogResponse.Success(new CategoryListDto(categories));
         }
         catch (Exception)
         {
-            return ProductResponse.Fail(CatalogStatusCode.UnknownError, "Internal server error");
+            return CatalogResponse.Fail(CatalogStatusCode.UnknownError, "Internal server error");
         }
     }
 }

@@ -40,7 +40,7 @@ public class CatalogController : ControllerBase
     }
     
 
-    private IActionResult ToHttpResponse(ProductResponse response)
+    private IActionResult ToHttpResponse(CatalogResponse response)
     {
         return response.Code switch
         {

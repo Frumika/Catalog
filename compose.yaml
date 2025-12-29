@@ -7,6 +7,7 @@
       - "5777:5777"
     depends_on:
       - postgres
+      - redis-users
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://0.0.0.0:5777
@@ -27,6 +28,19 @@
     volumes:
       - catalog-postgres-data:/var/lib/postgresql/data
 
+  redis-users:
+    image: redis:7
+    restart: always
+    ports:
+      - "5779:6379"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 
 networks:
   app-network:

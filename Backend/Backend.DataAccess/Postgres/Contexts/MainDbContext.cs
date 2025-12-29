@@ -1,7 +1,8 @@
 ﻿using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.DataAccess.Contexts;
+
+namespace Backend.DataAccess.Postgres.Contexts;
 
 public class MainDbContext : DbContext
 {

@@ -1,12 +1,13 @@
 ﻿namespace Backend.Application.StatusCodes;
 
-public enum UserStatusCode
+public enum AuthStatusCode
 {
     Success,
     InvalidLogin,
     InvalidPassword,
-    IncorrectData,
     UserAlreadyExists,
     UserNotFound,
+    SessionNotFound,
+    BadRequest,
     UnknownError
 }

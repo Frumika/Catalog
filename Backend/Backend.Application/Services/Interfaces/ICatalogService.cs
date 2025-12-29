@@ -6,7 +6,7 @@ namespace Backend.Application.Services.Interfaces;
 
 public interface ICatalogService
 {
-    Task<ProductResponse> GetCategoryListAsync();
-    Task<ProductResponse> GetProductByIdAsync(int id);
-    Task<ProductResponse> GetProductListAsync(GetProductListRequest request);
+    Task<CatalogResponse> GetCategoryListAsync();
+    Task<CatalogResponse> GetProductByIdAsync(int id);
+    Task<CatalogResponse> GetProductListAsync(GetProductListRequest request);
 }

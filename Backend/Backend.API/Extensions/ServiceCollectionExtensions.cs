@@ -1,8 +1,12 @@
 ﻿using System.Text.Json.Serialization;
 using Backend.Application.Services;
 using Backend.Application.Services.Interfaces;
-using Backend.DataAccess.Contexts;
+using Backend.DataAccess.Postgres.Contexts;
+using Backend.DataAccess.Redis;
+using Backend.DataAccess.Sessions.Storages;
+using Backend.DataAccess.Sessions.Storages.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 
 namespace Backend.API.Extensions;
@@ -13,6 +17,7 @@ public static class ServiceCollectionExtensions
     {
         services
             .ConnectPostgres(config)
+            .ConnectRedis(config)
             .AddCorsPolicy()
             .AddApplicationServices()
             .AddApplicationControllers()
@@ -23,8 +28,17 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection ConnectPostgres(this IServiceCollection services, IConfiguration config)
     {
-        string? connectionString = config["Databases:Main"];
+        string? connectionString = config["Databases:Postgres:Main"];
         services.AddDbContext<MainDbContext>(options => options.UseNpgsql(connectionString));
+        return services;
+    }
+
+    private static IServiceCollection ConnectRedis(this IServiceCollection services, IConfiguration config)
+    {
+        string connectionString = config["Databases:Redis:UserSessions"] ?? string.Empty;
+        IConnectionMultiplexer connection = ConnectionMultiplexer.Connect(connectionString);
+        services.AddSingleton(new RedisDbProvider(connection));
+
         return services;
     }
 
@@ -43,8 +57,10 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<ICatalogService, CatalogService>();
-        services.AddScoped<IUserService, UserService>();
         
+        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IUserSessionStorage,UserSessionStorage>();
+
         return services;
     }
 

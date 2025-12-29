@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Backend.DataAccess.Migrations
+namespace Backend.DataAccess.Postgres.Migrations
 {
     /// <inheritdoc />
     public partial class AddNameIndexToCategory : Migration
