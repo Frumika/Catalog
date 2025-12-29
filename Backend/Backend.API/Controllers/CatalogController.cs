@@ -17,7 +17,7 @@ public class CatalogController : ControllerBase
     {
         _catalogService = catalogService;
     }
-    
+
     [HttpGet("product/{id}")]
     public async Task<IActionResult> GetProduct([FromRoute] int id)
     {
@@ -38,14 +38,14 @@ public class CatalogController : ControllerBase
         var response = await _catalogService.GetCategoryListAsync();
         return ToHttpResponse(response);
     }
-    
+
 
     private IActionResult ToHttpResponse(CatalogResponse response)
     {
         return response.Code switch
         {
             CatalogStatusCode.Success => Ok(response),
-            CatalogStatusCode.NotFound => NotFound(response),
+            CatalogStatusCode.ProductNotFound or CatalogStatusCode.MakerNotFound => NotFound(response),
             CatalogStatusCode.IncorrectCategory or CatalogStatusCode.IncorrectMaker => BadRequest(response),
             CatalogStatusCode.BadRequest => BadRequest(response),
             CatalogStatusCode.UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),

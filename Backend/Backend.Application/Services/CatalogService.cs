@@ -32,9 +32,15 @@ public class CatalogService : ICatalogService
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
             if (product is null)
-                return CatalogResponse.Fail(CatalogStatusCode.NotFound, "Product not found");
+                return CatalogResponse.Fail(CatalogStatusCode.ProductNotFound, "Product not found");
 
-            return CatalogResponse.Success(new ProductDto(product));
+            Maker? maker = await _dbContext.Makers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == product.MakerId);
+            if (maker is null)
+                return CatalogResponse.Fail(CatalogStatusCode.MakerNotFound, "Maker not found");
+
+            return CatalogResponse.Success(new ProductExtendedDto(product, maker));
         }
         catch (Exception)
         {

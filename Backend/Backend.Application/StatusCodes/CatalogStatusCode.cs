@@ -4,7 +4,8 @@
 public enum CatalogStatusCode
 {
     Success,
-    NotFound,
+    ProductNotFound,
+    MakerNotFound,
     IncorrectCategory,
     IncorrectMaker,
     BadRequest,

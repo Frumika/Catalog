@@ -1,4 +1,5 @@
-﻿using Backend.Application.DTO.Requests.User;
+﻿using Backend.Application.DTO.Entities.User;
+using Backend.Application.DTO.Requests.User;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Logic;
 using Backend.Application.Services.Interfaces;
@@ -42,12 +43,15 @@ public class AuthService : IAuthService
                 return AuthResponse.Fail(AuthStatusCode.InvalidPassword, "Password is incorrect");
 
             string sessionId = Guid.NewGuid().ToString();
-            UserSessionStateDto sessionStateDto = new(user);
+            UserSessionStateDto sessionState = new(user);
+            await _userSessionStorage.SetSessionAsync(sessionId, sessionState);
 
-            await _userSessionStorage.SetSessionAsync(sessionId, sessionStateDto);
-
-            // Todo: тут надо отправлять sessionId
-            return AuthResponse.Success();
+            return AuthResponse.Success(new UserSessionDto
+            {
+                SessionId = sessionId,
+                UserId = sessionState.Id,
+                Login = sessionState.Login
+            }, "User has beel logged in");
         }
         catch (Exception)
         {
