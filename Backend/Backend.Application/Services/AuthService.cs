@@ -6,7 +6,7 @@ using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Sessions.DTO;
-using Backend.DataAccess.Sessions.Storages;
+using Backend.DataAccess.Sessions.Storages.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,9 +16,9 @@ namespace Backend.Application.Services;
 public class AuthService : IAuthService
 {
     private readonly MainDbContext _dbContext;
-    private readonly UserSessionStorage _userSessionStorage;
+    private readonly IUserSessionStorage _userSessionStorage;
 
-    public AuthService(MainDbContext dbContext, UserSessionStorage userSessionStorage)
+    public AuthService(MainDbContext dbContext, IUserSessionStorage userSessionStorage)
     {
         _dbContext = dbContext;
         _userSessionStorage = userSessionStorage;
