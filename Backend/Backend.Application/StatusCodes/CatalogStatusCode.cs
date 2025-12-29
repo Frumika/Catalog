@@ -1,7 +1,7 @@
 ﻿namespace Backend.Application.StatusCodes;
 
 
-public enum ProductStatusCode
+public enum CatalogStatusCode
 {
     Success,
     NotFound,

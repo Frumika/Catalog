@@ -4,11 +4,9 @@ using Backend.Application.DTO.Responses;
 
 namespace Backend.Application.Services.Interfaces;
 
-public interface IProductService
+public interface ICatalogService
 {
-    Task<ProductResponse> CreateProductAsync(CreateProductRequest request);
+    Task<ProductResponse> GetCategoryListAsync();
     Task<ProductResponse> GetProductByIdAsync(int id);
     Task<ProductResponse> GetProductListAsync(GetProductListRequest request);
-    Task<ProductResponse> UpdateProductAsync(UpdateProductRequest request);
-    Task<ProductResponse> DeleteProductAsync(int id);
 }

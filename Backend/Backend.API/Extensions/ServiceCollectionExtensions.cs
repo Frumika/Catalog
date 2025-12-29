@@ -42,9 +42,9 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
+        services.AddScoped<ICatalogService, CatalogService>();
         services.AddScoped<IUserService, UserService>();
-        services.AddScoped<IProductService, ProductService>();
-        services.AddScoped<ICategoryService, CategoryService>();
+        
         return services;
     }
 
@@ -54,7 +54,7 @@ public static class ServiceCollectionExtensions
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
-        
+
         return services;
     }
 }

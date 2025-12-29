@@ -2,15 +2,15 @@
 
 namespace Backend.Application.DTO.Responses;
 
-public class ProductResponse : BaseResponse<ProductStatusCode, ProductResponse>
+public class ProductResponse : BaseResponse<CatalogStatusCode, ProductResponse>
 {
     public new static ProductResponse Success<TData>(TData? data = null, string? message = null) where TData : class
     {
-        return CreateSuccess(ProductStatusCode.Success, data, message);
+        return CreateSuccess(CatalogStatusCode.Success, data, message);
     }
     
     public new static ProductResponse Success(string? message = null)
     {
-        return CreateSuccess(ProductStatusCode.Success, message);
+        return CreateSuccess(CatalogStatusCode.Success, message);
     }
 }
