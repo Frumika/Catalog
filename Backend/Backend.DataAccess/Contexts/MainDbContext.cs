@@ -103,6 +103,8 @@ public class MainDbContext : DbContext
                 .HasColumnName("name")
                 .HasMaxLength(32)
                 .IsRequired();
+
+            entity.HasIndex(c => c.Name).IsUnique();
         });
 
         modelBuilder.Entity<Maker>(entity =>
