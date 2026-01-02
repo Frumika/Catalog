@@ -12,8 +12,8 @@ public class UserSessionStorage : IUserSessionStorage
     private readonly IDatabase _database;
     private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(15);
 
-    private const string SessionKey = "auth:session";
-    private const string IndexKey = "auth:user_sessions";
+    private const string SessionKey = "session";
+    private const string IndexKey = "user_sessions";
 
     public UserSessionStorage(RedisDbProvider redis)
     {
@@ -40,9 +40,9 @@ public class UserSessionStorage : IUserSessionStorage
 
             if (!committed) throw new InvalidOperationException("Failed to set session for sessionId");
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while setting the session", exception);
+            throw new InvalidOperationException("An unexpected error occurred while setting the session", ex);
         }
     }
 
@@ -57,9 +57,26 @@ public class UserSessionStorage : IUserSessionStorage
             if (string.IsNullOrEmpty(json)) return null;
             return JsonSerializer.Deserialize<UserSessionStateDto>(json);
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while retrieving the session", exception);
+            throw new InvalidOperationException("An unexpected error occurred while retrieving the session", ex);
+        }
+    }
+
+    public async Task<bool> RefreshSessionTimeAsync(string sessionId)
+    {
+        if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
+
+        string sessionKey = $"{SessionKey}:{sessionId}";
+
+        try
+        {
+            bool updated = await _database.KeyExpireAsync(sessionKey, _expiryTime);
+            return updated;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("An unexpected error occurred while refreshing of session time", ex);
         }
     }
 
@@ -81,13 +98,13 @@ public class UserSessionStorage : IUserSessionStorage
             var transaction = _database.CreateTransaction();
             _ = transaction.KeyDeleteAsync(sessionKey);
             _ = transaction.SetRemoveAsync(indexKey, sessionId);
-            
+
             bool committed = await transaction.ExecuteAsync();
             return committed;
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while deleting the session", exception);
+            throw new InvalidOperationException("An unexpected error occurred while deleting the session", ex);
         }
     }
 
@@ -105,13 +122,13 @@ public class UserSessionStorage : IUserSessionStorage
             foreach (var sessionId in sessions)
                 _ = transaction.KeyDeleteAsync($"{SessionKey}:{sessionId}");
             _ = transaction.KeyDeleteAsync(indexKey);
-            
+
             bool committed = await transaction.ExecuteAsync();
             return committed;
         }
-        catch (Exception exception)
+        catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while deleting all sessions", exception);
+            throw new InvalidOperationException("An unexpected error occurred while deleting all sessions", ex);
         }
     }
 }

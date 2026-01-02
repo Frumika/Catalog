@@ -6,6 +6,7 @@ public interface IUserSessionStorage
 {
     Task SetSessionAsync(string sessionId, UserSessionStateDto state);
     Task<UserSessionStateDto?> GetSessionAsync(string sessionId);
+    Task <bool> RefreshSessionTimeAsync(string sessionId);
     Task<bool> LogoutSessionAsync(string sessionId);
     Task<bool> LogoutAllSessionsAsync(int id);
 }
