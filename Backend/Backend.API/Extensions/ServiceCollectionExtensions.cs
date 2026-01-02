@@ -3,8 +3,8 @@ using Backend.Application.Services;
 using Backend.Application.Services.Interfaces;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Redis;
-using Backend.DataAccess.Sessions.Storages;
-using Backend.DataAccess.Sessions.Storages.Interfaces;
+using Backend.DataAccess.Storages;
+using Backend.DataAccess.Storages.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 

@@ -5,10 +5,11 @@ using Backend.Application.Logic;
 using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
-using Backend.DataAccess.Sessions.DTO;
-using Backend.DataAccess.Sessions.Storages.Interfaces;
+using Backend.DataAccess.Storages.DTO;
+using Backend.DataAccess.Storages.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using UserSessionDto = Backend.DataAccess.Storages.DTO.UserSessionDto;
 
 
 namespace Backend.Application.Services;
@@ -43,14 +44,14 @@ public class AuthService : IAuthService
                 return AuthResponse.Fail(AuthStatusCode.InvalidPassword, "Password is incorrect");
 
             string sessionId = Guid.NewGuid().ToString();
-            UserSessionStateDto sessionState = new(user);
-            await _userSessionStorage.SetSessionAsync(sessionId, sessionState);
+            UserSessionDto session = new(user);
+            await _userSessionStorage.SetSessionAsync(sessionId, session);
 
-            return AuthResponse.Success(new UserSessionDto
+            return AuthResponse.Success(new DTO.Entities.User.UserSessionDto
             {
                 SessionId = sessionId,
-                UserId = sessionState.Id,
-                Login = sessionState.Login
+                UserId = session.Id,
+                Login = session.Login
             }, "User has beel logged in");
         }
         catch (Exception)

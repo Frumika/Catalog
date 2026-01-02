@@ -1,18 +1,18 @@
 ﻿using Backend.Domain.Models;
 
 
-namespace Backend.DataAccess.Sessions.DTO;
+namespace Backend.DataAccess.Storages.DTO;
 
-public class UserSessionStateDto
+public class UserSessionDto
 {
     public long Id { get; set; }
     public string Login { get; set; } = string.Empty;
 
-    public UserSessionStateDto()
+    public UserSessionDto()
     {
     }
 
-    public UserSessionStateDto(User user)
+    public UserSessionDto(User user)
     {
         Id = user.Id;
         Login = user.Login;

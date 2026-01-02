@@ -1,4 +1,4 @@
-﻿namespace Backend.DataAccess.Sessions.DTO;
+﻿namespace Backend.DataAccess.Storages.DTO;
 
 public class CartStateDto
 {

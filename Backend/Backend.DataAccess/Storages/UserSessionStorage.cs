@@ -1,26 +1,26 @@
 ﻿using System.Text.Json;
 using Backend.DataAccess.Redis;
-using Backend.DataAccess.Sessions.DTO;
-using Backend.DataAccess.Sessions.Storages.Interfaces;
+using Backend.DataAccess.Storages.DTO;
+using Backend.DataAccess.Storages.Interfaces;
 using StackExchange.Redis;
 
 
-namespace Backend.DataAccess.Sessions.Storages;
+namespace Backend.DataAccess.Storages;
 
 public class UserSessionStorage : IUserSessionStorage
 {
     private readonly IDatabase _database;
     private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(15);
 
-    private const string SessionKey = "session";
-    private const string IndexKey = "user_sessions";
+    private const string SessionKey = "auth:session";
+    private const string IndexKey = "auth:user_sessions";
 
     public UserSessionStorage(RedisDbProvider redis)
     {
         _database = redis.UserSessions;
     }
 
-    public async Task SetSessionAsync(string sessionId, UserSessionStateDto state)
+    public async Task SetSessionAsync(string sessionId, UserSessionDto state)
     {
         if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
 
@@ -46,7 +46,7 @@ public class UserSessionStorage : IUserSessionStorage
         }
     }
 
-    public async Task<UserSessionStateDto?> GetSessionAsync(string sessionId)
+    public async Task<UserSessionDto?> GetSessionAsync(string sessionId)
     {
         if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
 
@@ -55,7 +55,7 @@ public class UserSessionStorage : IUserSessionStorage
             string? json = await _database.StringGetAsync($"{SessionKey}:{sessionId}");
 
             if (string.IsNullOrEmpty(json)) return null;
-            return JsonSerializer.Deserialize<UserSessionStateDto>(json);
+            return JsonSerializer.Deserialize<UserSessionDto>(json);
         }
         catch (Exception ex)
         {
@@ -90,7 +90,7 @@ public class UserSessionStorage : IUserSessionStorage
             var json = await _database.StringGetAsync(sessionKey);
             if (json.IsNullOrEmpty) return false;
 
-            var state = JsonSerializer.Deserialize<UserSessionStateDto>(json!);
+            var state = JsonSerializer.Deserialize<UserSessionDto>(json!);
             if (state is null) return false;
 
             var indexKey = $"{IndexKey}:{state.Id}";
