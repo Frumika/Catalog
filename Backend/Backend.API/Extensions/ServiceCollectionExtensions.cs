@@ -61,9 +61,10 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<ICatalogService, CatalogService>();
-
         services.AddScoped<IAuthService, AuthService>();
+        
         services.AddScoped<IUserSessionStorage, UserSessionStorage>();
+        services.AddScoped<ICartStateStorage, CartStateStorage>();
 
         return services;
     }
