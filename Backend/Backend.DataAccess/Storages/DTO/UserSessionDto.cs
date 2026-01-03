@@ -5,7 +5,7 @@ namespace Backend.DataAccess.Storages.DTO;
 
 public class UserSessionDto
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
     public string Login { get; set; } = string.Empty;
 
     public UserSessionDto()

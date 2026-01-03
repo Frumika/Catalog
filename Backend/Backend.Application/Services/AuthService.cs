@@ -1,11 +1,9 @@
-﻿using Backend.Application.DTO.Entities.User;
-using Backend.Application.DTO.Requests.User;
+﻿using Backend.Application.DTO.Requests.User;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Logic;
 using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
-using Backend.DataAccess.Storages.DTO;
 using Backend.DataAccess.Storages.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
