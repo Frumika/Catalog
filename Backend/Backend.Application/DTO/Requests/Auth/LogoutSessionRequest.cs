@@ -1,6 +1,6 @@
 ﻿using Backend.Application.DTO.Requests.Base;
 
-namespace Backend.Application.DTO.Requests.User;
+namespace Backend.Application.DTO.Requests.Auth;
 
 public class LogoutSessionRequest : IValidatableRequest
 {

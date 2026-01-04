@@ -1,4 +1,4 @@
-﻿using Backend.Application.DTO.Requests.Product;
+﻿using Backend.Application.DTO.Requests.Catalog;
 using Backend.Application.DTO.Responses;
 
 

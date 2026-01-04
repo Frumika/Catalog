@@ -1,4 +1,4 @@
-﻿using Backend.Application.DTO.Requests.User;
+﻿using Backend.Application.DTO.Requests.Auth;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;

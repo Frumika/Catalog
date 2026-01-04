@@ -1,4 +1,4 @@
-﻿using Backend.Application.DTO.Requests.User;
+﻿using Backend.Application.DTO.Requests.Auth;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Logic;
 using Backend.Application.Services.Interfaces;
@@ -45,7 +45,7 @@ public class AuthService : IAuthService
             UserSessionDto session = new(user);
             await _userSessionStorage.SetSessionAsync(sessionId, session);
 
-            return AuthResponse.Success(new DTO.Entities.User.UserSessionDto
+            return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
             {
                 SessionId = sessionId,
                 UserId = session.Id,

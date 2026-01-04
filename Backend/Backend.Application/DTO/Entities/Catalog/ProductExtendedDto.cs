@@ -1,6 +1,6 @@
 ﻿using Backend.Domain.Models;
 
-namespace Backend.Application.DTO.Entities.Product;
+namespace Backend.Application.DTO.Entities.Catalog;
 
 public class ProductExtendedDto
 {

@@ -1,7 +1,7 @@
 ﻿using Backend.Application.DTO.Requests.Base;
 
 
-namespace Backend.Application.DTO.Requests.Product;
+namespace Backend.Application.DTO.Requests.Catalog;
 
 public class GetProductListRequest : IValidatableRequest
 {

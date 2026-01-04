@@ -1,20 +1,17 @@
-﻿using System.Text;
-using Backend.Application.DTO.Requests.Base;
+﻿using Backend.Application.DTO.Requests.Base;
 
+namespace Backend.Application.DTO.Requests.Auth;
 
-namespace Backend.Application.DTO.Requests.User;
-
-public class LoginRequest : IValidatableRequest
+public class RegisterRequest : IValidatableRequest
 {
     public string Login { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
-
 
     public ValidationResult Validate()
     {
         bool isLoginValid = !string.IsNullOrWhiteSpace(Login);
         bool isPasswordValid = !string.IsNullOrWhiteSpace(Password);
-        
+
         bool isRequestValid = isLoginValid && isPasswordValid;
         if (!isRequestValid)
         {

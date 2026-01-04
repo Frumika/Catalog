@@ -16,8 +16,10 @@ public class CartService
         _userStorage = userStorage;
     }
 
-    public async Task<CartResponse> AddProductAsync()
+    public async Task<CartResponse> HandleProductAsync()
     {
+        
+        
         return CartResponse.Fail(CartStatusCode.UnknownError);
     }
 

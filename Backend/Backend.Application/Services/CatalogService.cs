@@ -1,7 +1,6 @@
-﻿using Backend.Application.DTO.Entities.Category;
-using Backend.Application.DTO.Entities.Product;
+﻿using Backend.Application.DTO.Entities.Catalog;
 using Backend.Application.DTO.Requests.Base;
-using Backend.Application.DTO.Requests.Product;
+using Backend.Application.DTO.Requests.Catalog;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
