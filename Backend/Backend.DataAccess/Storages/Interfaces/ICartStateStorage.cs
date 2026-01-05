@@ -5,8 +5,9 @@ namespace Backend.DataAccess.Storages.Interfaces;
 
 public interface ICartStateStorage
 {
-    Task<bool> SetSessionAsync(string sessionId, CartStateDto state);
-    Task<CartStateDto?> GetSessionAsync(string sessionId);
-    Task<bool> RefreshSessionTimeAsync(string sessionId);
-    Task<bool> DeleteSessionAsync(string sessionId);
+    Task<bool> SetStateAsync(CartStateDto state);
+    Task<bool> UpdateStateAsync(CartStateDto state);
+    Task<CartStateDto?> GetStateAsync(int userId);
+    Task<bool> RefreshStateTimeAsync(int userId);
+    Task<bool> DeleteStateAsync(int userId);
 }

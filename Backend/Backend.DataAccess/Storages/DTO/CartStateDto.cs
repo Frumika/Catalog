@@ -2,6 +2,6 @@
 
 public class CartStateDto
 {
-    public long UserId { get; set; }
+    public int UserId { get; set; }
     public List<ProductDto>? Products { get; set; }
 }

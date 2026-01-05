@@ -12,21 +12,34 @@ public class CartStateStorage : ICartStateStorage
     private readonly IDatabase _database;
     private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(30);
 
-    private const string SessionKey = "cart:session";
+    private const string StateKey = "cart:state";
+    private const string IndexKey = "cart:state:user";
 
     public CartStateStorage(RedisDbProvider redis)
     {
         _database = redis.CartSessions;
     }
 
-    public async Task<bool> SetSessionAsync(string sessionId, CartStateDto state)
+    public async Task<bool> SetStateAsync(CartStateDto state)
     {
-        if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
+        string stateId = Guid.NewGuid().ToString();
+
+        string stateKey = $"{StateKey}:{stateId}";
+        string indexKey = $"{IndexKey}:{state.UserId}";
 
         try
         {
             string json = JsonSerializer.Serialize(state);
-            return await _database.StringSetAsync($"{SessionKey}:{sessionId}", json, _expiryTime);
+
+            bool isIndexExist = await _database.KeyExistsAsync(indexKey);
+
+            ITransaction transaction = _database.CreateTransaction();
+
+            if (!isIndexExist) _ = transaction.StringSetAsync(indexKey, stateId, _expiryTime);
+            _ = transaction.StringSetAsync(stateKey, json, _expiryTime);
+
+            bool commited = await transaction.ExecuteAsync();
+            return commited;
         }
         catch (Exception ex)
         {
@@ -34,16 +47,45 @@ public class CartStateStorage : ICartStateStorage
         }
     }
 
-    public async Task<CartStateDto?> GetSessionAsync(string sessionId)
+    public async Task<bool> UpdateStateAsync(CartStateDto state)
     {
-        if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
+        try
+        {
+            string? stateId = await _database.StringGetAsync($"{IndexKey}:{state.UserId}");
+            if (stateId is null) return false;
+
+            string stateKey = $"{StateKey}:{stateId}";
+            string indexKey = $"{IndexKey}:{state.UserId}";
+
+            string json = JsonSerializer.Serialize(state);
+
+            ITransaction transaction = _database.CreateTransaction();
+            _ = transaction.StringSetAsync(stateKey, json, _expiryTime);
+            _ = transaction.KeyExpireAsync(indexKey, _expiryTime);
+
+            bool commited = await transaction.ExecuteAsync();
+            return commited;
+        }
+        catch (Exception ex)
+        {
+            throw new InvalidOperationException("An unexpected error occurred while updating the session", ex);
+        }
+    }
+
+    public async Task<CartStateDto?> GetStateAsync(int userId)
+    {
+        if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
 
         try
         {
-            string? json = await _database.StringGetAsync($"{SessionKey}:{sessionId}");
+            string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
+            if (stateId is null) return null;
+
+            string? json = await _database.StringGetAsync($"{StateKey}:{stateId}");
             if (json is null) return null;
 
-            return JsonSerializer.Deserialize<CartStateDto>(json);
+            CartStateDto? state = JsonSerializer.Deserialize<CartStateDto>(json);
+            return state;
         }
         catch (Exception ex)
         {
@@ -51,14 +93,25 @@ public class CartStateStorage : ICartStateStorage
         }
     }
 
-    public async Task<bool> RefreshSessionTimeAsync(string sessionId)
+    public async Task<bool> RefreshStateTimeAsync(int userId)
     {
-        if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
+        if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
 
         try
         {
-            bool refreshed = await _database.KeyExpireAsync($"{SessionKey}:{sessionId}", _expiryTime);
-            return refreshed;
+            string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
+            if (stateId is null) return false;
+
+            string stateKey = $"{StateKey}:{stateId}";
+            string indexKey = $"{IndexKey}:{userId}";
+
+            ITransaction transaction = _database.CreateTransaction();
+
+            _ = transaction.KeyExpireAsync(indexKey, _expiryTime);
+            _ = transaction.KeyExpireAsync(stateKey, _expiryTime);
+
+            bool commited = await transaction.ExecuteAsync();
+            return commited;
         }
         catch (Exception ex)
         {
@@ -66,14 +119,25 @@ public class CartStateStorage : ICartStateStorage
         }
     }
 
-    public async Task<bool> DeleteSessionAsync(string sessionId)
+    public async Task<bool> DeleteStateAsync(int userId)
     {
-        if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
+        if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
 
         try
         {
-            bool deleted = await _database.KeyDeleteAsync($"{SessionKey}:{sessionId}");
-            return deleted;
+            string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
+            if (stateId is null) return false;
+            
+            string stateKey = $"{StateKey}:{stateId}";
+            string indexKey = $"{IndexKey}:{userId}";
+
+            ITransaction transaction = _database.CreateTransaction();
+
+            _ = transaction.KeyDeleteAsync(indexKey);
+            _ = transaction.KeyDeleteAsync(stateKey);
+
+            bool commited = await transaction.ExecuteAsync();
+            return commited;
         }
         catch (Exception ex)
         {
