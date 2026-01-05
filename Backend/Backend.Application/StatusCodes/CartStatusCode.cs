@@ -4,6 +4,8 @@ public enum CartStatusCode
 {
     Success,
     CartStateNotFound,
+    CartStateNotCreated,
+    CartStateNotUpdated,
     UserSessionNotFound,
     ProductNotFound,
     BadRequest,
