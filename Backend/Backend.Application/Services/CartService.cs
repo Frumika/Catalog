@@ -42,41 +42,7 @@ public class CartService
             if (product is null)
                 return CartResponse.Fail(CartStatusCode.ProductNotFound, "Incorrect Product Id");
 
-            if (request.CartStateId is null)
-            {
-                CartStateDto cartState = new()
-                {
-                    UserId = userSession.Id,
-                    Products = new()
-                };
-
-                cartState.Products.Add(new ProductDto
-                {
-                    Id = product.Id,
-                    Quantity = request.Quantity
-                });
-
-                await _cartStorage.SetStateAsync(cartState);
-            }
-            else
-            {
-                CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.Id);
-                if (cartState is null)
-                    return CartResponse.Fail(CartStatusCode.CartStateNotFound, "Cart State not found");
-
-                ProductDto? productDto = cartState.Products?.FirstOrDefault(p => p.Id == request.ProductId);
-                if (productDto is not null) productDto.Quantity = request.Quantity;
-                else
-                {
-                    productDto = new()
-                    {
-                        Id = product.Id,
-                        Quantity = request.Quantity
-                    };
-                }
-
-                await _cartStorage.SetStateAsync(cartState);
-            }
+       
 
             return CartResponse.Success();
         }

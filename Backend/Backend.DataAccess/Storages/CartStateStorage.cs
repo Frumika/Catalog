@@ -30,16 +30,18 @@ public class CartStateStorage : ICartStateStorage
         try
         {
             string json = JsonSerializer.Serialize(state);
+            
+            bool indexCreated = await _database.StringSetAsync(indexKey, stateId, _expiryTime, When.NotExists);
+            if (!indexCreated) return false;
 
-            bool isIndexExist = await _database.KeyExistsAsync(indexKey);
-
-            ITransaction transaction = _database.CreateTransaction();
-
-            if (!isIndexExist) _ = transaction.StringSetAsync(indexKey, stateId, _expiryTime);
-            _ = transaction.StringSetAsync(stateKey, json, _expiryTime);
-
-            bool commited = await transaction.ExecuteAsync();
-            return commited;
+            bool stateCreated = await _database.StringSetAsync(stateKey, json, _expiryTime);
+            if (!stateCreated)
+            {
+                await _database.KeyDeleteAsync(indexKey);
+                return false;
+            }
+            
+            return true;
         }
         catch (Exception ex)
         {
@@ -127,7 +129,7 @@ public class CartStateStorage : ICartStateStorage
         {
             string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
             if (stateId is null) return false;
-            
+
             string stateKey = $"{StateKey}:{stateId}";
             string indexKey = $"{IndexKey}:{userId}";
 
