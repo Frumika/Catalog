@@ -36,12 +36,14 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection ConnectRedis(this IServiceCollection services, IConfiguration config)
     {
         string userConnectionString = config["Databases:Redis:UserSessions"] ?? string.Empty;
-        string cartConnectionString = config["Databases:Redis:CartSessions"] ?? string.Empty;
+        string cartConnectionString = config["Databases:Redis:CartStates"] ?? string.Empty;
+        string orderConnectionString = config["Databases:Redis:OrderStates"] ?? string.Empty;
 
         IConnectionMultiplexer userConnection = ConnectionMultiplexer.Connect(userConnectionString);
         IConnectionMultiplexer cartConnection = ConnectionMultiplexer.Connect(cartConnectionString);
+        IConnectionMultiplexer orderConnection = ConnectionMultiplexer.Connect(orderConnectionString);
 
-        services.AddSingleton(new RedisDbProvider(userConnection, cartConnection));
+        services.AddSingleton(new RedisDbProvider(userConnection, cartConnection, orderConnection));
 
         return services;
     }
@@ -63,7 +65,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICatalogService, CatalogService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICartService, CartService>();
-        
+
         services.AddScoped<IUserSessionStorage, UserSessionStorage>();
         services.AddScoped<ICartStateStorage, CartStateStorage>();
 

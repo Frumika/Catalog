@@ -56,7 +56,20 @@
       retries: 5
       start_period: 10s
       timeout: 5s
-
+      
+  redis-orders:
+    image: redis:7
+    restart: always
+    ports:
+      - "5781:6379"
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 networks:
   app-network:
 
