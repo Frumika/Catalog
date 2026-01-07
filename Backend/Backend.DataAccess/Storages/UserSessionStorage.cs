@@ -20,7 +20,7 @@ public class UserSessionStorage : IUserSessionStorage
         _database = redis.UserSessions;
     }
 
-    public async Task SetSessionAsync(string sessionId, UserSessionDto state)
+    public async Task<bool> SetSessionAsync(string sessionId, UserSessionDto state)
     {
         if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
 
@@ -29,6 +29,13 @@ public class UserSessionStorage : IUserSessionStorage
 
         try
         {
+            var sessions = await _database.SetMembersAsync(indexKey);
+            foreach (var session in sessions)
+            {
+                bool isExist = await _database.KeyExistsAsync($"{SessionKey}:{session}");
+                if (!isExist) await _database.SetRemoveAsync(indexKey, session);
+            }
+
             string json = JsonSerializer.Serialize(state);
 
             var transaction = _database.CreateTransaction();
@@ -37,8 +44,7 @@ public class UserSessionStorage : IUserSessionStorage
             _ = transaction.SetAddAsync(indexKey, sessionId);
 
             bool committed = await transaction.ExecuteAsync();
-
-            if (!committed) throw new InvalidOperationException("Failed to set session for sessionId");
+            return committed;
         }
         catch (Exception ex)
         {

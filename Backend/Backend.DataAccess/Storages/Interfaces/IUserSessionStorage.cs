@@ -5,7 +5,7 @@ namespace Backend.DataAccess.Storages.Interfaces;
 
 public interface IUserSessionStorage
 {
-    Task SetSessionAsync(string sessionId, UserSessionDto state);
+    Task<bool> SetSessionAsync(string sessionId, UserSessionDto state);
     Task<UserSessionDto?> GetSessionAsync(string sessionId);
     Task <bool> RefreshSessionTimeAsync(string sessionId);
     Task<bool> LogoutSessionAsync(string sessionId);
