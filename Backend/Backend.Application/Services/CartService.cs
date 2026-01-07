@@ -1,6 +1,7 @@
 ﻿using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Cart;
 using Backend.Application.DTO.Responses;
+using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Storages.DTO;
@@ -11,7 +12,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Application.Services;
 
-public class CartService
+public class CartService : ICartService
 {
     private readonly MainDbContext _dbContext;
     private readonly IUserSessionStorage _userStorage;
@@ -92,7 +93,7 @@ public class CartService
                 }
             }
 
-            return CartResponse.Success("The product was handle");
+            return CartResponse.Success("The product was handled");
         }
         catch (Exception)
         {

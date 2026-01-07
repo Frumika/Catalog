@@ -62,6 +62,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<ICatalogService, CatalogService>();
         services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<ICartService, CartService>();
         
         services.AddScoped<IUserSessionStorage, UserSessionStorage>();
         services.AddScoped<ICartStateStorage, CartStateStorage>();
