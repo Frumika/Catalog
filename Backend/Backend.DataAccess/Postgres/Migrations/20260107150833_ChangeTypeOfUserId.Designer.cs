@@ -8,10 +8,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Backend.DataAccess.Migrations
+namespace Backend.DataAccess.Postgres.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20260103230125_ChangeTypeOfUserId")]
+    [Migration("20260107150833_ChangeTypeOfUserId")]
     partial class ChangeTypeOfUserId
     {
         /// <inheritdoc />
