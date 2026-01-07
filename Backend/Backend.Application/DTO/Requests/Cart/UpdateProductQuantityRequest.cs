@@ -3,7 +3,7 @@
 
 namespace Backend.Application.DTO.Requests.Cart;
 
-public class HandleProductRequest : IValidatableRequest
+public class UpdateProductQuantityRequest : IValidatableRequest
 {
     public string UserSessionId { get; set; } = string.Empty;
     public int ProductId { get; set; }

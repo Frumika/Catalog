@@ -4,4 +4,14 @@ public class ProductDto
 {
     public int Id { get; set; }
     public int Quantity { get; set; }
+
+    public ProductDto()
+    {
+    }
+
+    public ProductDto(int productId, int quantity = 1)
+    {
+        Id = productId;
+        Quantity = quantity;
+    }
 }

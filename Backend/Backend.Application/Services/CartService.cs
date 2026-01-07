@@ -25,7 +25,7 @@ public class CartService : ICartService
         _userStorage = userStorage;
     }
 
-    public async Task<CartResponse> HandleProductAsync(HandleProductRequest request)
+    public async Task<CartResponse> AddProductAsync(AddProductRequest request)
     {
         ValidationResult validationResult = request.Validate();
         if (!validationResult.IsValid)
@@ -41,13 +41,14 @@ public class CartService : ICartService
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == request.ProductId);
             if (product is null)
-                return CartResponse.Fail(CartStatusCode.ProductNotFound, "Incorrect Product Id");
+                return CartResponse.Fail(CartStatusCode.ProductNotFound, "Incorrect product Id");
 
             CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.Id);
+
             if (cartState is null)
             {
-                cartState = new CartStateDto { UserId = userSession.Id };
-                cartState.Products.Add(new ProductDto { Id = product.Id, Quantity = request.Quantity });
+                cartState = new CartStateDto(userSession.Id);
+                cartState.Products.Add(new ProductDto(product.Id));
 
                 bool isStateSet = await _cartStorage.SetStateAsync(cartState);
                 if (!isStateSet)
@@ -55,45 +56,18 @@ public class CartService : ICartService
             }
             else
             {
-                bool isChanged = false;
-                ProductDto? productDto = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
-                if (productDto is null)
+                bool isProductExist = cartState.Products.Exists(p => p.Id == product.Id);
+                if (!isProductExist)
                 {
-                    if (request.Quantity > 0)
-                    {
-                        productDto = new ProductDto
-                        {
-                            Id = product.Id,
-                            Quantity = request.Quantity
-                        };
+                    cartState.Products.Add(new ProductDto(product.Id));
 
-                        cartState.Products.Add(productDto);
-                        isChanged = true;
-                    }
-                }
-                else
-                {
-                    if (request.Quantity == 0)
-                    {
-                        cartState.Products.Remove(productDto);
-                        isChanged = true;
-                    }
-                    else if (productDto.Quantity != request.Quantity)
-                    {
-                        productDto.Quantity = request.Quantity;
-                        isChanged = true;
-                    }
-                }
-
-                if (isChanged)
-                {
                     bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
                     if (!isStateUpdated)
                         return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
                 }
             }
 
-            return CartResponse.Success("The product was handled");
+            return CartResponse.Success("The product was added");
         }
         catch (Exception)
         {
@@ -101,6 +75,37 @@ public class CartService : ICartService
         }
     }
 
+    public async Task<CartResponse> UpdateProductQuantityAsync(UpdateProductQuantityRequest request)
+    {
+        ValidationResult validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+
+        if (request.Quantity == 0) return await RemoveProductAsync(new RemoveProductRequest(request));
+
+        UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
+        if (userSession is null)
+            return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
+
+        CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.Id);
+        if (cartState is null)
+            return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
+
+        ProductDto? productDto = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
+        if (productDto is null)
+            return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product in the cart wasn't found");
+
+        if (productDto.Quantity != request.Quantity)
+        {
+            productDto.Quantity = request.Quantity;
+            bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
+            if (!isStateUpdated)
+                return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
+        }
+
+        return CartResponse.Success("Product quantity was updated");
+    }
+    
     public async Task<CartResponse> RemoveProductAsync(RemoveProductRequest request)
     {
         ValidationResult validationResult = request.Validate();
@@ -111,8 +116,8 @@ public class CartService : ICartService
         {
             UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
             if (userSession is null)
-                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
-            
+                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session wasn't found");
+
             CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.Id);
             if (cartState is null)
                 return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");

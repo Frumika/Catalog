@@ -1,21 +1,12 @@
 ﻿using Backend.Application.DTO.Requests.Base;
 
+
 namespace Backend.Application.DTO.Requests.Cart;
 
-public class RemoveProductRequest : IValidatableRequest
+public class AddProductRequest : IValidatableRequest
 {
     public string UserSessionId { get; set; } = string.Empty;
     public int ProductId { get; set; }
-
-    public RemoveProductRequest()
-    {
-    }
-
-    public RemoveProductRequest(UpdateProductQuantityRequest request)
-    {
-        UserSessionId = request.UserSessionId;
-        ProductId = request.ProductId;
-    }
 
     public ValidationResult Validate()
     {
