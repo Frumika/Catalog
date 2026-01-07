@@ -25,7 +25,7 @@ public class UserSessionStorage : IUserSessionStorage
         if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
 
         string sessionKey = $"{SessionKey}:{sessionId}";
-        string indexKey = $"{IndexKey}:{state.Id}";
+        string indexKey = $"{IndexKey}:{state.UserId}";
 
         try
         {
@@ -99,7 +99,7 @@ public class UserSessionStorage : IUserSessionStorage
             var state = JsonSerializer.Deserialize<UserSessionDto>(json!);
             if (state is null) return false;
 
-            var indexKey = $"{IndexKey}:{state.Id}";
+            var indexKey = $"{IndexKey}:{state.UserId}";
 
             var transaction = _database.CreateTransaction();
             _ = transaction.KeyDeleteAsync(sessionKey);

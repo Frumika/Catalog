@@ -48,7 +48,7 @@ public class AuthService : IAuthService
             return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
             {
                 SessionId = sessionId,
-                UserId = session.Id,
+                UserId = session.UserId,
                 Login = session.Login
             }, "User has beel logged in");
         }

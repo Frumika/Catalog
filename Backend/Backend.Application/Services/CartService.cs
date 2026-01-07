@@ -43,11 +43,11 @@ public class CartService : ICartService
             if (product is null)
                 return CartResponse.Fail(CartStatusCode.ProductNotFound, "Incorrect product Id");
 
-            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.Id);
+            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
 
             if (cartState is null)
             {
-                cartState = new CartStateDto(userSession.Id);
+                cartState = new CartStateDto(userSession.UserId);
                 cartState.Products.Add(new ProductDto(product.Id));
 
                 bool isStateSet = await _cartStorage.SetStateAsync(cartState);
@@ -87,7 +87,7 @@ public class CartService : ICartService
         if (userSession is null)
             return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
 
-        CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.Id);
+        CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
         if (cartState is null)
             return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
 
@@ -118,7 +118,7 @@ public class CartService : ICartService
             if (userSession is null)
                 return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session wasn't found");
 
-            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.Id);
+            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
             if (cartState is null)
                 return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
 
