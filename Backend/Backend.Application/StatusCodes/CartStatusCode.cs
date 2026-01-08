@@ -6,6 +6,7 @@ public enum CartStatusCode
     CartStateNotFound,
     CartStateNotCreated,
     CartStateNotUpdated,
+    CartStateNotDeleted,
     UserSessionNotFound,
     ProductNotFound,
     BadRequest,

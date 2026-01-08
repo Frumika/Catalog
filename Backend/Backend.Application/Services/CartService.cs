@@ -137,4 +137,28 @@ public class CartService
             return CartResponse.Fail(CartStatusCode.UnknownError, "Internal server error");
         }
     }
+
+    public async Task<CartResponse> DeleteCartAsync(DeleteCartRequest request)
+    {
+        ValidationResult validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+
+        try
+        {
+            UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
+            if (userSession is null)
+                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session wasn't found");
+
+            bool isStateDeleted = await _cartStorage.DeleteStateAsync(userSession.UserId);
+            if (!isStateDeleted)
+                return CartResponse.Fail(CartStatusCode.CartStateNotDeleted, "The cart wasn't deleted");
+
+            return CartResponse.Success("The cart was deleted");
+        }
+        catch (Exception)
+        {
+            return CartResponse.Fail(CartStatusCode.UnknownError, "Internal server error");
+        }
+    }
 }

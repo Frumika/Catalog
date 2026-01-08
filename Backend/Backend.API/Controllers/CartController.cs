@@ -40,6 +40,13 @@ public class CartController : ControllerBase
         return ToHttpResponse(response);
     }
 
+    [HttpDelete("cart/delete")]
+    public async Task<IActionResult> DeleteCart([FromBody] DeleteCartRequest request)
+    {
+        var response = await _cartService.DeleteCartAsync(request);
+        return ToHttpResponse(response);
+    }
+
     private IActionResult ToHttpResponse(CartResponse response)
     {
         return response.Code switch
@@ -54,6 +61,7 @@ public class CartController : ControllerBase
 
             CartStatusCode.CartStateNotCreated => StatusCode(StatusCodes.Status500InternalServerError, response),
             CartStatusCode.CartStateNotUpdated => StatusCode(StatusCodes.Status500InternalServerError, response),
+            CartStatusCode.CartStateNotDeleted => StatusCode(StatusCodes.Status500InternalServerError, response),
 
             CartStatusCode.UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
 
