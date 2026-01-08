@@ -17,7 +17,7 @@ public class CartStateStorage : ICartStateStorage
 
     public CartStateStorage(RedisDbProvider redis)
     {
-        _database = redis.CartSessions;
+        _database = redis.CartStates;
     }
 
     public async Task<bool> SetStateAsync(CartStateDto state)

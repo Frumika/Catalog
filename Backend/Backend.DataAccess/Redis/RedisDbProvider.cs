@@ -5,18 +5,18 @@ namespace Backend.DataAccess.Redis;
 
 public class RedisDbProvider
 {
-    private readonly IConnectionMultiplexer _userConnection;
-    private readonly IConnectionMultiplexer _cartConnection;
-    private readonly IConnectionMultiplexer _orderConnection;
+    private const int UserSessionsDbIndex = 0;
+    private const int CartsStatesDbIndex = 1;
+    private const int OrdersStatesDbIndex = 2;
+    
+    private readonly IConnectionMultiplexer _dbConnection;
+    
+    public IDatabase UserSessions => _dbConnection.GetDatabase(UserSessionsDbIndex);
+    public IDatabase CartStates => _dbConnection.GetDatabase(CartsStatesDbIndex);
+    public IDatabase OrderStates => _dbConnection.GetDatabase(OrdersStatesDbIndex);
 
-    public IDatabase UserSessions => _userConnection.GetDatabase();
-    public IDatabase CartSessions => _cartConnection.GetDatabase();
-
-    public RedisDbProvider(IConnectionMultiplexer userConnection, IConnectionMultiplexer cartConnection,
-        IConnectionMultiplexer orderConnection)
+    public RedisDbProvider(IConnectionMultiplexer dbConnection)
     {
-        _userConnection = userConnection;
-        _cartConnection = cartConnection;
-        _orderConnection = orderConnection;
+        _dbConnection = dbConnection;
     }
 }
