@@ -7,13 +7,6 @@ public class OrderStateDto
 {
     public int UserId { get; set; }
     public List<OrderItem> OrderItems { get; set; } = new();
-
-    public OrderStateDto()
-    {
-    }
-
-    public OrderStateDto(int userId)
-    {
-        UserId = userId;
-    }
+    public decimal FinalPrice { get; set; }
+    
 }
