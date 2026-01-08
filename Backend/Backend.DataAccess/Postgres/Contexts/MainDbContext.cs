@@ -177,6 +177,8 @@ public class MainDbContext : DbContext
                 .WithMany(o => o.Orders)
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(o => o.UserId);
         });
     }
 }
