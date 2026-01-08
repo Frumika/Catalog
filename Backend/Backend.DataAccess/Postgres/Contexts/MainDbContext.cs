@@ -1,5 +1,8 @@
-﻿using Backend.Domain.Models;
+﻿using System.Text.Json;
+using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 
 namespace Backend.DataAccess.Postgres.Contexts;
@@ -7,10 +10,10 @@ namespace Backend.DataAccess.Postgres.Contexts;
 public class MainDbContext : DbContext
 {
     public DbSet<User> Users { get; set; }
-
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Maker> Makers { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
     public MainDbContext(DbContextOptions<MainDbContext> options) : base(options)
     {
@@ -124,6 +127,56 @@ public class MainDbContext : DbContext
 
             entity.Property(m => m.Description)
                 .HasColumnName("description");
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.ToTable("orders");
+
+            entity.HasKey(o => o.Id);
+            entity.Property(o => o.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(o => o.UserId)
+                .HasColumnName("user_id");
+
+            entity.Property(o => o.PaymentTime)
+                .HasColumnName("payment_time");
+
+            entity.Property(o => o.FinalPrice)
+                .HasColumnName("final_price")
+                .HasColumnType("numeric(10,2)")
+                .HasDefaultValue(0);
+
+            var orderItemsConverter = new ValueConverter<List<OrderItem>, string>(
+                items => JsonSerializer.Serialize(items, (JsonSerializerOptions?)null),
+                json => JsonSerializer.Deserialize<List<OrderItem>>(json, (JsonSerializerOptions?)null) ??
+                        new List<OrderItem>()
+            );
+
+            var orderItemsComparer = new ValueComparer<List<OrderItem>>(
+                (c1, c2) =>
+                    JsonSerializer.Serialize(c1, (JsonSerializerOptions?)null) ==
+                    JsonSerializer.Serialize(c2, (JsonSerializerOptions?)null),
+                c =>
+                    JsonSerializer.Serialize(c, (JsonSerializerOptions?)null).GetHashCode(),
+                c =>
+                    JsonSerializer.Deserialize<List<OrderItem>>(
+                        JsonSerializer.Serialize(c, (JsonSerializerOptions?)null), (JsonSerializerOptions?)null
+                    )!
+            );
+
+            entity.Property(o => o.OrderItems)
+                .HasColumnName("order_items")
+                .HasColumnType("text")
+                .HasConversion(orderItemsConverter)
+                .Metadata.SetValueComparer(orderItemsComparer);
+
+            entity.HasOne(o => o.User)
+                .WithMany(o => o.Orders)
+                .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
         });
     }
 }
