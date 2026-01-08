@@ -19,22 +19,22 @@ public class CartController : ControllerBase
     }
 
 
-    [HttpPost("add")]
-    public async Task<IActionResult> AddProduct(AddProductRequest request)
+    [HttpPost("product/add")]
+    public async Task<IActionResult> AddProduct([FromBody] AddProductRequest request)
     {
         var response = await _cartService.AddProductAsync(request);
         return ToHttpResponse(response);
     }
 
-    [HttpPost("update")]
-    public async Task<IActionResult> HandleProduct(UpdateProductQuantityRequest request)
+    [HttpPatch("product/quantity/update")]
+    public async Task<IActionResult> UpdateProductQuantityProduct([FromBody] UpdateProductQuantityRequest request)
     {
         var response = await _cartService.UpdateProductQuantityAsync(request);
         return ToHttpResponse(response);
     }
 
-    [HttpPost("remove")]
-    public async Task<IActionResult> RemoveProduct(RemoveProductRequest request)
+    [HttpDelete("product/remove")]
+    public async Task<IActionResult> RemoveProduct([FromBody] RemoveProductRequest request)
     {
         var response = await _cartService.RemoveProductAsync(request);
         return ToHttpResponse(response);

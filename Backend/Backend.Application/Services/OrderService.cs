@@ -159,6 +159,7 @@ public class OrderService
             await transaction.CommitAsync();
 
             await _orderStorage.DeleteStateAsync(userSession.UserId);
+            await _cartStorage.DeleteStateAsync(userSession.UserId);
 
             return OrderResponse.Success("The payment was successful");
         }

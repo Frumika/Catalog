@@ -32,7 +32,7 @@ public class CatalogController : ControllerBase
         return ToHttpResponse(response);
     }
 
-    [HttpPost("category/list")]
+    [HttpGet("category/list")]
     public async Task<IActionResult> GetCategoryList()
     {
         var response = await _catalogService.GetCategoryListAsync();
