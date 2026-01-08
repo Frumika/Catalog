@@ -45,7 +45,7 @@ public class CartStateStorage : ICartStateStorage
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while setting the session", ex);
+            throw new InvalidOperationException("An unexpected error occurred while setting the state", ex);
         }
     }
 
@@ -70,7 +70,7 @@ public class CartStateStorage : ICartStateStorage
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while updating the session", ex);
+            throw new InvalidOperationException("An unexpected error occurred while updating the state", ex);
         }
     }
 
@@ -91,7 +91,7 @@ public class CartStateStorage : ICartStateStorage
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while getting the session", ex);
+            throw new InvalidOperationException("An unexpected error occurred while getting the state", ex);
         }
     }
 
@@ -117,7 +117,7 @@ public class CartStateStorage : ICartStateStorage
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while refreshing of session time", ex);
+            throw new InvalidOperationException("An unexpected error occurred while refreshing of state time", ex);
         }
     }
 
@@ -143,7 +143,7 @@ public class CartStateStorage : ICartStateStorage
         }
         catch (Exception ex)
         {
-            throw new InvalidOperationException("An unexpected error occurred while deleting the session", ex);
+            throw new InvalidOperationException("An unexpected error occurred while deleting the state", ex);
         }
     }
 }
