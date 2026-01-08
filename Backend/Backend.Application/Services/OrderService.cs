@@ -110,6 +110,8 @@ public class OrderService
         if (!validationResult.IsValid)
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
+        await using var transaction = await _dbContext.Database.BeginTransactionAsync();
+
         try
         {
             UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
@@ -120,18 +122,9 @@ public class OrderService
             if (orderState is null)
                 return OrderResponse.Fail(OrderStatusCode.OrderStateNotFound, "The order wasn't found");
 
-            Order order = new()
-            {
-                UserId = orderState.UserId,
-                PaymentTime = DateTime.UtcNow,
-                FinalPrice = orderState.FinalPrice,
-                OrderItems = orderState.OrderItems.ToList()
-            };
-
             var productIds = orderState.OrderItems.Select(o => o.ProductId);
 
             var products = await _dbContext.Products
-                .AsNoTracking()
                 .Where(p => productIds.Contains(p.Id))
                 .ToDictionaryAsync(p => p.Id);
 
@@ -140,16 +133,39 @@ public class OrderService
                 if (!products.TryGetValue(orderItem.ProductId, out Product? product))
                     return OrderResponse.Fail(OrderStatusCode.ProductNotFound, $"The product wasn't found");
 
+                if (product.Count < orderItem.Quantity)
+                    return OrderResponse.Fail(
+                        OrderStatusCode.IncorrectQuantity, "The quantity of the product is insufficient"
+                    );
+            }
+
+            foreach (var orderItem in orderState.OrderItems)
+            {
+                Product product = products[orderItem.ProductId];
                 product.Count -= orderItem.Quantity;
             }
 
+            Order order = new()
+            {
+                UserId = orderState.UserId,
+                PaymentTime = DateTime.UtcNow,
+                FinalPrice = orderState.FinalPrice,
+                OrderItems = orderState.OrderItems.ToList()
+            };
+
             _dbContext.Orders.Add(order);
+
             await _dbContext.SaveChangesAsync();
+            await transaction.CommitAsync();
+
+            await _orderStorage.DeleteStateAsync(userSession.UserId);
 
             return OrderResponse.Success("The payment was successful");
         }
         catch (Exception)
         {
+            await transaction.RollbackAsync();
+
             return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
         }
     }
