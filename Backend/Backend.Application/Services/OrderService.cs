@@ -8,8 +8,7 @@ using Backend.DataAccess.Storages.DTO;
 using Backend.DataAccess.Storages.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using DaOrderStateDto = Backend.DataAccess.Storages.DTO.OrderStateDto;
-using ApOrderStateDto = Backend.Application.DTO.Entities.Order.OrderStateDto;
+using ResponseOrderStateDto = Backend.Application.DTO.Entities.Order.OrderStateDto;
 
 
 namespace Backend.Application.Services;
@@ -30,7 +29,7 @@ public class OrderService
         _orderStorage = orderStorage;
     }
 
-    public async Task<OrderResponse> MakeOrder(MakeOrderRequest request)
+    public async Task<OrderResponse> MakeOrderAsync(MakeOrderRequest request)
     {
         ValidationResult validationResult = request.Validate();
         if (!validationResult.IsValid)
@@ -55,13 +54,11 @@ public class OrderService
                 .AsNoTracking()
                 .Where(p => productIds.Contains(p.Id))
                 .ToDictionaryAsync(p => p.Id);
-            
+
             foreach (var productDto in cartState.Products)
             {
-                if (!products.TryGetValue(productDto.Id, out var product))
-                    return OrderResponse.Fail(OrderStatusCode.ProductNotFound,
-                        $"The product {productDto.Id} wasn't found"
-                    );
+                if (!products.TryGetValue(productDto.Id, out Product? product))
+                    return OrderResponse.Fail(OrderStatusCode.ProductNotFound, $"The product wasn't found");
 
                 if (product.Count < productDto.Quantity)
                     return OrderResponse.Fail(OrderStatusCode.IncorrectQuantity,
@@ -74,10 +71,10 @@ public class OrderService
                 orderItems.Add(orderItem);
             }
 
-            DaOrderStateDto? orderState = await _orderStorage.GetStateAsync(userSession.UserId);
+            OrderStateDto? orderState = await _orderStorage.GetStateAsync(userSession.UserId);
             if (orderState is null)
             {
-                orderState = new DaOrderStateDto
+                orderState = new OrderStateDto
                 {
                     UserId = userSession.UserId,
                     OrderItems = orderItems,
@@ -86,7 +83,7 @@ public class OrderService
 
                 bool isStateSet = await _orderStorage.SetStateAsync(orderState);
                 if (!isStateSet)
-                    return OrderResponse.Fail(OrderStatusCode.CartStateNotCreated, "The order wasn't created");
+                    return OrderResponse.Fail(OrderStatusCode.OrderStateNotCreated, "The order wasn't created");
             }
             else
             {
@@ -96,10 +93,10 @@ public class OrderService
 
                 bool isStateUpdated = await _orderStorage.UpdateStateAsync(orderState);
                 if (!isStateUpdated)
-                    return OrderResponse.Fail(OrderStatusCode.CartStateNotUpdated, "The order wasn't updated");
+                    return OrderResponse.Fail(OrderStatusCode.OrderStateNotUpdated, "The order wasn't updated");
             }
 
-            return OrderResponse.Success(new ApOrderStateDto(orderState));
+            return OrderResponse.Success(new ResponseOrderStateDto(orderState));
         }
         catch (Exception)
         {
@@ -107,8 +104,53 @@ public class OrderService
         }
     }
 
-    public async Task<OrderResponse> PayOrder()
+    public async Task<OrderResponse> PayOrderAsync(PayOrderRequest request)
     {
-        return OrderResponse.Success();
+        ValidationResult validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
+
+        try
+        {
+            UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
+            if (userSession is null)
+                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
+
+            OrderStateDto? orderState = await _orderStorage.GetStateAsync(userSession.UserId);
+            if (orderState is null)
+                return OrderResponse.Fail(OrderStatusCode.OrderStateNotFound, "The order wasn't found");
+
+            Order order = new()
+            {
+                UserId = orderState.UserId,
+                PaymentTime = DateTime.UtcNow,
+                FinalPrice = orderState.FinalPrice,
+                OrderItems = orderState.OrderItems.ToList()
+            };
+
+            var productIds = orderState.OrderItems.Select(o => o.ProductId);
+
+            var products = await _dbContext.Products
+                .AsNoTracking()
+                .Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+
+            foreach (var orderItem in orderState.OrderItems)
+            {
+                if (!products.TryGetValue(orderItem.ProductId, out Product? product))
+                    return OrderResponse.Fail(OrderStatusCode.ProductNotFound, $"The product wasn't found");
+
+                product.Count -= orderItem.Quantity;
+            }
+
+            _dbContext.Orders.Add(order);
+            await _dbContext.SaveChangesAsync();
+
+            return OrderResponse.Success("The payment was successful");
+        }
+        catch (Exception)
+        {
+            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+        }
     }
 }

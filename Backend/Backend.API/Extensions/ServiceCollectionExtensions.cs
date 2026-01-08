@@ -37,7 +37,7 @@ public static class ServiceCollectionExtensions
     {
         string connectionString = config["Databases:Redis:Main"] ?? string.Empty;
         IConnectionMultiplexer connection = ConnectionMultiplexer.Connect(connectionString);
-        
+
         services.AddSingleton(new RedisDbProvider(connection));
         return services;
     }
@@ -59,9 +59,11 @@ public static class ServiceCollectionExtensions
         services.AddScoped<ICatalogService, CatalogService>();
         services.AddScoped<IAuthService, AuthService>();
         services.AddScoped<ICartService, CartService>();
+        services.AddScoped<OrderService>();
 
         services.AddScoped<IUserSessionStorage, UserSessionStorage>();
         services.AddScoped<ICartStateStorage, CartStateStorage>();
+        services.AddScoped<OrderStateStorage>();
 
         return services;
     }

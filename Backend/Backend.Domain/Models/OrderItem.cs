@@ -7,6 +7,10 @@ public class OrderItem
     public decimal ProductPrice { get; set; }
     public decimal TotalPrice { get; }
 
+    public OrderItem()
+    {
+    }
+    
     public OrderItem(Product product, int quantity)
     {
         ProductId = product.Id;
