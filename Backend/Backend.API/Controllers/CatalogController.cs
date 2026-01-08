@@ -17,6 +17,13 @@ public class CatalogController : ControllerBase
     {
         _catalogService = catalogService;
     }
+    
+    [HttpGet("category/list")]
+    public async Task<IActionResult> GetCategoryList()
+    {
+        var response = await _catalogService.GetCategoryListAsync();
+        return ToHttpResponse(response);
+    }
 
     [HttpGet("product/{id}")]
     public async Task<IActionResult> GetProduct([FromRoute] int id)
@@ -29,13 +36,6 @@ public class CatalogController : ControllerBase
     public async Task<IActionResult> GetProductsList([FromBody] GetProductListRequest request)
     {
         var response = await _catalogService.GetProductListAsync(request);
-        return ToHttpResponse(response);
-    }
-
-    [HttpGet("category/list")]
-    public async Task<IActionResult> GetCategoryList()
-    {
-        var response = await _catalogService.GetCategoryListAsync();
         return ToHttpResponse(response);
     }
 
