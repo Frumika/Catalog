@@ -1,10 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 using Backend.Application.Services;
-using Backend.Application.Services.Interfaces;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Redis;
 using Backend.DataAccess.Storages;
-using Backend.DataAccess.Storages.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -56,13 +54,13 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
-        services.AddScoped<ICatalogService, CatalogService>();
-        services.AddScoped<IAuthService, AuthService>();
-        services.AddScoped<ICartService, CartService>();
+        services.AddScoped<CatalogService>();
+        services.AddScoped<AuthService>();
+        services.AddScoped<CartService>();
         services.AddScoped<OrderService>();
 
-        services.AddScoped<IUserSessionStorage, UserSessionStorage>();
-        services.AddScoped<ICartStateStorage, CartStateStorage>();
+        services.AddScoped<UserSessionStorage>();
+        services.AddScoped<CartStateStorage>();
         services.AddScoped<OrderStateStorage>();
 
         return services;

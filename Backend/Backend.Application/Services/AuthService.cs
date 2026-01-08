@@ -1,10 +1,9 @@
 ﻿using Backend.Application.DTO.Requests.Auth;
 using Backend.Application.DTO.Responses;
 using Backend.Application.Logic;
-using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
-using Backend.DataAccess.Storages.Interfaces;
+using Backend.DataAccess.Storages;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using UserSessionDto = Backend.DataAccess.Storages.DTO.UserSessionDto;
@@ -12,12 +11,12 @@ using UserSessionDto = Backend.DataAccess.Storages.DTO.UserSessionDto;
 
 namespace Backend.Application.Services;
 
-public class AuthService : IAuthService
+public class AuthService
 {
     private readonly MainDbContext _dbContext;
-    private readonly IUserSessionStorage _userSessionStorage;
+    private readonly UserSessionStorage _userSessionStorage;
 
-    public AuthService(MainDbContext dbContext, IUserSessionStorage userSessionStorage)
+    public AuthService(MainDbContext dbContext, UserSessionStorage userSessionStorage)
     {
         _dbContext = dbContext;
         _userSessionStorage = userSessionStorage;

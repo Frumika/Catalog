@@ -2,7 +2,6 @@
 using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Catalog;
 using Backend.Application.DTO.Responses;
-using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
@@ -11,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Application.Services;
 
-public class CatalogService : ICatalogService
+public class CatalogService
 {
     private readonly MainDbContext _dbContext;
 

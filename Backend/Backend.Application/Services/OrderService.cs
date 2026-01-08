@@ -5,7 +5,6 @@ using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Storages;
 using Backend.DataAccess.Storages.DTO;
-using Backend.DataAccess.Storages.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using ResponseOrderStateDto = Backend.Application.DTO.Entities.Order.OrderStateDto;
@@ -16,12 +15,12 @@ namespace Backend.Application.Services;
 public class OrderService
 {
     private readonly MainDbContext _dbContext;
-    private readonly IUserSessionStorage _userStorage;
-    private readonly ICartStateStorage _cartStorage;
+    private readonly UserSessionStorage _userStorage;
+    private readonly CartStateStorage _cartStorage;
     private readonly OrderStateStorage _orderStorage;
 
-    public OrderService(MainDbContext dbContext, ICartStateStorage cartStorage,
-        IUserSessionStorage userStorage, OrderStateStorage orderStorage)
+    public OrderService(MainDbContext dbContext, CartStateStorage cartStorage,
+        UserSessionStorage userStorage, OrderStateStorage orderStorage)
     {
         _dbContext = dbContext;
         _cartStorage = cartStorage;

@@ -1,6 +1,6 @@
 ﻿using Backend.Application.DTO.Requests.Cart;
 using Backend.Application.DTO.Responses;
-using Backend.Application.Services.Interfaces;
+using Backend.Application.Services;
 using Backend.Application.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +11,9 @@ namespace Backend.API.Controllers;
 [Route("api/cart")]
 public class CartController : ControllerBase
 {
-    private readonly ICartService _cartService;
+    private readonly CartService _cartService;
 
-    public CartController(ICartService cartService)
+    public CartController(CartService cartService)
     {
         _cartService = cartService;
     }

@@ -1,6 +1,6 @@
 ﻿using Backend.Application.DTO.Requests.Catalog;
 using Backend.Application.DTO.Responses;
-using Backend.Application.Services.Interfaces;
+using Backend.Application.Services;
 using Backend.Application.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,9 +11,9 @@ namespace Backend.API.Controllers;
 [Route("api/catalog")]
 public class CatalogController : ControllerBase
 {
-    private readonly ICatalogService _catalogService;
+    private readonly CatalogService _catalogService;
 
-    public CatalogController(ICatalogService catalogService)
+    public CatalogController(CatalogService catalogService)
     {
         _catalogService = catalogService;
     }

@@ -1,24 +1,23 @@
 ﻿using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Cart;
 using Backend.Application.DTO.Responses;
-using Backend.Application.Services.Interfaces;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
+using Backend.DataAccess.Storages;
 using Backend.DataAccess.Storages.DTO;
-using Backend.DataAccess.Storages.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace Backend.Application.Services;
 
-public class CartService : ICartService
+public class CartService
 {
     private readonly MainDbContext _dbContext;
-    private readonly IUserSessionStorage _userStorage;
-    private readonly ICartStateStorage _cartStorage;
+    private readonly UserSessionStorage _userStorage;
+    private readonly CartStateStorage _cartStorage;
 
-    public CartService(MainDbContext dbContext, ICartStateStorage cartStorage, IUserSessionStorage userStorage)
+    public CartService(MainDbContext dbContext, CartStateStorage cartStorage, UserSessionStorage userStorage)
     {
         _dbContext = dbContext;
         _cartStorage = cartStorage;
@@ -105,7 +104,7 @@ public class CartService : ICartService
 
         return CartResponse.Success("Product quantity was updated");
     }
-    
+
     public async Task<CartResponse> RemoveProductAsync(RemoveProductRequest request)
     {
         ValidationResult validationResult = request.Validate();

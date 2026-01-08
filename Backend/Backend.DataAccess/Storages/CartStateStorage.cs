@@ -1,13 +1,12 @@
 ﻿using System.Text.Json;
 using Backend.DataAccess.Redis;
 using Backend.DataAccess.Storages.DTO;
-using Backend.DataAccess.Storages.Interfaces;
 using StackExchange.Redis;
 
 
 namespace Backend.DataAccess.Storages;
 
-public class CartStateStorage : ICartStateStorage
+public class CartStateStorage
 {
     private readonly IDatabase _database;
     private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(30);
