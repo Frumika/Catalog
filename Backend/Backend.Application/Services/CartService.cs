@@ -1,4 +1,5 @@
-﻿using Backend.Application.DTO.Requests.Base;
+﻿using Backend.Application.DTO.Entities.Cart;
+using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Cart;
 using Backend.Application.DTO.Responses;
 using Backend.Application.StatusCodes;
@@ -7,6 +8,8 @@ using Backend.DataAccess.Storages;
 using Backend.DataAccess.Storages.DTO;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using CartItem = Backend.DataAccess.Storages.DTO.CartItem;
+using ResponseCartItem = Backend.Application.DTO.Entities.Cart.CartItem;
 
 
 namespace Backend.Application.Services;
@@ -22,6 +25,48 @@ public class CartService
         _dbContext = dbContext;
         _cartStorage = cartStorage;
         _userStorage = userStorage;
+    }
+
+    public async Task<CartResponse> GetCartAsync(GetCartRequest request)
+    {
+        ValidationResult validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+
+        try
+        {
+            UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
+            if (userSession is null)
+                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
+
+            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
+            if (cartState is null)
+                return CartResponse.Success(new CartDto());
+
+            IEnumerable<int> productIds = cartState.Products.Select(i => i.Id);
+            Dictionary<int, Product> products = await _dbContext.Products
+                .AsNoTracking()
+                .Where(p => productIds.Contains(p.Id))
+                .ToDictionaryAsync(p => p.Id);
+
+
+            List<ResponseCartItem> cartItems = new();
+            foreach (var cartItem in cartState.Products)
+            {
+                if (!products.TryGetValue(cartItem.Id, out Product? product))
+                    return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product wasn't found");
+
+                ResponseCartItem responseCartItem = new(product, cartItem.Quantity);
+
+                cartItems.Add(responseCartItem);
+            }
+
+            return CartResponse.Success(new CartDto { CartItems = cartItems });
+        }
+        catch (Exception)
+        {
+            return CartResponse.Fail(CartStatusCode.UnknownError, "Internal server error");
+        }
     }
 
     public async Task<CartResponse> AddProductAsync(AddProductRequest request)
@@ -47,7 +92,7 @@ public class CartService
             if (cartState is null)
             {
                 cartState = new CartStateDto(userSession.UserId);
-                cartState.Products.Add(new ProductDto(product.Id));
+                cartState.Products.Add(new CartItem(product.Id));
 
                 bool isStateSet = await _cartStorage.SetStateAsync(cartState);
                 if (!isStateSet)
@@ -58,7 +103,7 @@ public class CartService
                 bool isProductExist = cartState.Products.Exists(p => p.Id == product.Id);
                 if (!isProductExist)
                 {
-                    cartState.Products.Add(new ProductDto(product.Id));
+                    cartState.Products.Add(new CartItem(product.Id));
 
                     bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
                     if (!isStateUpdated)
@@ -90,13 +135,13 @@ public class CartService
         if (cartState is null)
             return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
 
-        ProductDto? productDto = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
-        if (productDto is null)
+        CartItem? cartItem = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
+        if (cartItem is null)
             return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product in the cart wasn't found");
 
-        if (productDto.Quantity != request.Quantity)
+        if (cartItem.Quantity != request.Quantity)
         {
-            productDto.Quantity = request.Quantity;
+            cartItem.Quantity = request.Quantity;
             bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
             if (!isStateUpdated)
                 return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
@@ -121,10 +166,10 @@ public class CartService
             if (cartState is null)
                 return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
 
-            ProductDto? productDto = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
-            if (productDto is not null)
+            CartItem? cartItem = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
+            if (cartItem is not null)
             {
-                cartState.Products.Remove(productDto);
+                cartState.Products.Remove(cartItem);
                 bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
                 if (!isStateUpdated)
                     return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");

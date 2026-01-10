@@ -19,6 +19,20 @@ public class CartController : ControllerBase
     }
 
 
+    [HttpPost("get")]
+    public async Task<IActionResult> GetCart([FromBody] GetCartRequest request)
+    {
+        var response = await _cartService.GetCartAsync(request);
+        return ToHttpResponse(response);
+    }
+
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteCart([FromBody] DeleteCartRequest request)
+    {
+        var response = await _cartService.DeleteCartAsync(request);
+        return ToHttpResponse(response);
+    }
+
     [HttpPost("product/add")]
     public async Task<IActionResult> AddProduct([FromBody] AddProductRequest request)
     {
@@ -40,12 +54,6 @@ public class CartController : ControllerBase
         return ToHttpResponse(response);
     }
 
-    [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteCart([FromBody] DeleteCartRequest request)
-    {
-        var response = await _cartService.DeleteCartAsync(request);
-        return ToHttpResponse(response);
-    }
 
     private IActionResult ToHttpResponse(CartResponse response)
     {
