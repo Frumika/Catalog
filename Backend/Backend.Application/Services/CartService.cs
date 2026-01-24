@@ -80,6 +80,8 @@ public class CartService
             UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
             if (userSession is null)
                 return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
+            
+            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
             Product? product = await _dbContext.Products
                 .AsNoTracking()
@@ -130,10 +132,14 @@ public class CartService
         UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
         if (userSession is null)
             return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
+        
+        await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
         CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
         if (cartState is null)
             return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
+
+        await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
 
         CartItem? cartItem = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
         if (cartItem is null)
@@ -162,9 +168,13 @@ public class CartService
             if (userSession is null)
                 return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session wasn't found");
 
+            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
+
             CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
             if (cartState is null)
                 return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
+
+            await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
 
             CartItem? cartItem = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
             if (cartItem is not null)
@@ -194,6 +204,8 @@ public class CartService
             UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
             if (userSession is null)
                 return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session wasn't found");
+            
+            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
             bool isStateDeleted = await _cartStorage.DeleteStateAsync(userSession.UserId);
             if (!isStateDeleted)

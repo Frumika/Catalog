@@ -40,9 +40,13 @@ public class OrderService
             if (userSession is null)
                 return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
+            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
+
             CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
             if (cartState is null)
                 return OrderResponse.Fail(OrderStatusCode.CartStateNotFound, "The cart wasn't found");
+
+            await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
 
             decimal finalPrice = 0m;
             List<OrderItem> orderItems = new();
@@ -117,12 +121,15 @@ public class OrderService
             if (userSession is null)
                 return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
+            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
+
             OrderStateDto? orderState = await _orderStorage.GetStateAsync(userSession.UserId);
             if (orderState is null)
                 return OrderResponse.Fail(OrderStatusCode.OrderStateNotFound, "The order wasn't found");
 
-            var productIds = orderState.OrderItems.Select(o => o.ProductId);
+            await _orderStorage.RefreshStateTimeAsync(userSession.UserId);
 
+            var productIds = orderState.OrderItems.Select(o => o.ProductId);
             var products = await _dbContext.Products
                 .Where(p => productIds.Contains(p.Id))
                 .ToDictionaryAsync(p => p.Id);
