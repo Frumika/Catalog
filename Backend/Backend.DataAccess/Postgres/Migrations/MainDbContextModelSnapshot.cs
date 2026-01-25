@@ -66,6 +66,9 @@ namespace Backend.DataAccess.Postgres.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.ToTable("makers", (string)null);
                 });
 
@@ -78,20 +81,27 @@ namespace Backend.DataAccess.Postgres.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal>("FinalPrice")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric(10,2)")
-                        .HasDefaultValue(0m)
-                        .HasColumnName("final_price");
-
-                    b.Property<string>("OrderItems")
-                        .IsRequired()
-                        .HasColumnType("text")
-                        .HasColumnName("order_items");
-
-                    b.Property<DateTime>("PaymentTime")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
-                        .HasColumnName("payment_time");
+                        .HasColumnName("created_at");
+
+                    b.Property<DateTime>("DeletionTime")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deletion_time");
+
+                    b.Property<DateTime?>("PaidAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("paid_at");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)")
+                        .HasColumnName("status");
+
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric(10,2)")
+                        .HasColumnName("total_price");
 
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
@@ -99,9 +109,47 @@ namespace Backend.DataAccess.Postgres.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Status");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("orders", (string)null);
+                });
+
+            modelBuilder.Entity("Backend.Domain.Models.OrderedProduct", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("integer")
+                        .HasColumnName("order_id");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("integer")
+                        .HasColumnName("product_id");
+
+                    b.Property<decimal>("ProductPrice")
+                        .HasColumnType("numeric(10,2)")
+                        .HasColumnName("product_price");
+
+                    b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("quantity");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ordered_products", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Domain.Models.Product", b =>
@@ -118,7 +166,9 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .HasColumnName("category_id");
 
                     b.Property<int>("Count")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer")
+                        .HasDefaultValue(0)
                         .HasColumnName("count");
 
                     b.Property<string>("Description")
@@ -195,6 +245,25 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Backend.Domain.Models.OrderedProduct", b =>
+                {
+                    b.HasOne("Backend.Domain.Models.Order", "Order")
+                        .WithMany("OrderedProducts")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Domain.Models.Product", "Product")
+                        .WithMany("OrderedProducts")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("Backend.Domain.Models.Product", b =>
                 {
                     b.HasOne("Backend.Domain.Models.Category", "Category")
@@ -222,6 +291,16 @@ namespace Backend.DataAccess.Postgres.Migrations
             modelBuilder.Entity("Backend.Domain.Models.Maker", b =>
                 {
                     b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("Backend.Domain.Models.Order", b =>
+                {
+                    b.Navigation("OrderedProducts");
+                });
+
+            modelBuilder.Entity("Backend.Domain.Models.Product", b =>
+                {
+                    b.Navigation("OrderedProducts");
                 });
 
             modelBuilder.Entity("Backend.Domain.Models.User", b =>

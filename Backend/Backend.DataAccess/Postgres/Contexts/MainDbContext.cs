@@ -207,7 +207,7 @@ public class MainDbContext : DbContext
                 .IsRequired();
 
             entity.HasOne(o => o.Order)
-                .WithMany(o => OrderedProducts)
+                .WithMany(o => o.OrderedProducts)
                 .HasForeignKey(o => o.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 

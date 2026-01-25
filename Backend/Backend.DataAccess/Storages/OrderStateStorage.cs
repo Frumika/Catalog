@@ -8,141 +8,141 @@ namespace Backend.DataAccess.Storages;
 
 public class OrderStateStorage
 {
-    private readonly IDatabase _database;
-    private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(5);
-
-    private const string StateKey = "order:state";
-    private const string IndexKey = "order:state:user";
-
-    public OrderStateStorage(RedisDbProvider redis)
-    {
-        _database = redis.OrderStates;
-    }
-
-    public async Task<bool> SetStateAsync(OrderStateDto state)
-    {
-        string stateId = Guid.NewGuid().ToString();
-
-        string stateKey = $"{StateKey}:{stateId}";
-        string indexKey = $"{IndexKey}:{state.UserId}";
-
-        try
-        {
-            string json = JsonSerializer.Serialize(state);
-
-            bool indexCreated = await _database.StringSetAsync(indexKey, stateId, _expiryTime, When.NotExists);
-            if (!indexCreated) return false;
-
-            bool stateCreated = await _database.StringSetAsync(stateKey, json, _expiryTime);
-            if (!stateCreated)
-            {
-                await _database.KeyDeleteAsync(indexKey);
-                return false;
-            }
-
-            return true;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("An unexpected error occurred while setting the state", ex);
-        }
-    }
-
-    public async Task<bool> UpdateStateAsync(OrderStateDto state)
-    {
-        try
-        {
-            string? stateId = await _database.StringGetAsync($"{IndexKey}:{state.UserId}");
-            if (stateId is null) return false;
-
-            string stateKey = $"{StateKey}:{stateId}";
-            string indexKey = $"{IndexKey}:{state.UserId}";
-
-            string json = JsonSerializer.Serialize(state);
-
-            ITransaction transaction = _database.CreateTransaction();
-            _ = transaction.StringSetAsync(stateKey, json, _expiryTime);
-            _ = transaction.KeyExpireAsync(indexKey, _expiryTime);
-
-            bool commited = await transaction.ExecuteAsync();
-            return commited;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("An unexpected error occurred while updating the state", ex);
-        }
-    }
-
-    public async Task<OrderStateDto?> GetStateAsync(int userId)
-    {
-        if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
-
-        try
-        {
-            string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
-            if (stateId is null) return null;
-
-            string? json = await _database.StringGetAsync($"{StateKey}:{stateId}");
-            if (json is null) return null;
-
-            OrderStateDto? state = JsonSerializer.Deserialize<OrderStateDto>(json);
-            return state;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("An unexpected error occurred while getting the state", ex);
-        }
-    }
-
-    public async Task<bool> RefreshStateTimeAsync(int userId)
-    {
-        if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
-
-        try
-        {
-            string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
-            if (stateId is null) return false;
-
-            string stateKey = $"{StateKey}:{stateId}";
-            string indexKey = $"{IndexKey}:{userId}";
-
-            ITransaction transaction = _database.CreateTransaction();
-
-            _ = transaction.KeyExpireAsync(indexKey, _expiryTime);
-            _ = transaction.KeyExpireAsync(stateKey, _expiryTime);
-
-            bool commited = await transaction.ExecuteAsync();
-            return commited;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("An unexpected error occurred while refreshing of state time", ex);
-        }
-    }
-
-    public async Task<bool> DeleteStateAsync(int userId)
-    {
-        if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
-
-        try
-        {
-            string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
-            if (stateId is null) return false;
-
-            string stateKey = $"{StateKey}:{stateId}";
-            string indexKey = $"{IndexKey}:{userId}";
-
-            ITransaction transaction = _database.CreateTransaction();
-
-            _ = transaction.KeyDeleteAsync(indexKey);
-            _ = transaction.KeyDeleteAsync(stateKey);
-
-            bool commited = await transaction.ExecuteAsync();
-            return commited;
-        }
-        catch (Exception ex)
-        {
-            throw new InvalidOperationException("An unexpected error occurred while deleting the state", ex);
-        }
-    }
+    // private readonly IDatabase _database;
+    // private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(5);
+    //
+    // private const string StateKey = "order:state";
+    // private const string IndexKey = "order:state:user";
+    //
+    // public OrderStateStorage(RedisDbProvider redis)
+    // {
+    //     _database = redis.OrderStates;
+    // }
+    //
+    // public async Task<bool> SetStateAsync(OrderStateDto state)
+    // {
+    //     string stateId = Guid.NewGuid().ToString();
+    //
+    //     string stateKey = $"{StateKey}:{stateId}";
+    //     string indexKey = $"{IndexKey}:{state.UserId}";
+    //
+    //     try
+    //     {
+    //         string json = JsonSerializer.Serialize(state);
+    //
+    //         bool indexCreated = await _database.StringSetAsync(indexKey, stateId, _expiryTime, When.NotExists);
+    //         if (!indexCreated) return false;
+    //
+    //         bool stateCreated = await _database.StringSetAsync(stateKey, json, _expiryTime);
+    //         if (!stateCreated)
+    //         {
+    //             await _database.KeyDeleteAsync(indexKey);
+    //             return false;
+    //         }
+    //
+    //         return true;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         throw new InvalidOperationException("An unexpected error occurred while setting the state", ex);
+    //     }
+    // }
+    //
+    // public async Task<bool> UpdateStateAsync(OrderStateDto state)
+    // {
+    //     try
+    //     {
+    //         string? stateId = await _database.StringGetAsync($"{IndexKey}:{state.UserId}");
+    //         if (stateId is null) return false;
+    //
+    //         string stateKey = $"{StateKey}:{stateId}";
+    //         string indexKey = $"{IndexKey}:{state.UserId}";
+    //
+    //         string json = JsonSerializer.Serialize(state);
+    //
+    //         ITransaction transaction = _database.CreateTransaction();
+    //         _ = transaction.StringSetAsync(stateKey, json, _expiryTime);
+    //         _ = transaction.KeyExpireAsync(indexKey, _expiryTime);
+    //
+    //         bool commited = await transaction.ExecuteAsync();
+    //         return commited;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         throw new InvalidOperationException("An unexpected error occurred while updating the state", ex);
+    //     }
+    // }
+    //
+    // public async Task<OrderStateDto?> GetStateAsync(int userId)
+    // {
+    //     if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
+    //
+    //     try
+    //     {
+    //         string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
+    //         if (stateId is null) return null;
+    //
+    //         string? json = await _database.StringGetAsync($"{StateKey}:{stateId}");
+    //         if (json is null) return null;
+    //
+    //         OrderStateDto? state = JsonSerializer.Deserialize<OrderStateDto>(json);
+    //         return state;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         throw new InvalidOperationException("An unexpected error occurred while getting the state", ex);
+    //     }
+    // }
+    //
+    // public async Task<bool> RefreshStateTimeAsync(int userId)
+    // {
+    //     if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
+    //
+    //     try
+    //     {
+    //         string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
+    //         if (stateId is null) return false;
+    //
+    //         string stateKey = $"{StateKey}:{stateId}";
+    //         string indexKey = $"{IndexKey}:{userId}";
+    //
+    //         ITransaction transaction = _database.CreateTransaction();
+    //
+    //         _ = transaction.KeyExpireAsync(indexKey, _expiryTime);
+    //         _ = transaction.KeyExpireAsync(stateKey, _expiryTime);
+    //
+    //         bool commited = await transaction.ExecuteAsync();
+    //         return commited;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         throw new InvalidOperationException("An unexpected error occurred while refreshing of state time", ex);
+    //     }
+    // }
+    //
+    // public async Task<bool> DeleteStateAsync(int userId)
+    // {
+    //     if (userId <= 0) throw new ArgumentException("User Id must be greater than 0");
+    //
+    //     try
+    //     {
+    //         string? stateId = await _database.StringGetAsync($"{IndexKey}:{userId}");
+    //         if (stateId is null) return false;
+    //
+    //         string stateKey = $"{StateKey}:{stateId}";
+    //         string indexKey = $"{IndexKey}:{userId}";
+    //
+    //         ITransaction transaction = _database.CreateTransaction();
+    //
+    //         _ = transaction.KeyDeleteAsync(indexKey);
+    //         _ = transaction.KeyDeleteAsync(stateKey);
+    //
+    //         bool commited = await transaction.ExecuteAsync();
+    //         return commited;
+    //     }
+    //     catch (Exception ex)
+    //     {
+    //         throw new InvalidOperationException("An unexpected error occurred while deleting the state", ex);
+    //     }
+    // }
 }

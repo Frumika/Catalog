@@ -11,4 +11,15 @@ public class OrderedProduct
 
     public Order Order { get; set; } = null!;
     public Product Product { get; set; } = null!;
+
+    public OrderedProduct()
+    {
+    }
+
+    public OrderedProduct(Product product, int quantity)
+    {
+        ProductId = product.Id;
+        ProductPrice = product.Price;
+        Quantity = quantity;
+    }
 }

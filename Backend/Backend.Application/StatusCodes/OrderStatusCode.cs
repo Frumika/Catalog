@@ -7,9 +7,7 @@ public enum OrderStatusCode
     UserSessionNotFound,
     CartStateNotFound,
     ProductNotFound,
-    OrderStateNotFound,
-    OrderStateNotCreated,
-    OrderStateNotUpdated,
+    OrderNotFound,
     IncorrectQuantity,
     UnknownError
 }

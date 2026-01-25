@@ -45,10 +45,8 @@ public class OrderController : ControllerBase
             OrderStatusCode.UserSessionNotFound => NotFound(response),
             OrderStatusCode.CartStateNotFound => NotFound(response),
             OrderStatusCode.ProductNotFound => NotFound(response),
-            OrderStatusCode.OrderStateNotFound => NotFound(response),
-
-            OrderStatusCode.OrderStateNotCreated => StatusCode(StatusCodes.Status500InternalServerError, response),
-            OrderStatusCode.OrderStateNotUpdated => StatusCode(StatusCodes.Status500InternalServerError, response),
+            OrderStatusCode.OrderNotFound => NotFound(response),
+            
             OrderStatusCode.UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
 
             _ => BadRequest(response)
