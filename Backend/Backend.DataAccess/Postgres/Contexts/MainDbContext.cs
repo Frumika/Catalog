@@ -1,19 +1,19 @@
-﻿using System.Text.Json;
-using Backend.Domain.Models;
+﻿using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 
 namespace Backend.DataAccess.Postgres.Contexts;
 
 public class MainDbContext : DbContext
 {
+    private const string MoneyType = "numeric(10,2)";
+
     public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Maker> Makers { get; set; }
     public DbSet<Order> Orders { get; set; }
+    public DbSet<OrderedProduct> OrderedProducts { get; set; }
 
     public MainDbContext(DbContextOptions<MainDbContext> options) : base(options)
     {
@@ -55,10 +55,12 @@ public class MainDbContext : DbContext
                 .ValueGeneratedOnAdd();
 
             entity.Property(p => p.MakerId)
-                .HasColumnName("maker_id");
+                .HasColumnName("maker_id")
+                .IsRequired();
 
             entity.Property(p => p.CategoryId)
-                .HasColumnName("category_id");
+                .HasColumnName("category_id")
+                .IsRequired();
 
             entity.Property(p => p.Name)
                 .HasColumnName("name")
@@ -70,12 +72,14 @@ public class MainDbContext : DbContext
 
             entity.Property(p => p.Price)
                 .HasColumnName("price")
-                .HasColumnType("numeric(10,2)")
+                .HasColumnType(MoneyType)
                 .HasDefaultValue(0)
                 .IsRequired();
 
             entity.Property(p => p.Count)
-                .HasColumnName("count");
+                .HasColumnName("count")
+                .HasDefaultValue(0)
+                .IsRequired();
 
             entity.Property(p => p.ImageUrl)
                 .HasColumnName("image_url");
@@ -127,6 +131,8 @@ public class MainDbContext : DbContext
 
             entity.Property(m => m.Description)
                 .HasColumnName("description");
+
+            entity.HasIndex(m => m.Name).IsUnique();
         });
 
         modelBuilder.Entity<Order>(entity =>
@@ -138,40 +144,31 @@ public class MainDbContext : DbContext
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd();
 
+            entity.Property(o => o.Status)
+                .HasColumnName("status")
+                .HasConversion<string>()
+                .HasMaxLength(16)
+                .IsRequired();
+
+            entity.Property(o => o.TotalPrice)
+                .HasColumnName("total_price")
+                .HasColumnType(MoneyType)
+                .IsRequired();
+
+            entity.Property(o => o.CreatedAt)
+                .HasColumnName("created_at")
+                .IsRequired();
+
+            entity.Property(o => o.DeletionTime)
+                .HasColumnName("deletion_time")
+                .IsRequired();
+
+            entity.Property(o => o.PaidAt)
+                .HasColumnName("paid_at");
+
             entity.Property(o => o.UserId)
-                .HasColumnName("user_id");
-
-            entity.Property(o => o.PaymentTime)
-                .HasColumnName("payment_time");
-
-            entity.Property(o => o.FinalPrice)
-                .HasColumnName("final_price")
-                .HasColumnType("numeric(10,2)")
-                .HasDefaultValue(0);
-
-            var orderItemsConverter = new ValueConverter<List<OrderItem>, string>(
-                items => JsonSerializer.Serialize(items, (JsonSerializerOptions?)null),
-                json => JsonSerializer.Deserialize<List<OrderItem>>(json, (JsonSerializerOptions?)null) ??
-                        new List<OrderItem>()
-            );
-
-            var orderItemsComparer = new ValueComparer<List<OrderItem>>(
-                (c1, c2) =>
-                    JsonSerializer.Serialize(c1, (JsonSerializerOptions?)null) ==
-                    JsonSerializer.Serialize(c2, (JsonSerializerOptions?)null),
-                c =>
-                    JsonSerializer.Serialize(c, (JsonSerializerOptions?)null).GetHashCode(),
-                c =>
-                    JsonSerializer.Deserialize<List<OrderItem>>(
-                        JsonSerializer.Serialize(c, (JsonSerializerOptions?)null), (JsonSerializerOptions?)null
-                    )!
-            );
-
-            entity.Property(o => o.OrderItems)
-                .HasColumnName("order_items")
-                .HasColumnType("text")
-                .HasConversion(orderItemsConverter)
-                .Metadata.SetValueComparer(orderItemsComparer);
+                .HasColumnName("user_id")
+                .IsRequired();
 
             entity.HasOne(o => o.User)
                 .WithMany(o => o.Orders)
@@ -179,6 +176,48 @@ public class MainDbContext : DbContext
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasIndex(o => o.UserId);
+            entity.HasIndex(o => o.Status);
+        });
+
+        modelBuilder.Entity<OrderedProduct>(entity =>
+        {
+            entity.ToTable("ordered_products");
+
+            entity.HasKey(o => o.Id);
+            entity.Property(o => o.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(o => o.ProductPrice)
+                .HasColumnName("product_price")
+                .HasColumnType(MoneyType)
+                .IsRequired();
+
+            entity.Property(o => o.Quantity)
+                .HasColumnName("quantity")
+                .HasDefaultValue(0)
+                .IsRequired();
+
+            entity.Property(o => o.OrderId)
+                .HasColumnName("order_id")
+                .IsRequired();
+
+            entity.Property(o => o.ProductId)
+                .HasColumnName("product_id")
+                .IsRequired();
+
+            entity.HasOne(o => o.Order)
+                .WithMany(o => OrderedProducts)
+                .HasForeignKey(o => o.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(o => o.Product)
+                .WithMany(o => o.OrderedProducts)
+                .HasForeignKey(o => o.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(o => o.OrderId);
+            entity.HasIndex(o => o.ProductId);
         });
     }
 }

@@ -13,4 +13,5 @@ public class Product
 
     public Maker Maker { get; set; } = null!;
     public Category Category { get; set; } = null!;
+    public ICollection<OrderedProduct> OrderedProducts { get; set; } = null!;
 }
