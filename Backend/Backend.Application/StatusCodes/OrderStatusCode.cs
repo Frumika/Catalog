@@ -8,6 +8,7 @@ public enum OrderStatusCode
     CartStateNotFound,
     ProductNotFound,
     OrderNotFound,
+    OrderAlreadyExist,
     IncorrectQuantity,
     UnknownError
 }

@@ -15,13 +15,16 @@ namespace Backend.Application.Services;
 public class OrderService
 {
     private readonly MainDbContext _dbContext;
-    private readonly UserSessionStorage _userStorage;
     private readonly CartStateStorage _cartStorage;
+    private readonly OrderIndexStorage _orderStorage;
+    private readonly UserSessionStorage _userStorage;
 
-    public OrderService(MainDbContext dbContext, CartStateStorage cartStorage, UserSessionStorage userStorage)
+    public OrderService(MainDbContext dbContext, CartStateStorage cartStorage,
+        OrderIndexStorage orderStorage, UserSessionStorage userStorage)
     {
         _dbContext = dbContext;
         _cartStorage = cartStorage;
+        _orderStorage = orderStorage;
         _userStorage = userStorage;
     }
 
@@ -33,7 +36,6 @@ public class OrderService
 
         UserSessionDto? userSession;
         CartStateDto? cartState;
-        Dictionary<int, Product> products;
         decimal totalPrice = 0m;
 
         try
@@ -49,6 +51,13 @@ public class OrderService
                 return OrderResponse.Fail(OrderStatusCode.CartStateNotFound, "The cart wasn't found");
 
             await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
+
+            bool isOrderExists = await _orderStorage.IsOrderExists(request.UserSessionId);
+            if (isOrderExists)
+            {
+                OrderResponse response = await GetOrderAsync(request.UserSessionId);
+                return response;
+            }
         }
         catch (Exception)
         {
@@ -62,7 +71,7 @@ public class OrderService
             List<OrderItemDto> orderItems = new();
 
             var productIds = cartState.Products.Select(p => p.Id);
-            products = await _dbContext.Products
+            Dictionary<int, Product> products = await _dbContext.Products
                 .Where(p => productIds.Contains(p.Id))
                 .ToDictionaryAsync(p => p.Id);
 
@@ -101,6 +110,8 @@ public class OrderService
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
+            await _orderStorage.SetStateAsync(request.UserSessionId, order.Id);
+            
             return OrderResponse.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
         }
         catch (Exception)
@@ -110,12 +121,49 @@ public class OrderService
         }
     }
 
+
+    private async Task<OrderResponse> GetOrderAsync(string userSessionId)
+    {
+        try
+        {
+            int? orderId = await _orderStorage.GetOrderIdAsync(userSessionId);
+            if (orderId is null)
+                return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "The order wasn't found");
+
+            var orderItems = await _dbContext.OrderedProducts
+                .AsNoTracking()
+                .Where(op => op.OrderId == orderId)
+                .Select(op => new OrderItemDto
+                {
+                    Id = op.ProductId,
+                    Name = op.Product.Name,
+                    Quantity = op.Quantity,
+                    Price = op.ProductPrice
+                })
+                .ToListAsync();
+
+            decimal totalPrice = 0m;
+            foreach (var orderItem in orderItems)
+            {
+                totalPrice += orderItem.TotalPrice;
+            }
+
+            return OrderResponse.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
+        }
+        catch (Exception)
+        {
+            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+
     public async Task<OrderResponse> PayOrderAsync(PayOrderRequest request)
     {
         ValidationResult validationResult = request.Validate();
         if (!validationResult.IsValid)
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
+        int? orderId;
         UserSessionDto? userSession;
         try
         {
@@ -124,36 +172,35 @@ public class OrderService
                 return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
+
+            orderId = await _orderStorage.GetOrderIdAsync(request.UserSessionId);
+            if (orderId is null)
+                return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "Order wasn't found");
         }
         catch (Exception)
         {
             return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
         }
 
-
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            var pendingOrders = await _dbContext.Orders
-                .Where(o =>
-                    o.UserId == userSession.UserId &&
-                    o.Status == OrderStatus.Pending)
-                .ToListAsync();
+            Order? pendingOrder = await _dbContext.Orders.FirstOrDefaultAsync(o =>
+                o.Id == orderId &&
+                o.UserId == userSession.UserId &&
+                o.Status == OrderStatus.Pending);
 
-            if (!pendingOrders.Any())
-                return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "There are no pending orders to pay");
+            if (pendingOrder is null)
+                return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "The order wasn't exist in data base");
 
-            DateTime paidAt = DateTime.UtcNow;
-            foreach (var order in pendingOrders)
-            {
-                order.Status = OrderStatus.Paid;
-                order.PaidAt = paidAt;
-            }
+            pendingOrder.Status = OrderStatus.Paid;
+            pendingOrder.PaidAt = DateTime.UtcNow;
 
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
             await _cartStorage.DeleteStateAsync(userSession.UserId);
+            await _orderStorage.DeleteStateAsync(request.UserSessionId);
 
             return OrderResponse.Success("The payment was successful");
         }

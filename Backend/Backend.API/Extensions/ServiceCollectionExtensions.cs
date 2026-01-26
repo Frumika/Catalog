@@ -61,6 +61,7 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<UserSessionStorage>();
         services.AddScoped<CartStateStorage>();
+        services.AddScoped<OrderIndexStorage>();
 
         return services;
     }

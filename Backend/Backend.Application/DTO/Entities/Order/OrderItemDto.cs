@@ -5,16 +5,21 @@ namespace Backend.Application.DTO.Entities.Order;
 
 public class OrderItemDto
 {
-    public string Name { get; set; }
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
     public int Quantity { get; set; }
-    public decimal ProductPrice { get; set; }
-    public decimal TotalPrice { get; }
+    public decimal Price { get; set; }
+    public decimal TotalPrice => Price * Quantity;
 
+    public OrderItemDto()
+    {
+    }
+    
     public OrderItemDto(Product product, int quantity)
     {
+        Id = product.Id;
         Name = product.Name;
         Quantity = quantity;
-        ProductPrice = product.Price;
-        TotalPrice = product.Price * quantity;
+        Price = product.Price;
     }
 }
