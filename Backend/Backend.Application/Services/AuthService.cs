@@ -47,7 +47,6 @@ public class AuthService
             return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
             {
                 SessionId = sessionId,
-                UserId = session.UserId,
                 Login = session.Login
             }, "User has beel logged in");
         }
