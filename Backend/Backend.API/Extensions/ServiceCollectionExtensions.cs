@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Backend.API.Background;
 using Backend.Application.Services;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Redis;
@@ -58,10 +59,13 @@ public static class ServiceCollectionExtensions
         services.AddScoped<AuthService>();
         services.AddScoped<CartService>();
         services.AddScoped<OrderService>();
+        services.AddScoped<OrdersCleanupService>();
 
         services.AddScoped<UserSessionStorage>();
         services.AddScoped<CartStateStorage>();
         services.AddScoped<OrderIndexStorage>();
+
+        services.AddHostedService<OrdersCleanupBackgroundService>();
 
         return services;
     }

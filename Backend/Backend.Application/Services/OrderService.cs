@@ -183,7 +183,10 @@ public class OrderService
 
             orderId = await _orderStorage.GetOrderIdAsync(request.UserSessionId);
             if (orderId is null)
+            {
+                await _orderStorage.DeleteStateAsync(request.UserSessionId);
                 return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "Order wasn't found");
+            }
         }
         catch (Exception)
         {
