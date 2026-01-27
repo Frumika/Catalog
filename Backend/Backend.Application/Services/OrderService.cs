@@ -199,7 +199,7 @@ public class OrderService
                 o.Status == OrderStatus.Pending);
 
             if (pendingOrder is null)
-                throw new OrderException(OrderStatusCode.OrderNotFound, "The order wasn't exist in data base");
+                throw new OrderException(OrderStatusCode.OrderNotFound, "The order doesn't exist");
 
             pendingOrder.Status = OrderStatus.Paid;
             pendingOrder.PaidAt = DateTime.UtcNow;
