@@ -2,6 +2,7 @@
 using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Order;
 using Backend.Application.DTO.Responses;
+using Backend.Application.Exceptions;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Storages;
@@ -55,7 +56,7 @@ public class OrderService
             bool isOrderExists = await _orderStorage.IsOrderExists(request.UserSessionId);
             if (isOrderExists)
             {
-                OrderResponse response = await GetOrderAsync(request.UserSessionId);
+                OrderResponse response = await GetPendingOrderAsync(request.UserSessionId);
                 return response;
             }
         }
@@ -78,10 +79,14 @@ public class OrderService
             foreach (var cartItem in cartState.Products)
             {
                 if (!products.TryGetValue(cartItem.Id, out Product? product))
-                    return OrderResponse.Fail(OrderStatusCode.ProductNotFound, $"The product wasn't found");
+                    throw new OrderException(
+                        OrderStatusCode.ProductNotFound,
+                        "The product wasn't found"
+                    );
 
                 if (product.Count < cartItem.Quantity)
-                    return OrderResponse.Fail(OrderStatusCode.IncorrectQuantity,
+                    throw new OrderException(
+                        OrderStatusCode.IncorrectQuantity,
                         "The quantity of the product is insufficient"
                     );
 
@@ -111,8 +116,13 @@ public class OrderService
             await transaction.CommitAsync();
 
             await _orderStorage.SetStateAsync(request.UserSessionId, order.Id);
-            
+
             return OrderResponse.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
+        }
+        catch (OrderException orderException)
+        {
+            await transaction.RollbackAsync();
+            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
         }
         catch (Exception)
         {
@@ -122,7 +132,7 @@ public class OrderService
     }
 
 
-    private async Task<OrderResponse> GetOrderAsync(string userSessionId)
+    private async Task<OrderResponse> GetPendingOrderAsync(string userSessionId)
     {
         try
         {
@@ -144,9 +154,7 @@ public class OrderService
 
             decimal totalPrice = 0m;
             foreach (var orderItem in orderItems)
-            {
                 totalPrice += orderItem.TotalPrice;
-            }
 
             return OrderResponse.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
         }
@@ -191,7 +199,7 @@ public class OrderService
                 o.Status == OrderStatus.Pending);
 
             if (pendingOrder is null)
-                return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "The order wasn't exist in data base");
+                throw new OrderException(OrderStatusCode.OrderNotFound, "The order wasn't exist in data base");
 
             pendingOrder.Status = OrderStatus.Paid;
             pendingOrder.PaidAt = DateTime.UtcNow;
@@ -203,6 +211,11 @@ public class OrderService
             await _orderStorage.DeleteStateAsync(request.UserSessionId);
 
             return OrderResponse.Success("The payment was successful");
+        }
+        catch (OrderException orderException)
+        {
+            await transaction.RollbackAsync();
+            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
         }
         catch (Exception)
         {
