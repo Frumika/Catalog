@@ -33,6 +33,13 @@ public class OrderController : ControllerBase
         return ToHttpResponse(response);
     }
 
+    [HttpDelete("delete")]
+    public async Task<IActionResult> CancelOrder([FromBody] CancelOrderRequest request)
+    {
+        var response = await _orderService.CancelOrderAsync(request);
+        return ToHttpResponse(response);
+    }
+
     private IActionResult ToHttpResponse(OrderResponse response)
     {
         return response.Code switch
@@ -46,6 +53,8 @@ public class OrderController : ControllerBase
             OrderStatusCode.CartStateNotFound => NotFound(response),
             OrderStatusCode.ProductNotFound => NotFound(response),
             OrderStatusCode.OrderNotFound => NotFound(response),
+
+            OrderStatusCode.InvalidOrderStatus => Conflict(response),
             
             OrderStatusCode.UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
 

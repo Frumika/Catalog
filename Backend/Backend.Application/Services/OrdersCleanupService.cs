@@ -42,17 +42,12 @@ public class OrdersCleanupService
         try
         {
             Order? order = await _dbContext.Orders
+                .Where(o => o.Status == OrderStatus.Pending)
                 .Include(o => o.OrderedProducts)
                 .ThenInclude(op => op.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
 
             if (order is null)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                return;
-            }
-
-            if (order.Status != OrderStatus.Pending)
             {
                 await transaction.RollbackAsync(cancellationToken);
                 return;
@@ -64,8 +59,8 @@ public class OrdersCleanupService
             }
 
             _dbContext.Orders.Remove(order);
-
             await _dbContext.SaveChangesAsync(cancellationToken);
+            
             await transaction.CommitAsync(cancellationToken);
         }
         catch

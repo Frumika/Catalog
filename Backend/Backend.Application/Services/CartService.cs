@@ -176,15 +176,22 @@ public class CartService
             if (cartState is null)
                 return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
 
-            await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
-
             CartItem? cartItem = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
             if (cartItem is not null)
             {
-                cartState.Products.Remove(cartItem);
-                bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
-                if (!isStateUpdated)
-                    return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
+                if (cartState.Products.Count <= 1)
+                {
+                    await _cartStorage.DeleteStateAsync(userSession.UserId);
+                }
+                else
+                {
+                    await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
+
+                    cartState.Products.Remove(cartItem);
+                    bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
+                    if (!isStateUpdated)
+                        return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
+                }
             }
 
             return CartResponse.Success("The product was deleted");
