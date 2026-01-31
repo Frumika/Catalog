@@ -84,13 +84,13 @@ public class OrderService
                         "The product wasn't found"
                     );
 
-                if (product.Count < cartItem.Quantity)
+                if (product.Quantity < cartItem.Quantity)
                     throw new OrderException(
                         OrderStatusCode.IncorrectQuantity,
                         "The quantity of the product is insufficient"
                     );
 
-                product.Count -= cartItem.Quantity;
+                product.Quantity -= cartItem.Quantity;
                 totalPrice += product.Price * cartItem.Quantity;
 
                 OrderedProduct orderedProduct = new(product, cartItem.Quantity);
@@ -234,7 +234,7 @@ public class OrderService
 
             foreach (OrderedProduct orderedProduct in order.OrderedProducts)
             {
-                orderedProduct.Product.Count += orderedProduct.Quantity;
+                orderedProduct.Product.Quantity += orderedProduct.Quantity;
             }
 
             _dbContext.Orders.Remove(order);

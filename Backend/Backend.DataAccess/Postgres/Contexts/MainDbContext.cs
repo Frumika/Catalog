@@ -76,8 +76,8 @@ public class MainDbContext : DbContext
                 .HasDefaultValue(0)
                 .IsRequired();
 
-            entity.Property(p => p.Count)
-                .HasColumnName("count")
+            entity.Property(p => p.Quantity)
+                .HasColumnName("quantity")
                 .HasDefaultValue(0)
                 .IsRequired();
 

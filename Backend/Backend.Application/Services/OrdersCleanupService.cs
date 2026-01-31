@@ -55,7 +55,7 @@ public class OrdersCleanupService
 
             foreach (OrderedProduct orderedProduct in order.OrderedProducts)
             {
-                orderedProduct.Product.Count += orderedProduct.Quantity;
+                orderedProduct.Product.Quantity += orderedProduct.Quantity;
             }
 
             _dbContext.Orders.Remove(order);

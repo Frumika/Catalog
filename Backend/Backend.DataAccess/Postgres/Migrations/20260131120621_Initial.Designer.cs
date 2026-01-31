@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.DataAccess.Postgres.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    [Migration("20260125162209_Initial")]
+    [Migration("20260131120621_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -168,12 +168,6 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("category_id");
 
-                    b.Property<int>("Count")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0)
-                        .HasColumnName("count");
-
                     b.Property<string>("Description")
                         .HasColumnType("text")
                         .HasColumnName("description");
@@ -198,6 +192,12 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .HasColumnType("numeric(10,2)")
                         .HasDefaultValue(0m)
                         .HasColumnName("price");
+
+                    b.Property<int>("Quantity")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("quantity");
 
                     b.HasKey("Id");
 

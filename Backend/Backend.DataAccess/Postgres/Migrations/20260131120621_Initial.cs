@@ -62,7 +62,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                     name = table.Column<string>(type: "character varying(64)", maxLength: 64, nullable: false),
                     description = table.Column<string>(type: "text", nullable: true),
                     price = table.Column<decimal>(type: "numeric(10,2)", nullable: false, defaultValue: 0m),
-                    count = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    quantity = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     image_url = table.Column<string>(type: "text", nullable: false),
                     maker_id = table.Column<int>(type: "integer", nullable: false),
                     category_id = table.Column<int>(type: "integer", nullable: false)
