@@ -14,6 +14,10 @@ public class MainDbContext : DbContext
     public DbSet<Maker> Makers { get; set; }
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderedProduct> OrderedProducts { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+    public DbSet<CartItem> CartItems { get; set; }
+    public DbSet<Wishlist> Wishlists { get; set; }
+    public DbSet<WishlistItem> WishlistItems { get; set; }
 
     public MainDbContext(DbContextOptions<MainDbContext> options) : base(options)
     {
@@ -183,10 +187,7 @@ public class MainDbContext : DbContext
         {
             entity.ToTable("ordered_products");
 
-            entity.HasKey(o => o.Id);
-            entity.Property(o => o.Id)
-                .HasColumnName("id")
-                .ValueGeneratedOnAdd();
+            entity.HasKey(o => new { o.OrderId, o.ProductId });
 
             entity.Property(o => o.ProductPrice)
                 .HasColumnName("product_price")
@@ -195,7 +196,6 @@ public class MainDbContext : DbContext
 
             entity.Property(o => o.Quantity)
                 .HasColumnName("quantity")
-                .HasDefaultValue(0)
                 .IsRequired();
 
             entity.Property(o => o.OrderId)
@@ -218,6 +218,114 @@ public class MainDbContext : DbContext
 
             entity.HasIndex(o => o.OrderId);
             entity.HasIndex(o => o.ProductId);
+        });
+
+        modelBuilder.Entity<Cart>(entity =>
+        {
+            entity.ToTable("carts");
+
+            entity.HasKey(c => c.Id);
+            entity.Property(c => c.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(c => c.UserId)
+                .HasColumnName("user_id")
+                .IsRequired();
+
+            entity.HasOne(c => c.User)
+                .WithOne(u => u.Cart)
+                .HasForeignKey<Cart>(c => c.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(c => c.UserId).IsUnique();
+        });
+
+        modelBuilder.Entity<CartItem>(entity =>
+        {
+            entity.ToTable("cart_items");
+
+            entity.HasKey(ci => new { ci.CartId, ci.ProductId });
+
+            entity.Property(ci => ci.CartId)
+                .HasColumnName("cart_id")
+                .IsRequired();
+
+            entity.Property(ci => ci.ProductId)
+                .HasColumnName("product_id")
+                .IsRequired();
+
+            entity.Property(ci => ci.Quantity)
+                .HasColumnName("quantity")
+                .IsRequired();
+
+            entity.Property(ci => ci.AddedAt)
+                .HasColumnName("added_at")
+                .IsRequired();
+
+            entity.HasOne(ci => ci.Cart)
+                .WithMany(c => c.CartItems)
+                .HasForeignKey(ci => ci.CartId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(ci => ci.Product)
+                .WithMany(p => p.CartItems)
+                .HasForeignKey(ci => ci.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(ci => ci.CartId);
+            entity.HasIndex(ci => ci.ProductId);
+        });
+
+        modelBuilder.Entity<Wishlist>(entity =>
+        {
+            entity.ToTable("wishlists");
+
+            entity.HasKey(w => w.Id);
+            entity.Property(w => w.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(w => w.UserId)
+                .HasColumnName("user_id");
+
+            entity.HasOne(w => w.User)
+                .WithOne(u => u.Wishlist)
+                .HasForeignKey<Wishlist>(w => w.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(w => w.UserId).IsUnique();
+        });
+
+        modelBuilder.Entity<WishlistItem>(entity =>
+        {
+            entity.ToTable("wishlist_items");
+
+            entity.HasKey(ci => new { ci.WishlistId, ci.ProductId });
+
+            entity.Property(ci => ci.WishlistId)
+                .HasColumnName("wishlist_id")
+                .IsRequired();
+
+            entity.Property(ci => ci.ProductId)
+                .HasColumnName("product_id")
+                .IsRequired();
+
+            entity.Property(ci => ci.AddedAt)
+                .HasColumnName("added_at");
+
+            entity.HasOne(wi => wi.Wishlist)
+                .WithMany(w => w.WishlistItems)
+                .HasForeignKey(wi => wi.WishlistId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(wi => wi.Product)
+                .WithMany(p => p.WishlistItems)
+                .HasForeignKey(wi => wi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(wi => wi.WishlistId);
+            entity.HasIndex(wi => wi.ProductId);
         });
     }
 }

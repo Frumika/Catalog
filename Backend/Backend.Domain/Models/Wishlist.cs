@@ -6,4 +6,5 @@ public class Wishlist
     public int UserId { get; set; }
     
     public User User { get; set; } = null!;
+    public ICollection<WishlistItem> WishlistItems { get; set; } = null!;
 }
