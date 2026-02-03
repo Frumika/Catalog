@@ -312,7 +312,8 @@ public class MainDbContext : DbContext
                 .IsRequired();
 
             entity.Property(ci => ci.AddedAt)
-                .HasColumnName("added_at");
+                .HasColumnName("added_at")
+                .IsRequired();
 
             entity.HasOne(wi => wi.Wishlist)
                 .WithMany(w => w.WishlistItems)

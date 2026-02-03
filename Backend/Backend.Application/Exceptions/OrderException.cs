@@ -3,12 +3,9 @@
 
 namespace Backend.Application.Exceptions;
 
-public class OrderException : Exception
+public class OrderException : BaseServiceException<OrderStatusCode>
 {
-    public OrderStatusCode StatusCode;
-
-    public OrderException(OrderStatusCode statusCode, string message) : base(message)
+    public OrderException(OrderStatusCode statusCode, string message) : base(statusCode, message)
     {
-        StatusCode = statusCode;
     }
 }

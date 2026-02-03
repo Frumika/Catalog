@@ -1,5 +1,6 @@
 ﻿using Backend.Application.DTO.Requests.Auth;
 using Backend.Application.DTO.Responses;
+using Backend.Application.Exceptions;
 using Backend.Application.Logic;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
@@ -61,14 +62,15 @@ public class AuthService
         var validationResult = request.Validate();
         if (!validationResult.IsValid)
             return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
-
+        
         try
         {
             bool isUserExist = await _dbContext.Users
                 .AsNoTracking()
                 .AnyAsync(user => user.Login == request.Login);
 
-            if (isUserExist) return AuthResponse.Fail(AuthStatusCode.UserAlreadyExists, "User already exists");
+            if (isUserExist)
+                throw new AuthException(AuthStatusCode.UserAlreadyExists, "User already exists");
 
             User user = new()
             {
@@ -80,6 +82,10 @@ public class AuthService
             await _dbContext.SaveChangesAsync();
 
             return AuthResponse.Success("User registered");
+        }
+        catch (AuthException e)
+        {
+            return AuthResponse.Fail(e.StatusCode, e.Message);
         }
         catch (Exception)
         {
