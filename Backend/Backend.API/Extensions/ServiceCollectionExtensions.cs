@@ -20,7 +20,7 @@ public static class ServiceCollectionExtensions
             .AddCorsPolicy()
             .AddApplicationServices()
             .AddApplicationControllers()
-            .AddSwaggerGen();
+            .AddSwagger();
 
         return services;
     }
@@ -58,6 +58,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<CatalogService>();
         services.AddScoped<AuthService>();
         services.AddScoped<CartService>();
+        services.AddScoped<WishlistService>();
         services.AddScoped<OrderService>();
         services.AddScoped<OrdersCleanupService>();
 
@@ -76,6 +77,12 @@ public static class ServiceCollectionExtensions
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
 
+        return services;
+    }
+    
+    private static IServiceCollection AddSwagger(this IServiceCollection services)
+    {
+        services.AddSwaggerGen(options => { options.CustomSchemaIds(type => type.FullName); });
         return services;
     }
 }
