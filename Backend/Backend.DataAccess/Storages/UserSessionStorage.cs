@@ -1,6 +1,5 @@
 ﻿using System.Text.Json;
 using Backend.DataAccess.Redis;
-using Backend.DataAccess.Storages.DTO;
 using StackExchange.Redis;
 
 
@@ -19,13 +18,12 @@ public class UserSessionStorage
         _database = redis.UserSessions;
     }
 
-    public async Task<bool> SetSessionAsync(string sessionId, UserSessionDto state)
+    public async Task<string?> SetSessionAsync(int userId)
     {
-        if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
+        string sessionId = Guid.NewGuid().ToString();
 
         string sessionKey = $"{SessionKey}:{sessionId}";
-        string indexKey = $"{IndexKey}:{state.UserId}";
-
+        string indexKey = $"{IndexKey}:{userId}";
         try
         {
             var sessions = await _database.SetMembersAsync(indexKey);
@@ -35,15 +33,13 @@ public class UserSessionStorage
                 if (!isExist) await _database.SetRemoveAsync(indexKey, session);
             }
 
-            string json = JsonSerializer.Serialize(state);
-
             var transaction = _database.CreateTransaction();
 
-            _ = transaction.StringSetAsync(sessionKey, json, _expiryTime);
+            _ = transaction.StringSetAsync(sessionKey, userId, _expiryTime);
             _ = transaction.SetAddAsync(indexKey, sessionId);
 
             bool committed = await transaction.ExecuteAsync();
-            return committed;
+            return committed ? sessionId : null;
         }
         catch (Exception ex)
         {
@@ -51,16 +47,14 @@ public class UserSessionStorage
         }
     }
 
-    public async Task<UserSessionDto?> GetSessionAsync(string sessionId)
+    public async Task<int?> GetUserIdAsync(string sessionId)
     {
         if (string.IsNullOrWhiteSpace(sessionId)) throw new ArgumentException("Session ID cannot be null or empty");
 
         try
         {
-            string? json = await _database.StringGetAsync($"{SessionKey}:{sessionId}");
-
-            if (string.IsNullOrEmpty(json)) return null;
-            return JsonSerializer.Deserialize<UserSessionDto>(json);
+            RedisValue userId = await _database.StringGetAsync($"{SessionKey}:{sessionId}");
+            return userId.HasValue ? (int)userId : null;
         }
         catch (Exception ex)
         {
@@ -92,13 +86,11 @@ public class UserSessionStorage
         try
         {
             var sessionKey = $"{SessionKey}:{sessionId}";
-            var json = await _database.StringGetAsync(sessionKey);
-            if (json.IsNullOrEmpty) return false;
-
-            var state = JsonSerializer.Deserialize<UserSessionDto>(json!);
-            if (state is null) return false;
-
-            var indexKey = $"{IndexKey}:{state.UserId}";
+            
+            RedisValue userId = await _database.StringGetAsync(sessionKey);
+            if (!userId.HasValue) return false;
+            
+            var indexKey = $"{IndexKey}:{(int)userId}";
 
             var transaction = _database.CreateTransaction();
             _ = transaction.KeyDeleteAsync(sessionKey);

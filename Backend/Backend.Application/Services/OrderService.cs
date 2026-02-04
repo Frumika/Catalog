@@ -6,7 +6,6 @@ using Backend.Application.Exceptions;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Storages;
-using Backend.DataAccess.Storages.DTO;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -34,11 +33,11 @@ public class OrderService
         if (!validationResult.IsValid)
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
-        UserSessionDto? userSession;
+        int? userId;
         try
         {
-            userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
-            if (userSession is null)
+            userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
+            if (userId is null)
                 return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
@@ -63,7 +62,7 @@ public class OrderService
 
             int? cartId = await _dbContext.Carts
                 .AsNoTracking()
-                .Where(c => c.UserId == userSession.UserId)
+                .Where(c => c.UserId == userId)
                 .Select(c => (int?)c.Id)
                 .FirstOrDefaultAsync();
             if (cartId is null)
@@ -104,7 +103,7 @@ public class OrderService
                 TotalPrice = totalPrice,
                 CreatedAt = createdAt,
                 DeletionTime = createdAt + TimeSpan.FromMinutes(5),
-                UserId = userSession.UserId,
+                UserId = userId.Value,
                 OrderedProducts = orderedProducts
             };
 
@@ -136,11 +135,11 @@ public class OrderService
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
         int? orderId;
-        UserSessionDto? userSession;
+        int? userId;
         try
         {
-            userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
-            if (userSession is null)
+            userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
+            if (userId is null)
                 return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
@@ -159,7 +158,7 @@ public class OrderService
         {
             Order? pendingOrder = await _dbContext.Orders.FirstOrDefaultAsync(o =>
                 o.Id == orderId &&
-                o.UserId == userSession.UserId &&
+                o.UserId == userId &&
                 o.Status == OrderStatus.Pending);
 
             if (pendingOrder is null)
@@ -173,7 +172,7 @@ public class OrderService
 
             int? cartId = await _dbContext.Carts
                 .AsNoTracking()
-                .Where(c => c.UserId == userSession.UserId)
+                .Where(c => c.UserId == userId)
                 .Select(c => (int?)c.Id)
                 .FirstOrDefaultAsync();
 
@@ -207,8 +206,8 @@ public class OrderService
         int? orderId;
         try
         {
-            UserSessionDto? sessionDto = await _userStorage.GetSessionAsync(request.UserSessionId);
-            if (sessionDto is null)
+            int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
+            if (userId is null)
                 return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "User session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);

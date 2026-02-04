@@ -8,7 +8,6 @@ using Backend.DataAccess.Storages;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using UserSessionDto = Backend.DataAccess.Storages.DTO.UserSessionDto;
 
 
 namespace Backend.Application.Services;
@@ -88,14 +87,15 @@ public class AuthService
             if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
                 return AuthResponse.Fail(AuthStatusCode.InvalidPassword, "Password is incorrect");
 
-            string sessionId = Guid.NewGuid().ToString();
-            UserSessionDto session = new(user);
-            await _userStorage.SetSessionAsync(sessionId, session);
+            string? sessionId = await _userStorage.SetSessionAsync(user.Id);
+
+            if (sessionId is null)
+                return AuthResponse.Fail(AuthStatusCode.UnknownError, "Session wasn't create");
 
             return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
             {
                 SessionId = sessionId,
-                Login = session.Login
+                Login = user.Login
             }, "User has beel logged in");
         }
         catch (Exception)
@@ -133,11 +133,11 @@ public class AuthService
 
         try
         {
-            UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.SessionId);
-            if (userSession is null)
+            int? userId = await _userStorage.GetUserIdAsync(request.SessionId);
+            if (userId is null)
                 return AuthResponse.Fail(AuthStatusCode.UserNotFound, "The user wasn't found");
-            
-            bool isLogout = await _userStorage.LogoutAllSessionsAsync(userSession.UserId);
+
+            bool isLogout = await _userStorage.LogoutAllSessionsAsync(userId.Value);
             return isLogout
                 ? AuthResponse.Success("The user has been logged out of all sessions")
                 : AuthResponse.Fail(AuthStatusCode.SessionNotFound, "Incorrect user id");
