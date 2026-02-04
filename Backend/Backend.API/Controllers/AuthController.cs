@@ -34,16 +34,16 @@ public class AuthController : ControllerBase
     }
 
     [HttpDelete("logout")]
-    public async Task<IActionResult> LogoutSession([FromBody] LogoutSessionRequest request)
+    public async Task<IActionResult> LogoutSession([FromBody] LogoutRequest request)
     {
         var response = await _authService.LogoutSessionAsync(request);
         return ToHttpResponse(response);
     }
 
-    [HttpDelete("logout/all/{id}")]
-    public async Task<IActionResult> LogoutSession([FromRoute] int id)
+    [HttpDelete("logout_all")]
+    public async Task<IActionResult> LogoutAllSessions([FromBody] LogoutRequest request)
     {
-        var response = await _authService.LogoutAllSessionsAsync(id);
+        var response = await _authService.LogoutAllSessionsAsync(request);
         return ToHttpResponse(response);
     }
 

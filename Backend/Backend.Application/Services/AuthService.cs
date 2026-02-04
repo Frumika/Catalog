@@ -16,14 +16,14 @@ namespace Backend.Application.Services;
 public class AuthService
 {
     private readonly MainDbContext _dbContext;
-    private readonly UserSessionStorage _userSessionStorage;
+    private readonly UserSessionStorage _userStorage;
 
-    public AuthService(MainDbContext dbContext, UserSessionStorage userSessionStorage)
+    public AuthService(MainDbContext dbContext, UserSessionStorage userStorage)
     {
         _dbContext = dbContext;
-        _userSessionStorage = userSessionStorage;
+        _userStorage = userStorage;
     }
-    
+
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
         var validationResult = request.Validate();
@@ -90,7 +90,7 @@ public class AuthService
 
             string sessionId = Guid.NewGuid().ToString();
             UserSessionDto session = new(user);
-            await _userSessionStorage.SetSessionAsync(sessionId, session);
+            await _userStorage.SetSessionAsync(sessionId, session);
 
             return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
             {
@@ -104,7 +104,7 @@ public class AuthService
         }
     }
 
-    public async Task<AuthResponse> LogoutSessionAsync(LogoutSessionRequest request)
+    public async Task<AuthResponse> LogoutSessionAsync(LogoutRequest request)
     {
         var validationResult = request.Validate();
         if (!validationResult.IsValid)
@@ -112,7 +112,7 @@ public class AuthService
 
         try
         {
-            bool isLogout = await _userSessionStorage.LogoutSessionAsync(request.SessionId);
+            bool isLogout = await _userStorage.LogoutSessionAsync(request.SessionId);
             if (!isLogout) return AuthResponse.Fail(AuthStatusCode.SessionNotFound, "Incorrect session id");
 
             return isLogout
@@ -125,15 +125,19 @@ public class AuthService
         }
     }
 
-    public async Task<AuthResponse> LogoutAllSessionsAsync(int id)
+    public async Task<AuthResponse> LogoutAllSessionsAsync(LogoutRequest request)
     {
-        if (id <= 0)
-            return AuthResponse.Fail(AuthStatusCode.BadRequest, "Id must be greater than 0");
+        var validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
 
         try
         {
-            bool isLogout = await _userSessionStorage.LogoutAllSessionsAsync(id);
-
+            UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.SessionId);
+            if (userSession is null)
+                return AuthResponse.Fail(AuthStatusCode.UserNotFound, "The user wasn't found");
+            
+            bool isLogout = await _userStorage.LogoutAllSessionsAsync(userSession.UserId);
             return isLogout
                 ? AuthResponse.Success("The user has been logged out of all sessions")
                 : AuthResponse.Fail(AuthStatusCode.SessionNotFound, "Incorrect user id");

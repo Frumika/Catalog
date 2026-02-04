@@ -2,7 +2,7 @@
 
 namespace Backend.Application.DTO.Requests.Auth;
 
-public class LogoutSessionRequest : IValidatableRequest
+public class LogoutRequest : IValidatableRequest
 {
     public string SessionId { get; set; } = string.Empty;
 
