@@ -23,41 +23,7 @@ public class AuthService
         _dbContext = dbContext;
         _userSessionStorage = userSessionStorage;
     }
-
-    public async Task<AuthResponse> LoginAsync(LoginRequest request)
-    {
-        var validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
-
-        try
-        {
-            var user = await _dbContext.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Login == request.Login);
-
-            if (user is null)
-                return AuthResponse.Fail(AuthStatusCode.UserNotFound, "User not found");
-
-            if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
-                return AuthResponse.Fail(AuthStatusCode.InvalidPassword, "Password is incorrect");
-
-            string sessionId = Guid.NewGuid().ToString();
-            UserSessionDto session = new(user);
-            await _userSessionStorage.SetSessionAsync(sessionId, session);
-
-            return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
-            {
-                SessionId = sessionId,
-                Login = session.Login
-            }, "User has beel logged in");
-        }
-        catch (Exception)
-        {
-            return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
-        }
-    }
-
+    
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
         var validationResult = request.Validate();
@@ -100,6 +66,40 @@ public class AuthService
         catch (Exception)
         {
             await transaction.RollbackAsync();
+            return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+    public async Task<AuthResponse> LoginAsync(LoginRequest request)
+    {
+        var validationResult = request.Validate();
+        if (!validationResult.IsValid)
+            return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
+
+        try
+        {
+            var user = await _dbContext.Users
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Login == request.Login);
+
+            if (user is null)
+                return AuthResponse.Fail(AuthStatusCode.UserNotFound, "The user wasn't found");
+
+            if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
+                return AuthResponse.Fail(AuthStatusCode.InvalidPassword, "Password is incorrect");
+
+            string sessionId = Guid.NewGuid().ToString();
+            UserSessionDto session = new(user);
+            await _userSessionStorage.SetSessionAsync(sessionId, session);
+
+            return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
+            {
+                SessionId = sessionId,
+                Login = session.Login
+            }, "User has beel logged in");
+        }
+        catch (Exception)
+        {
             return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
         }
     }

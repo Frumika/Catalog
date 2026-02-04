@@ -19,17 +19,17 @@ public class AuthController : ControllerBase
     }
 
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
-    {
-        var response = await _authService.LoginAsync(request);
-        return ToHttpResponse(response);
-    }
-
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {
         var response = await _authService.RegisterAsync(request);
+        return ToHttpResponse(response);
+    }
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
+    {
+        var response = await _authService.LoginAsync(request);
         return ToHttpResponse(response);
     }
 
