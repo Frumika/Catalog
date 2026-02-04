@@ -44,13 +44,13 @@ public class WishlistService
             List<ResponseWishlistItem> wishlistItems = await _dbContext.WishlistItems
                 .AsNoTracking()
                 .Where(wi => wi.WishlistId == wishlistId)
+                .OrderBy(wi => wi.AddedAt)
                 .Select(wi => new ResponseWishlistItem
                 {
                     ProductId = wi.ProductId,
                     ProductName = wi.Product.Name,
                     ProductPrice = wi.Product.Price
                 })
-                .OrderBy(wi => wi.ProductId)
                 .ToListAsync();
 
             return WishlistResponse.Success(new WishlistDto { WishlistItems = wishlistItems });

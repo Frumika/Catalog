@@ -56,13 +56,11 @@ public class OrderService
             List<OrderedProduct> orderedProducts = new();
             List<OrderItemDto> orderItems = new();
 
-            int? cartId = await _dbContext.Carts
+            int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)
-                .Select(c => (int?)c.Id)
-                .FirstOrDefaultAsync();
-            if (cartId is null)
-                throw new OrderException(OrderStatusCode.CartNotFound, "The cart wasn't found");
+                .Select(c => c.Id)
+                .FirstAsync();
 
             var cartItems = await _dbContext.CartItems
                 .Where(ci => ci.CartId == cartId)
