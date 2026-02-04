@@ -1,6 +1,4 @@
-﻿using Backend.Domain.Models;
-
-namespace Backend.Application.DTO.Entities.Cart;
+﻿namespace Backend.Application.DTO.Entities.Cart;
 
 public class CartItem
 {
@@ -9,16 +7,4 @@ public class CartItem
     public int Quantity { get; set; }
     public decimal ProductPrice { get; set; }
     public decimal TotalPrice => ProductPrice * Quantity;
-
-    public CartItem()
-    {
-    }
-
-    public CartItem(Product product, int quantity)
-    {
-        ProductId = product.Id;
-        ProductName = product.Name;
-        Quantity = quantity;
-        ProductPrice = product.Price;
-    }
 }

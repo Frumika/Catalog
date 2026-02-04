@@ -33,7 +33,7 @@ public class OrderController : ControllerBase
         return ToHttpResponse(response);
     }
 
-    [HttpDelete("delete")]
+    [HttpDelete("cancel")]
     public async Task<IActionResult> CancelOrder([FromBody] CancelOrderRequest request)
     {
         var response = await _orderService.CancelOrderAsync(request);
@@ -50,7 +50,7 @@ public class OrderController : ControllerBase
             OrderStatusCode.IncorrectQuantity => BadRequest(response),
 
             OrderStatusCode.UserSessionNotFound => NotFound(response),
-            OrderStatusCode.CartStateNotFound => NotFound(response),
+            OrderStatusCode.CartNotFound => NotFound(response),
             OrderStatusCode.ProductNotFound => NotFound(response),
             OrderStatusCode.OrderNotFound => NotFound(response),
 

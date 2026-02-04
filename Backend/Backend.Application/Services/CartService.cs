@@ -6,9 +6,8 @@ using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Storages;
 using Backend.DataAccess.Storages.DTO;
-using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using CartItem = Backend.DataAccess.Storages.DTO.CartItem;
+using CartItem = Backend.Domain.Models.CartItem;
 using ResponseCartItem = Backend.Application.DTO.Entities.Cart.CartItem;
 
 
@@ -18,12 +17,10 @@ public class CartService
 {
     private readonly MainDbContext _dbContext;
     private readonly UserSessionStorage _userStorage;
-    private readonly CartStateStorage _cartStorage;
 
-    public CartService(MainDbContext dbContext, CartStateStorage cartStorage, UserSessionStorage userStorage)
+    public CartService(MainDbContext dbContext, UserSessionStorage userStorage)
     {
         _dbContext = dbContext;
-        _cartStorage = cartStorage;
         _userStorage = userStorage;
     }
 
@@ -37,31 +34,21 @@ public class CartService
         {
             UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
             if (userSession is null)
-                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session wasn't found");
+                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "The user session wasn't found");
 
-            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
-            if (cartState is null)
-                return CartResponse.Success(new CartDto());
-
-            IEnumerable<int> productIds = cartState.Products.Select(i => i.Id);
-            Dictionary<int, Product> products = await _dbContext.Products
+            List<ResponseCartItem> cartItems = await _dbContext.CartItems
                 .AsNoTracking()
-                .Where(p => productIds.Contains(p.Id))
-                .ToDictionaryAsync(p => p.Id);
+                .Where(ci => ci.Cart.UserId == userSession.UserId)
+                .Select(ci => new ResponseCartItem
+                {
+                    ProductId = ci.ProductId,
+                    ProductName = ci.Product.Name,
+                    Quantity = ci.Quantity,
+                    ProductPrice = ci.Product.Price
+                })
+                .ToListAsync();
 
-
-            decimal totalPrice = 0m;
-            List<ResponseCartItem> cartItems = new();
-            foreach (var cartItem in cartState.Products)
-            {
-                if (!products.TryGetValue(cartItem.Id, out Product? product))
-                    return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product wasn't found");
-
-                ResponseCartItem responseCartItem = new(product, cartItem.Quantity);
-                totalPrice += responseCartItem.TotalPrice;
-
-                cartItems.Add(responseCartItem);
-            }
+            decimal totalPrice = cartItems.Sum(c => c.TotalPrice);
 
             return CartResponse.Success(new CartDto { CartItems = cartItems, TotalPrice = totalPrice });
         }
@@ -81,38 +68,40 @@ public class CartService
         {
             UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
             if (userSession is null)
-                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
+                return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "The user session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-            Product? product = await _dbContext.Products
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == request.ProductId);
-            if (product is null)
-                return CartResponse.Fail(CartStatusCode.ProductNotFound, "Incorrect product Id");
+            int cartId = await _dbContext.Carts
+                .Where(c => c.UserId == userSession.UserId)
+                .Select(c => c.Id)
+                .FirstAsync();
 
-            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
+            int? productId = await _dbContext.Products
+                .Where(p => p.Id == request.ProductId)
+                .Select(p => (int?)p.Id)
+                .FirstOrDefaultAsync();
 
-            if (cartState is null)
+            if (productId is null)
+                return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product wasn't found");
+
+            bool isCartItemExists = await _dbContext.CartItems
+                .AnyAsync(ci => ci.CartId == cartId &&
+                                ci.ProductId == request.ProductId
+                );
+
+            if (!isCartItemExists)
             {
-                cartState = new CartStateDto(userSession.UserId);
-                cartState.Products.Add(new CartItem(product.Id));
-
-                bool isStateSet = await _cartStorage.SetStateAsync(cartState);
-                if (!isStateSet)
-                    return CartResponse.Fail(CartStatusCode.CartStateNotCreated, "The cart wasn't created");
-            }
-            else
-            {
-                bool isProductExist = cartState.Products.Exists(p => p.Id == product.Id);
-                if (!isProductExist)
-                {
-                    cartState.Products.Add(new CartItem(product.Id));
-
-                    bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
-                    if (!isStateUpdated)
-                        return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
-                }
+                _dbContext.CartItems.Add(
+                    new CartItem
+                    {
+                        CartId = cartId,
+                        ProductId = request.ProductId,
+                        Quantity = 1,
+                        AddedAt = DateTime.UtcNow
+                    }
+                );
+                await _dbContext.SaveChangesAsync();
             }
 
             return CartResponse.Success("The product was added");
@@ -133,26 +122,27 @@ public class CartService
 
         UserSessionDto? userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
         if (userSession is null)
-            return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "User session hasn't been find");
+            return CartResponse.Fail(CartStatusCode.UserSessionNotFound, "The user session wasn't found");
 
         await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-        CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
-        if (cartState is null)
+        int? cartId = await _dbContext.Carts
+            .AsNoTracking()
+            .Where(c => c.UserId == userSession.UserId)
+            .Select(c => (int?)c.Id)
+            .FirstOrDefaultAsync();
+        if (cartId is null)
             return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
-
-        await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
-
-        CartItem? cartItem = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
+        
+        CartItem? cartItem = await _dbContext.CartItems
+            .FirstOrDefaultAsync(ci => ci.Cart.UserId == cartId && ci.ProductId == request.ProductId);
         if (cartItem is null)
             return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product in the cart wasn't found");
 
         if (cartItem.Quantity != request.Quantity)
         {
             cartItem.Quantity = request.Quantity;
-            bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
-            if (!isStateUpdated)
-                return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
+            await _dbContext.SaveChangesAsync();
         }
 
         return CartResponse.Success("Product quantity was updated");
@@ -172,26 +162,20 @@ public class CartService
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-            CartStateDto? cartState = await _cartStorage.GetStateAsync(userSession.UserId);
-            if (cartState is null)
+            int? cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userSession.UserId)
+                .Select(c => (int?)c.Id)
+                .FirstOrDefaultAsync();
+            if (cartId is null)
                 return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
 
-            CartItem? cartItem = cartState.Products.FirstOrDefault(p => p.Id == request.ProductId);
-            if (cartItem is not null)
+            CartItem? cartItem = await _dbContext.CartItems
+                .FirstOrDefaultAsync(ci => ci.Cart.Id == cartId && ci.ProductId == request.ProductId);
+            if (cartItem != null)
             {
-                if (cartState.Products.Count <= 1)
-                {
-                    await _cartStorage.DeleteStateAsync(userSession.UserId);
-                }
-                else
-                {
-                    await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
-
-                    cartState.Products.Remove(cartItem);
-                    bool isStateUpdated = await _cartStorage.UpdateStateAsync(cartState);
-                    if (!isStateUpdated)
-                        return CartResponse.Fail(CartStatusCode.CartStateNotUpdated, "The cart wasn't updated");
-                }
+                _dbContext.CartItems.Remove(cartItem);
+                await _dbContext.SaveChangesAsync();
             }
 
             return CartResponse.Success("The product was deleted");
@@ -202,7 +186,7 @@ public class CartService
         }
     }
 
-    public async Task<CartResponse> DeleteCartAsync(DeleteCartRequest request)
+    public async Task<CartResponse> ClearCartAsync(DeleteCartRequest request)
     {
         ValidationResult validationResult = request.Validate();
         if (!validationResult.IsValid)
@@ -216,9 +200,17 @@ public class CartService
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-            bool isStateDeleted = await _cartStorage.DeleteStateAsync(userSession.UserId);
-            if (!isStateDeleted)
-                return CartResponse.Fail(CartStatusCode.CartStateNotDeleted, "The cart wasn't deleted");
+            int? cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userSession.UserId)
+                .Select(c => (int?)c.Id)
+                .FirstOrDefaultAsync();
+            if (cartId is null)
+                return CartResponse.Fail(CartStatusCode.CartStateNotFound, "The cart wasn't found");
+
+            await _dbContext.CartItems
+                .Where(ci => ci.Cart.Id == cartId)
+                .ExecuteDeleteAsync();
 
             return CartResponse.Success("The cart was deleted");
         }

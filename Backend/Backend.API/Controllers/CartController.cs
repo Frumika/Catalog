@@ -26,10 +26,10 @@ public class CartController : ControllerBase
         return ToHttpResponse(response);
     }
 
-    [HttpDelete("delete")]
-    public async Task<IActionResult> DeleteCart([FromBody] DeleteCartRequest request)
+    [HttpDelete("clear")]
+    public async Task<IActionResult> ClearCart([FromBody] DeleteCartRequest request)
     {
-        var response = await _cartService.DeleteCartAsync(request);
+        var response = await _cartService.ClearCartAsync(request);
         return ToHttpResponse(response);
     }
 

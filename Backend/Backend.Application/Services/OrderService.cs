@@ -17,15 +17,13 @@ namespace Backend.Application.Services;
 public class OrderService
 {
     private readonly MainDbContext _dbContext;
-    private readonly CartStateStorage _cartStorage;
+
     private readonly OrderIndexStorage _orderStorage;
     private readonly UserSessionStorage _userStorage;
 
-    public OrderService(MainDbContext dbContext, CartStateStorage cartStorage,
-        OrderIndexStorage orderStorage, UserSessionStorage userStorage)
+    public OrderService(MainDbContext dbContext, OrderIndexStorage orderStorage, UserSessionStorage userStorage)
     {
         _dbContext = dbContext;
-        _cartStorage = cartStorage;
         _orderStorage = orderStorage;
         _userStorage = userStorage;
     }
@@ -37,7 +35,6 @@ public class OrderService
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
         UserSessionDto? userSession;
-        CartStateDto? cartState;
         try
         {
             userSession = await _userStorage.GetSessionAsync(request.UserSessionId);
@@ -45,12 +42,6 @@ public class OrderService
                 return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
-
-            cartState = await _cartStorage.GetStateAsync(userSession.UserId);
-            if (cartState is null)
-                return OrderResponse.Fail(OrderStatusCode.CartStateNotFound, "The cart wasn't found");
-
-            await _cartStorage.RefreshStateTimeAsync(userSession.UserId);
 
             bool isOrderExists = await _orderStorage.IsOrderExists(request.UserSessionId);
             if (isOrderExists)
@@ -70,19 +61,25 @@ public class OrderService
             List<OrderedProduct> orderedProducts = new();
             List<OrderItemDto> orderItems = new();
 
-            var productIds = cartState.Products.Select(p => p.Id);
-            Dictionary<int, Product> products = await _dbContext.Products
-                .Where(p => productIds.Contains(p.Id))
-                .ToDictionaryAsync(p => p.Id);
+            int? cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userSession.UserId)
+                .Select(c => (int?)c.Id)
+                .FirstOrDefaultAsync();
+            if (cartId is null)
+                throw new OrderException(OrderStatusCode.CartNotFound, "The cart wasn't found");
+
+            var cartItems = await _dbContext.CartItems
+                .Where(ci => ci.CartId == cartId)
+                .Include(ci => ci.Product)
+                .ToListAsync();
+            if (cartItems.Count == 0)
+                throw new OrderException(OrderStatusCode.CartNotFound, "The cart is empty");
 
             decimal totalPrice = 0m;
-            foreach (var cartItem in cartState.Products)
+            foreach (var cartItem in cartItems)
             {
-                if (!products.TryGetValue(cartItem.Id, out Product? product))
-                    throw new OrderException(
-                        OrderStatusCode.ProductNotFound,
-                        "The product wasn't found"
-                    );
+                Product product = cartItem.Product;
 
                 if (product.Quantity < cartItem.Quantity)
                     throw new OrderException(
@@ -151,7 +148,6 @@ public class OrderService
             orderId = await _orderStorage.GetOrderIdAsync(request.UserSessionId);
             if (orderId is null)
                 return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "Order wasn't found");
-            
         }
         catch (Exception)
         {
@@ -175,7 +171,16 @@ public class OrderService
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            await _cartStorage.DeleteStateAsync(userSession.UserId);
+            int? cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userSession.UserId)
+                .Select(c => (int?)c.Id)
+                .FirstOrDefaultAsync();
+
+            await _dbContext.CartItems
+                .Where(ci => ci.Cart.Id == cartId)
+                .ExecuteDeleteAsync();
+
             await _orderStorage.DeleteStateAsync(request.UserSessionId);
 
             return OrderResponse.Success("The payment was successful");
@@ -192,7 +197,7 @@ public class OrderService
         }
     }
 
-    
+
     public async Task<OrderResponse> CancelOrderAsync(CancelOrderRequest request)
     {
         ValidationResult validationResult = request.Validate();

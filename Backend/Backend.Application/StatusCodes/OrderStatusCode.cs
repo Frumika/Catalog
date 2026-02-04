@@ -5,7 +5,7 @@ public enum OrderStatusCode
     Success,
     BadRequest,
     UserSessionNotFound,
-    CartStateNotFound,
+    CartNotFound,
     ProductNotFound,
     OrderNotFound,
     InvalidOrderStatus,

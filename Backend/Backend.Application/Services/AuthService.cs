@@ -7,6 +7,7 @@ using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Storages;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using UserSessionDto = Backend.DataAccess.Storages.DTO.UserSessionDto;
 
 
@@ -62,7 +63,8 @@ public class AuthService
         var validationResult = request.Validate();
         if (!validationResult.IsValid)
             return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
-        
+
+        await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
             bool isUserExist = await _dbContext.Users
@@ -78,17 +80,26 @@ public class AuthService
                 HashPassword = Argon2Hasher.HashPassword(request.Password)
             };
 
+            Cart cart = new() { User = user };
+            Wishlist wishlist = new() { User = user };
+
             _dbContext.Add(user);
+            _dbContext.Add(cart);
+            _dbContext.Add(wishlist);
+
+            await transaction.CommitAsync();
             await _dbContext.SaveChangesAsync();
 
             return AuthResponse.Success("User registered");
         }
         catch (AuthException e)
         {
+            await transaction.RollbackAsync();
             return AuthResponse.Fail(e.StatusCode, e.Message);
         }
         catch (Exception)
         {
+            await transaction.RollbackAsync();
             return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
         }
     }
