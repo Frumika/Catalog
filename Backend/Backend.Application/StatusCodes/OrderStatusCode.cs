@@ -3,12 +3,11 @@
 public enum OrderStatusCode
 {
     Success,
-    BadRequest,
-    UserSessionNotFound,
+    UserNotFound,
     CartNotFound,
-    ProductNotFound,
     OrderNotFound,
     InvalidOrderStatus,
     IncorrectQuantity,
+    BadRequest,
     UnknownError
 }

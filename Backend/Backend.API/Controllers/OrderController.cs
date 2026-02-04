@@ -49,9 +49,8 @@ public class OrderController : ControllerBase
             OrderStatusCode.BadRequest => BadRequest(response),
             OrderStatusCode.IncorrectQuantity => BadRequest(response),
 
-            OrderStatusCode.UserSessionNotFound => NotFound(response),
+            OrderStatusCode.UserNotFound => NotFound(response),
             OrderStatusCode.CartNotFound => NotFound(response),
-            OrderStatusCode.ProductNotFound => NotFound(response),
             OrderStatusCode.OrderNotFound => NotFound(response),
 
             OrderStatusCode.InvalidOrderStatus => Conflict(response),

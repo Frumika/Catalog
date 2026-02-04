@@ -2,12 +2,9 @@
 
 public enum CartStatusCode
 {
-    Success,
-    CartStateNotFound,
-    CartStateNotCreated,
-    CartStateNotUpdated,
-    CartStateNotDeleted,
-    UserSessionNotFound,
+    Success, 
+    CartNotFound, 
+    UserNotFound,
     ProductNotFound,
     BadRequest,
     UnknownError

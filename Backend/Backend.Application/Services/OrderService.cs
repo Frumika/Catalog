@@ -38,7 +38,7 @@ public class OrderService
         {
             userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
             if (userId is null)
-                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
+                return OrderResponse.Fail(OrderStatusCode.UserNotFound, "The user session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
@@ -136,7 +136,7 @@ public class OrderService
         {
             userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
             if (userId is null)
-                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
+                return OrderResponse.Fail(OrderStatusCode.UserNotFound, "The user session wasn't found");
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
@@ -203,7 +203,7 @@ public class OrderService
         {
             int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
             if (userId is null)
-                throw new OrderException(OrderStatusCode.UserSessionNotFound, "User session wasn't found");
+                throw new OrderException(OrderStatusCode.UserNotFound, "User session wasn't found");
             
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 

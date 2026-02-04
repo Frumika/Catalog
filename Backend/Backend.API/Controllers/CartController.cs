@@ -61,15 +61,11 @@ public class CartController : ControllerBase
         {
             CartStatusCode.Success => Ok(response),
 
-            CartStatusCode.CartStateNotFound => NotFound(response),
-            CartStatusCode.UserSessionNotFound => NotFound(response),
+            CartStatusCode.CartNotFound => NotFound(response),
+            CartStatusCode.UserNotFound => NotFound(response),
             CartStatusCode.ProductNotFound => NotFound(response),
 
             CartStatusCode.BadRequest => BadRequest(response),
-
-            CartStatusCode.CartStateNotCreated => StatusCode(StatusCodes.Status500InternalServerError, response),
-            CartStatusCode.CartStateNotUpdated => StatusCode(StatusCodes.Status500InternalServerError, response),
-            CartStatusCode.CartStateNotDeleted => StatusCode(StatusCodes.Status500InternalServerError, response),
 
             CartStatusCode.UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
 

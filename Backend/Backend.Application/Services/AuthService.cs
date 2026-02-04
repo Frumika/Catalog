@@ -113,11 +113,11 @@ public class AuthService
         try
         {
             bool isLogout = await _userStorage.LogoutSessionAsync(request.SessionId);
-            if (!isLogout) return AuthResponse.Fail(AuthStatusCode.SessionNotFound, "Incorrect session id");
+            if (!isLogout) return AuthResponse.Fail(AuthStatusCode.UserNotFound, "Incorrect session id");
 
             return isLogout
                 ? AuthResponse.Success("The user has been logged out")
-                : AuthResponse.Fail(AuthStatusCode.SessionNotFound, "Incorrect session id");
+                : AuthResponse.Fail(AuthStatusCode.UserNotFound, "Incorrect session id");
         }
         catch (Exception)
         {
@@ -140,7 +140,7 @@ public class AuthService
             bool isLogout = await _userStorage.LogoutAllSessionsAsync(userId.Value);
             return isLogout
                 ? AuthResponse.Success("The user has been logged out of all sessions")
-                : AuthResponse.Fail(AuthStatusCode.SessionNotFound, "Incorrect user id");
+                : AuthResponse.Fail(AuthStatusCode.UserNotFound, "Incorrect user id");
         }
         catch (Exception)
         {
