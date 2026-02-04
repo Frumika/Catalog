@@ -35,9 +35,15 @@ public class CartService
             if (userId is null)
                 return CartResponse.Fail(CartStatusCode.UserNotFound, "The user session wasn't found");
 
+            int cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .FirstAsync();
+            
             List<ResponseCartItem> cartItems = await _dbContext.CartItems
                 .AsNoTracking()
-                .Where(ci => ci.Cart.UserId == userId)
+                .Where(ci => ci.CartId == cartId)
                 .Select(ci => new ResponseCartItem
                 {
                     ProductId = ci.ProductId,
@@ -73,15 +79,16 @@ public class CartService
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
             int cartId = await _dbContext.Carts
+                .AsNoTracking()
                 .Where(c => c.UserId == userId)
                 .Select(c => c.Id)
                 .FirstAsync();
 
             int? productId = await _dbContext.Products
+                .AsNoTracking()
                 .Where(p => p.Id == request.ProductId)
                 .Select(p => (int?)p.Id)
                 .FirstOrDefaultAsync();
-
             if (productId is null)
                 return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product wasn't found");
 
@@ -123,16 +130,14 @@ public class CartService
 
         await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-        int? cartId = await _dbContext.Carts
+        int cartId = await _dbContext.Carts
             .AsNoTracking()
             .Where(c => c.UserId == userId)
-            .Select(c => (int?)c.Id)
-            .FirstOrDefaultAsync();
-        if (cartId is null)
-            return CartResponse.Fail(CartStatusCode.CartNotFound, "The cart wasn't found");
+            .Select(c => c.Id)
+            .FirstAsync();
 
         CartItem? cartItem = await _dbContext.CartItems
-            .FirstOrDefaultAsync(ci => ci.Cart.UserId == cartId && ci.ProductId == request.ProductId);
+            .FirstOrDefaultAsync(ci => ci.CartId== cartId && ci.ProductId == request.ProductId);
         if (cartItem is null)
             return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product in the cart wasn't found");
 
@@ -159,16 +164,14 @@ public class CartService
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-            int? cartId = await _dbContext.Carts
+            int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)
-                .Select(c => (int?)c.Id)
-                .FirstOrDefaultAsync();
-            if (cartId is null)
-                return CartResponse.Fail(CartStatusCode.CartNotFound, "The cart wasn't found");
+                .Select(c => c.Id)
+                .FirstAsync();
 
             CartItem? cartItem = await _dbContext.CartItems
-                .FirstOrDefaultAsync(ci => ci.Cart.Id == cartId && ci.ProductId == request.ProductId);
+                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
             if (cartItem != null)
             {
                 _dbContext.CartItems.Remove(cartItem);
@@ -197,16 +200,14 @@ public class CartService
 
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-            int? cartId = await _dbContext.Carts
+            int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)
-                .Select(c => (int?)c.Id)
+                .Select(c => c.Id)
                 .FirstOrDefaultAsync();
-            if (cartId is null)
-                return CartResponse.Fail(CartStatusCode.CartNotFound, "The cart wasn't found");
 
             await _dbContext.CartItems
-                .Where(ci => ci.Cart.Id == cartId)
+                .Where(ci => ci.CartId == cartId)
                 .ExecuteDeleteAsync();
 
             return CartResponse.Success("The cart was deleted");
