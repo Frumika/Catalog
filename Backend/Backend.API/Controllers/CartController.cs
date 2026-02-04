@@ -60,8 +60,7 @@ public class CartController : ControllerBase
         return response.Code switch
         {
             CartStatusCode.Success => Ok(response),
-
-            CartStatusCode.CartNotFound => NotFound(response),
+            
             CartStatusCode.UserNotFound => NotFound(response),
             CartStatusCode.ProductNotFound => NotFound(response),
 

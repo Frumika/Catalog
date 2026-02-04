@@ -3,7 +3,6 @@
 public enum WishlistStatusCode
 {
     Success, 
-    WishlistNotFound, 
     UserNotFound,
     ProductNotFound,
     BadRequest,
