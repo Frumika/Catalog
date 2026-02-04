@@ -62,7 +62,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped<OrdersCleanupService>();
 
         services.AddScoped<UserSessionStorage>();
-        services.AddScoped<CartStateStorage>();
         services.AddScoped<OrderIndexStorage>();
 
         services.AddHostedService<OrdersCleanupBackgroundService>();
