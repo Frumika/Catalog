@@ -43,11 +43,7 @@ public class OrderService
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
             bool isOrderExists = await _orderStorage.IsOrderExists(request.UserSessionId);
-            if (isOrderExists)
-            {
-                OrderResponse response = await GetPendingOrderAsync(request.UserSessionId);
-                return response;
-            }
+            if (isOrderExists) await CancelOrderAsync(request.UserSessionId);
         }
         catch (Exception)
         {
@@ -203,18 +199,40 @@ public class OrderService
         if (!validationResult.IsValid)
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
-        int? orderId;
         try
         {
             int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
             if (userId is null)
-                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "User session wasn't found");
-
+                throw new OrderException(OrderStatusCode.UserSessionNotFound, "User session wasn't found");
+            
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
-            orderId = await _orderStorage.GetOrderIdAsync(request.UserSessionId);
+            OrderResponse response = await CancelOrderAsync(request.UserSessionId);
+            return response;
+        }
+        catch (OrderException orderException)
+        {
+            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
+        }
+        catch (Exception)
+        {
+            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+
+    private async Task<OrderResponse> CancelOrderAsync(string userSessionId)
+    {
+        int? orderId;
+        try
+        {
+            orderId = await _orderStorage.GetOrderIdAsync(userSessionId);
             if (orderId is null)
                 return OrderResponse.Success("The order doesn't exist");
+        }
+        catch (OrderException orderException)
+        {
+            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
         }
         catch (Exception)
         {
@@ -246,7 +264,7 @@ public class OrderService
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            await _orderStorage.DeleteStateAsync(request.UserSessionId);
+            await _orderStorage.DeleteStateAsync(userSessionId);
 
             return OrderResponse.Success("The order was canceled");
         }

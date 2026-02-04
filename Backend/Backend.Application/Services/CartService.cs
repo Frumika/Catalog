@@ -45,6 +45,7 @@ public class CartService
                     Quantity = ci.Quantity,
                     ProductPrice = ci.Product.Price
                 })
+                .OrderBy(ci => ci.ProductId)
                 .ToListAsync();
 
             decimal totalPrice = cartItems.Sum(c => c.TotalPrice);
@@ -85,10 +86,7 @@ public class CartService
                 return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product wasn't found");
 
             bool isCartItemExists = await _dbContext.CartItems
-                .AnyAsync(ci => ci.CartId == cartId &&
-                                ci.ProductId == request.ProductId
-                );
-
+                .AnyAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
             if (!isCartItemExists)
             {
                 _dbContext.CartItems.Add(
