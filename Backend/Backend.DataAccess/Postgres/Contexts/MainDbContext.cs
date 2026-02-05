@@ -38,7 +38,7 @@ public class MainDbContext : DbContext
 
             entity.Property(user => user.Login)
                 .HasColumnName("login")
-                .HasMaxLength(128)
+                .HasMaxLength(100)
                 .IsRequired();
 
             entity.Property(user => user.HashPassword)
@@ -68,7 +68,7 @@ public class MainDbContext : DbContext
 
             entity.Property(p => p.Name)
                 .HasColumnName("name")
-                .HasMaxLength(64)
+                .HasMaxLength(100)
                 .IsRequired();
 
             entity.Property(p => p.Description)
@@ -77,7 +77,6 @@ public class MainDbContext : DbContext
             entity.Property(p => p.Price)
                 .HasColumnName("price")
                 .HasColumnType(MoneyType)
-                .HasDefaultValue(0)
                 .IsRequired();
 
             entity.Property(p => p.Quantity)
@@ -113,7 +112,7 @@ public class MainDbContext : DbContext
 
             entity.Property(c => c.Name)
                 .HasColumnName("name")
-                .HasMaxLength(32)
+                .HasMaxLength(40)
                 .IsRequired();
 
             entity.HasIndex(c => c.Name).IsUnique();
@@ -130,7 +129,7 @@ public class MainDbContext : DbContext
 
             entity.Property(m => m.Name)
                 .HasColumnName("name")
-                .HasMaxLength(128)
+                .HasMaxLength(100)
                 .IsRequired();
 
             entity.Property(m => m.Description)
@@ -151,7 +150,7 @@ public class MainDbContext : DbContext
             entity.Property(o => o.Status)
                 .HasColumnName("status")
                 .HasConversion<string>()
-                .HasMaxLength(16)
+                .HasMaxLength(20)
                 .IsRequired();
 
             entity.Property(o => o.TotalPrice)
