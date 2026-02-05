@@ -41,6 +41,18 @@
       retries: 5
       start_period: 10s
       timeout: 5s
+  
+  nginx:
+    restart: always
+    build:
+      context: ./Infrastructure/Nginx
+      dockerfile: Dockerfile
+    ports:
+      - "5780:80"
+    volumes:
+      - ./Resources/ProductImages:/usr/share/nginx/static/images:ro
+    networks:
+      - app-network
 
 
 networks:
