@@ -12,6 +12,7 @@ namespace Backend.Application.Services;
 
 public class CatalogService
 {
+    private const string ImageUrlPrefix = "http://localhost:5780/";
     private readonly MainDbContext _dbContext;
 
     public CatalogService(MainDbContext dbContext)
@@ -26,19 +27,27 @@ public class CatalogService
 
         try
         {
-            Product? product = await _dbContext.Products
+            ProductExtendedDto? product = await _dbContext.Products
                 .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == id);
-            if (product is null)
-                return CatalogResponse.Fail(CatalogStatusCode.ProductNotFound, "Product not found");
+                .Where(p => p.Id == id)
+                .Select(p => new ProductExtendedDto
+                {
+                    Id = p.Id,
+                    ProductName = p.Name,
+                    Price = p.Price,
+                    ProductDescription = p.Description,
+                    MakerName = p.Maker.Name,
+                    MakerDescription = p.Maker.Description,
+                    ImageUrls = p.ProductImages
+                        .OrderBy(pi => pi.Position)
+                        .Select(pi => ImageUrlPrefix + pi.Path)
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
-            Maker? maker = await _dbContext.Makers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(m => m.Id == product.MakerId);
-            if (maker is null)
-                return CatalogResponse.Fail(CatalogStatusCode.MakerNotFound, "Maker not found");
-
-            return CatalogResponse.Success(new ProductExtendedDto(product, maker));
+            return product is not null
+                ? CatalogResponse.Success(product)
+                : CatalogResponse.Fail(CatalogStatusCode.ProductNotFound, "The product wasn't found");
         }
         catch (Exception)
         {
@@ -70,10 +79,20 @@ public class CatalogService
             int totalCount = await query.CountAsync();
 
             List<ProductDto> products = await query
-                .OrderBy(product => product.Id)
+                .AsNoTracking()
+                .OrderBy(p => p.Id)
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
-                .Select(product => new ProductDto(product))
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImageUrl = p.ProductImages
+                        .OrderBy(pi => pi.Position)
+                        .Select(pi => ImageUrlPrefix + pi.Path)
+                        .FirstOrDefault() ?? string.Empty
+                })
                 .ToListAsync();
 
             return CatalogResponse.Success(new ProductListDto(products, totalCount));
