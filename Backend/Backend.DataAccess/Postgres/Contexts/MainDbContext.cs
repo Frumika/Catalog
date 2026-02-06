@@ -10,6 +10,7 @@ public class MainDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Product> Products { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Maker> Makers { get; set; }
     public DbSet<Order> Orders { get; set; }
@@ -84,9 +85,6 @@ public class MainDbContext : DbContext
                 .HasDefaultValue(0)
                 .IsRequired();
 
-            entity.Property(p => p.ImageUrl)
-                .HasColumnName("image_url");
-
             entity.HasOne(p => p.Maker)
                 .WithMany(m => m.Products)
                 .HasForeignKey(p => p.MakerId)
@@ -99,6 +97,36 @@ public class MainDbContext : DbContext
 
             entity.HasIndex(p => p.MakerId);
             entity.HasIndex(p => p.CategoryId);
+        });
+
+        modelBuilder.Entity<ProductImage>(entity =>
+        {
+            entity.ToTable("product_images");
+
+            entity.HasKey(pi => pi.Id);
+            entity.Property(pi => pi.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(pi => pi.Position)
+                .HasColumnName("position")
+                .IsRequired();
+
+            entity.Property(pi => pi.Path)
+                .HasColumnName("path")
+                .IsRequired();
+
+            entity.Property(pi => pi.ProductId)
+                .HasColumnName("product_id")
+                .IsRequired();
+
+            entity.HasOne(pi => pi.Product)
+                .WithMany(p => p.ProductImages)
+                .HasForeignKey(pi => pi.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(pi => new { pi.ProductId, pi.Position }).IsUnique();
+            entity.HasIndex(pi => pi.ProductId);
         });
 
         modelBuilder.Entity<Category>(entity =>
