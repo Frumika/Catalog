@@ -1,0 +1,33 @@
+http:
+  routers:
+    dashboard:
+      rule: PathPrefix(`/dashboard`)
+      entryPoints: web
+      service: api@internal
+    
+    api:
+      rule: PathPrefix(`/api`)
+      entryPoints: web
+      service: api-service
+      
+    nginx:
+      rule: PathPrefix(`/images`) || PathPrefix(`/web`)
+      entryPoints: web
+      service: nginx
+  
+  
+  services:
+    api-service:
+      loadBalancer:
+        healthCheck:
+          path: /api/health
+          interval: 5s
+          timeout: 2s
+        servers:
+          - url: "http://api-server:5777"
+          - url: "http://host.docker.internal:5777"
+    
+    nginx:
+      loadBalancer:
+        servers:
+          - url: "http://nginx:80"  

@@ -12,7 +12,7 @@ namespace Backend.Application.Services;
 
 public class CatalogService
 {
-    private const string ImageUrlPrefix = "http://localhost:5780/";
+    private const string ImageUrlPrefix = "http://localhost:5700/";
     private readonly MainDbContext _dbContext;
 
     public CatalogService(MainDbContext dbContext)

@@ -10,6 +10,8 @@ public static class ApplicationBuilderExtensions
     {
         app.UseCors("AllowAllOrigins");
         app.MapControllers();
+        
+        app.MapGet("/api/health", () => Results.Ok());
 
         return app;
     }
@@ -27,7 +29,7 @@ public static class ApplicationBuilderExtensions
         var dbContext = scope.ServiceProvider.GetRequiredService<MainDbContext>();
         _ = dbContext.Users.Any();
     }
-    
+
     public static void AddSwagger(this WebApplication app)
     {
         if (app.Environment.IsDevelopment())
