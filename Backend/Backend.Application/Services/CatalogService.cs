@@ -12,7 +12,6 @@ namespace Backend.Application.Services;
 
 public class CatalogService
 {
-    private const string ImageUrlPrefix = "http://localhost:5700/";
     private readonly MainDbContext _dbContext;
 
     public CatalogService(MainDbContext dbContext)
@@ -40,7 +39,7 @@ public class CatalogService
                     MakerDescription = p.Maker.Description,
                     ImageUrls = p.ProductImages
                         .OrderBy(pi => pi.Position)
-                        .Select(pi => ImageUrlPrefix + pi.Path)
+                        .Select(pi => pi.Path)
                         .ToList()
                 })
                 .FirstOrDefaultAsync();
@@ -90,7 +89,7 @@ public class CatalogService
                     Price = p.Price,
                     ImageUrl = p.ProductImages
                         .OrderBy(pi => pi.Position)
-                        .Select(pi => ImageUrlPrefix + pi.Path)
+                        .Select(pi => pi.Path)
                         .FirstOrDefault() ?? string.Empty
                 })
                 .ToListAsync();

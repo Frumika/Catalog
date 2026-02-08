@@ -1,4 +1,5 @@
 ﻿using Backend.Application.Services;
+using Backend.Domain.Settings;
 
 
 namespace Backend.API.Background;
@@ -6,11 +7,12 @@ namespace Backend.API.Background;
 public class OrdersCleanupBackgroundService : BackgroundService
 {
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly TimeSpan _interval = TimeSpan.FromMinutes(1);
+    private readonly OrderCleanupSettings _settings;
 
-    public OrdersCleanupBackgroundService(IServiceScopeFactory scopeFactory)
+    public OrdersCleanupBackgroundService(IServiceScopeFactory scopeFactory, OrderCleanupSettings settings)
     {
         _scopeFactory = scopeFactory;
+        _settings = settings;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -23,7 +25,7 @@ public class OrdersCleanupBackgroundService : BackgroundService
                 var cleanupService = scope.ServiceProvider.GetRequiredService<OrdersCleanupService>();
 
                 await cleanupService.CleanupExpiredOrdersAsync(stoppingToken);
-                await Task.Delay(_interval, stoppingToken);
+                await Task.Delay(_settings.Interval, stoppingToken);
             }
             catch (TaskCanceledException)
             {

@@ -1,5 +1,6 @@
 ﻿using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
+using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -9,14 +10,15 @@ public class OrdersCleanupService
 {
     private readonly MainDbContext _dbContext;
 
-    public int BatchSize { get; init; } = 50;
-    
-    public OrdersCleanupService(MainDbContext dbContext)
+    public int BatchSize { get; }
+
+    public OrdersCleanupService(OrderCleanupSettings settings, MainDbContext dbContext)
     {
         _dbContext = dbContext;
+        BatchSize = settings.BatchSize;
     }
 
-    
+
     public async Task CleanupExpiredOrdersAsync(CancellationToken cancellationToken = default)
     {
         DateTime currentTime = DateTime.UtcNow;
@@ -60,7 +62,7 @@ public class OrdersCleanupService
 
             _dbContext.Orders.Remove(order);
             await _dbContext.SaveChangesAsync(cancellationToken);
-            
+
             await transaction.CommitAsync(cancellationToken);
         }
         catch

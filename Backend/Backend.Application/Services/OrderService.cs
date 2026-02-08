@@ -7,6 +7,7 @@ using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Storages;
 using Backend.Domain.Models;
+using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 
@@ -15,13 +16,18 @@ namespace Backend.Application.Services;
 
 public class OrderService
 {
+    private readonly OrderSettings _settings;
+
     private readonly MainDbContext _dbContext;
 
     private readonly OrderIndexStorage _orderStorage;
     private readonly UserSessionStorage _userStorage;
 
-    public OrderService(MainDbContext dbContext, OrderIndexStorage orderStorage, UserSessionStorage userStorage)
+
+    public OrderService(OrderSettings settings, MainDbContext dbContext, OrderIndexStorage orderStorage,
+        UserSessionStorage userStorage)
     {
+        _settings = settings;
         _dbContext = dbContext;
         _orderStorage = orderStorage;
         _userStorage = userStorage;
@@ -96,7 +102,7 @@ public class OrderService
                 Status = OrderStatus.Pending,
                 TotalPrice = totalPrice,
                 CreatedAt = createdAt,
-                DeletionTime = createdAt + TimeSpan.FromMinutes(5),
+                DeletionTime = createdAt + _settings.Lifetime,
                 UserId = userId.Value,
                 OrderedProducts = orderedProducts
             };
@@ -202,7 +208,7 @@ public class OrderService
             int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
             if (userId is null)
                 throw new OrderException(OrderStatusCode.UserNotFound, "User session wasn't found");
-            
+
             await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
             OrderResponse response = await CancelOrderAsync(request.UserSessionId);

@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Backend.DataAccess.Redis;
+using Backend.Domain.Settings;
 using StackExchange.Redis;
 
 
@@ -8,14 +9,15 @@ namespace Backend.DataAccess.Storages;
 public class UserSessionStorage
 {
     private readonly IDatabase _database;
-    private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(15);
+    private readonly TimeSpan _expiryTime;
 
     private const string SessionKey = "auth:session";
     private const string IndexKey = "auth:user_sessions";
 
-    public UserSessionStorage(RedisDbProvider redis)
+    public UserSessionStorage(UserSettings settings, RedisDbProvider redis)
     {
         _database = redis.UserSessions;
+        _expiryTime = settings.SessionLifetime;
     }
 
     public async Task<string?> SetSessionAsync(int userId)
@@ -86,10 +88,10 @@ public class UserSessionStorage
         try
         {
             var sessionKey = $"{SessionKey}:{sessionId}";
-            
+
             RedisValue userId = await _database.StringGetAsync(sessionKey);
             if (!userId.HasValue) return false;
-            
+
             var indexKey = $"{IndexKey}:{(int)userId}";
 
             var transaction = _database.CreateTransaction();

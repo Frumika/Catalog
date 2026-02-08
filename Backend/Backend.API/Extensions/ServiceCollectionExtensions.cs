@@ -4,6 +4,7 @@ using Backend.Application.Services;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Redis;
 using Backend.DataAccess.Storages;
+using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -17,9 +18,10 @@ public static class ServiceCollectionExtensions
         services
             .ConnectPostgres(config)
             .ConnectRedis(config)
-            .AddCorsPolicy()
+            .AddSettings(config)
             .AddApplicationServices()
             .AddApplicationControllers()
+            .AddCorsPolicy()
             .AddSwagger();
 
         return services;
@@ -38,6 +40,17 @@ public static class ServiceCollectionExtensions
         IConnectionMultiplexer connection = ConnectionMultiplexer.Connect(connectionString);
 
         services.AddSingleton(new RedisDbProvider(connection));
+        return services;
+    }
+
+    private static IServiceCollection AddSettings(this IServiceCollection services, IConfiguration config)
+    {
+        AppConfiguration appConfiguration = new(config);
+
+        services.AddSingleton<OrderSettings>(_ => appConfiguration.OrderSettings);
+        services.AddSingleton<OrderCleanupSettings>(_ => appConfiguration.OrderCleanupSettings);
+        services.AddSingleton<UserSettings>(_ => appConfiguration.UserSettings);
+
         return services;
     }
 
@@ -79,7 +92,7 @@ public static class ServiceCollectionExtensions
 
         return services;
     }
-    
+
     private static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options => { options.CustomSchemaIds(type => type.FullName); });

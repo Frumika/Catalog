@@ -1,4 +1,5 @@
 ﻿using Backend.DataAccess.Redis;
+using Backend.Domain.Settings;
 using StackExchange.Redis;
 
 
@@ -7,15 +8,16 @@ namespace Backend.DataAccess.Storages;
 public class OrderIndexStorage
 {
     private readonly IDatabase _database;
-    private readonly TimeSpan _expiryTime = TimeSpan.FromMinutes(5);
+    private readonly TimeSpan _expiryTime;
 
     private const string StateKeyPrefix = "order:state";
 
-    public OrderIndexStorage(RedisDbProvider redis)
+    
+    public OrderIndexStorage(OrderSettings settings, RedisDbProvider redis)
     {
         _database = redis.OrderStates;
+        _expiryTime = settings.Lifetime;
     }
-
 
     public async Task<bool> IsOrderExists(string userSessionId)
     {
