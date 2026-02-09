@@ -9,6 +9,7 @@ public class MainDbContext : DbContext
     private const string MoneyType = "numeric(10,2)";
 
     public DbSet<User> Users { get; set; }
+    public DbSet<UserSession> UserSessions { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
     public DbSet<Category> Categories { get; set; }
@@ -48,6 +49,42 @@ public class MainDbContext : DbContext
                 .IsRequired();
 
             entity.HasIndex(user => user.Login).IsUnique();
+        });
+
+        modelBuilder.Entity<UserSession>(entity =>
+        {
+            entity.ToTable("user_sessions");
+
+            entity.HasKey(us => us.Id);
+            entity.Property(us => us.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd();
+
+            entity.Property(us => us.UId)
+                .HasColumnName("uid")
+                .IsRequired();
+
+            entity.Property(us => us.UserId)
+                .HasColumnName("user_id")
+                .IsRequired();
+
+            entity.Property(us => us.OrderId)
+                .HasColumnName("order_id")
+                .HasDefaultValue(null);
+
+            entity.HasOne(us => us.User)
+                .WithMany(u => u.UserSessions)
+                .HasForeignKey(us => us.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(us => us.Order)
+                .WithOne(o => o.UserSession)
+                .HasForeignKey<UserSession>(us => us.OrderId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            entity.HasIndex(us => us.UserId);
+            entity.HasIndex(us => us.OrderId).IsUnique();
+            entity.HasIndex(us => us.UId).IsUnique();
         });
 
         modelBuilder.Entity<Product>(entity =>

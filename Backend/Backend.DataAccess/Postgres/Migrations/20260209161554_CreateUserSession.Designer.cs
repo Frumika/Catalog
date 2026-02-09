@@ -3,6 +3,7 @@ using System;
 using Backend.DataAccess.Postgres.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.DataAccess.Postgres.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260209161554_CreateUserSession")]
+    partial class CreateUserSession
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -308,8 +311,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("OrderId")
-                        .HasColumnType("integer")
-                        .HasColumnName("order_id");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UId")
                         .IsRequired()
@@ -317,8 +319,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .HasColumnName("uid");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("integer")
-                        .HasColumnName("user_id");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
