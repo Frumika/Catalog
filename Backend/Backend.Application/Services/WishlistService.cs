@@ -4,7 +4,6 @@ using Backend.Application.DTO.Requests.Wishlist;
 using Backend.Application.DTO.Responses;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
-using Backend.DataAccess.Storages;
 using Microsoft.EntityFrameworkCore;
 using ResponseWishlistItem = Backend.Application.DTO.Entities.Wishlist.WishlistItem;
 using WishlistItem = Backend.Domain.Models.WishlistItem;
@@ -15,12 +14,10 @@ namespace Backend.Application.Services;
 public class WishlistService
 {
     private readonly MainDbContext _dbContext;
-    private readonly UserSessionStorage _userStorage;
 
-    public WishlistService(MainDbContext dbContext, UserSessionStorage userStorage)
+    public WishlistService(MainDbContext dbContext)
     {
         _dbContext = dbContext;
-        _userStorage = userStorage;
     }
 
     public async Task<WishlistResponse> GetWishlistAsync(GetWishlistRequest request)
@@ -31,7 +28,11 @@ public class WishlistService
 
         try
         {
-            int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return WishlistResponse.Fail(WishlistStatusCode.UserNotFound, "The user session wasn't found");
 
@@ -69,11 +70,13 @@ public class WishlistService
 
         try
         {
-            int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return WishlistResponse.Fail(WishlistStatusCode.UserNotFound, "The user session wasn't found");
-
-            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
             int wishlistId = await _dbContext.Wishlists
                 .AsNoTracking()
@@ -120,11 +123,13 @@ public class WishlistService
 
         try
         {
-            int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return WishlistResponse.Fail(WishlistStatusCode.UserNotFound, "User session wasn't found");
-
-            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
 
             int wishlistId = await _dbContext.Carts
                 .AsNoTracking()

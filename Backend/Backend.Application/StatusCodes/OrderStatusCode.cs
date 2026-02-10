@@ -3,7 +3,7 @@
 public enum OrderStatusCode
 {
     Success,
-    UserNotFound,
+    UserSessionNotFound,
     CartNotFound,
     OrderNotFound,
     InvalidOrderStatus,

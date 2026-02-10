@@ -4,7 +4,6 @@ using Backend.Application.Exceptions;
 using Backend.Application.Logic;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
-using Backend.DataAccess.Storages;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -15,12 +14,10 @@ namespace Backend.Application.Services;
 public class AuthService
 {
     private readonly MainDbContext _dbContext;
-    private readonly UserSessionStorage _userStorage;
 
-    public AuthService(MainDbContext dbContext, UserSessionStorage userStorage)
+    public AuthService(MainDbContext dbContext)
     {
         _dbContext = dbContext;
-        _userStorage = userStorage;
     }
 
     public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
@@ -77,7 +74,7 @@ public class AuthService
 
         try
         {
-            var user = await _dbContext.Users
+            User? user = await _dbContext.Users
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Login == request.Login);
 
@@ -87,14 +84,20 @@ public class AuthService
             if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
                 return AuthResponse.Fail(AuthStatusCode.InvalidPassword, "Password is incorrect");
 
-            string? sessionId = await _userStorage.SetSessionAsync(user.Id);
+            string sessionUId = Guid.NewGuid().ToString();
 
-            if (sessionId is null)
-                return AuthResponse.Fail(AuthStatusCode.UnknownError, "Session wasn't create");
+            UserSession userSession = new()
+            {
+                UId = sessionUId,
+                User = user
+            };
+
+            _dbContext.UserSessions.Add(userSession);
+            await _dbContext.SaveChangesAsync();
 
             return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
             {
-                SessionId = sessionId,
+                SessionId = sessionUId,
                 Login = user.Login
             }, "User has beel logged in");
         }
@@ -112,12 +115,11 @@ public class AuthService
 
         try
         {
-            bool isLogout = await _userStorage.LogoutSessionAsync(request.SessionId);
-            if (!isLogout) return AuthResponse.Fail(AuthStatusCode.UserNotFound, "Incorrect session id");
+            await _dbContext.UserSessions
+                .Where(us => us.UId == request.SessionId)
+                .ExecuteDeleteAsync();
 
-            return isLogout
-                ? AuthResponse.Success("The user has been logged out")
-                : AuthResponse.Fail(AuthStatusCode.UserNotFound, "Incorrect session id");
+            return AuthResponse.Success("The user has been logged out");
         }
         catch (Exception)
         {
@@ -133,14 +135,20 @@ public class AuthService
 
         try
         {
-            int? userId = await _userStorage.GetUserIdAsync(request.SessionId);
-            if (userId is null)
-                return AuthResponse.Fail(AuthStatusCode.UserNotFound, "The user wasn't found");
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(us => us.UId == request.SessionId)
+                .Select(us => (int?)us.UserId)
+                .FirstOrDefaultAsync();
 
-            bool isLogout = await _userStorage.LogoutAllSessionsAsync(userId.Value);
-            return isLogout
-                ? AuthResponse.Success("The user has been logged out of all sessions")
-                : AuthResponse.Fail(AuthStatusCode.UserNotFound, "Incorrect user id");
+            if (userId is null)
+                return AuthResponse.Fail(AuthStatusCode.UserNotFound, "User not found");
+
+            await _dbContext.UserSessions
+                .Where(us => us.UserId == userId)
+                .ExecuteDeleteAsync();
+
+            return AuthResponse.Success("The user has been logged out of all sessions");
         }
         catch (Exception)
         {

@@ -77,7 +77,7 @@ public class MainDbContext : DbContext
                 .HasForeignKey(us => us.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            entity.HasOne(us => us.Order)
+            entity.HasOne(us => us.PendingOrder)
                 .WithOne(o => o.UserSession)
                 .HasForeignKey<UserSession>(us => us.OrderId)
                 .OnDelete(DeleteBehavior.SetNull);

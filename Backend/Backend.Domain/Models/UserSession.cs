@@ -9,5 +9,5 @@ public class UserSession
     public int? OrderId { get; set; }
 
     public User User { get; set; } = null!;
-    public Order? Order { get; set; }
+    public Order? PendingOrder { get; set; }
 }

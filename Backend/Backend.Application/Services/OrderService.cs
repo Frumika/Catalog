@@ -5,7 +5,6 @@ using Backend.Application.DTO.Responses;
 using Backend.Application.Exceptions;
 using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
-using Backend.DataAccess.Storages;
 using Backend.Domain.Models;
 using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
@@ -17,20 +16,12 @@ namespace Backend.Application.Services;
 public class OrderService
 {
     private readonly OrderSettings _settings;
-
     private readonly MainDbContext _dbContext;
 
-    private readonly OrderIndexStorage _orderStorage;
-    private readonly UserSessionStorage _userStorage;
-
-
-    public OrderService(OrderSettings settings, MainDbContext dbContext, OrderIndexStorage orderStorage,
-        UserSessionStorage userStorage)
+    public OrderService(OrderSettings settings, MainDbContext dbContext)
     {
         _settings = settings;
         _dbContext = dbContext;
-        _orderStorage = orderStorage;
-        _userStorage = userStorage;
     }
 
     public async Task<OrderResponse> MakeOrderAsync(MakeOrderRequest request)
@@ -39,17 +30,17 @@ public class OrderService
         if (!validationResult.IsValid)
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
-        int? userId;
+        UserSession? userSession;
         try
         {
-            userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
-            if (userId is null)
-                return OrderResponse.Fail(OrderStatusCode.UserNotFound, "The user session wasn't found");
+            userSession = await _dbContext.UserSessions
+                .Where(us => us.UId == request.UserSessionId)
+                .FirstOrDefaultAsync();
 
-            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
+            if (userSession is null)
+                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
-            bool isOrderExists = await _orderStorage.IsOrderExists(request.UserSessionId);
-            if (isOrderExists) await CancelOrderAsync(request.UserSessionId);
+            if (userSession.OrderId is not null) await CancelOrderAsync(userSession.OrderId.Value);
         }
         catch (Exception)
         {
@@ -64,7 +55,7 @@ public class OrderService
 
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
-                .Where(c => c.UserId == userId)
+                .Where(c => c.UserId == userSession.UserId)
                 .Select(c => c.Id)
                 .FirstAsync();
 
@@ -103,15 +94,15 @@ public class OrderService
                 TotalPrice = totalPrice,
                 CreatedAt = createdAt,
                 DeletionTime = createdAt + _settings.Lifetime,
-                UserId = userId.Value,
+                UserId = userSession.UserId,
                 OrderedProducts = orderedProducts
             };
+
+            userSession.PendingOrder = order;
 
             await _dbContext.Orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
-
-            await _orderStorage.SetStateAsync(request.UserSessionId, order.Id);
 
             return OrderResponse.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
         }
@@ -134,18 +125,17 @@ public class OrderService
         if (!validationResult.IsValid)
             return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
 
-        int? orderId;
-        int? userId;
+        UserSession? userSession;
         try
         {
-            userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
-            if (userId is null)
-                return OrderResponse.Fail(OrderStatusCode.UserNotFound, "The user session wasn't found");
+            userSession = await _dbContext.UserSessions
+                .Where(us => us.UId == request.UserSessionId)
+                .Include(us => us.PendingOrder)
+                .FirstOrDefaultAsync();
+            if (userSession is null)
+                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
 
-            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
-
-            orderId = await _orderStorage.GetOrderIdAsync(request.UserSessionId);
-            if (orderId is null)
+            if (userSession.PendingOrder is null)
                 return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "Order wasn't found");
         }
         catch (Exception)
@@ -156,31 +146,25 @@ public class OrderService
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            Order? pendingOrder = await _dbContext.Orders.FirstOrDefaultAsync(o =>
-                o.Id == orderId &&
-                o.UserId == userId &&
-                o.Status == OrderStatus.Pending);
-
-            if (pendingOrder is null)
-                throw new OrderException(OrderStatusCode.OrderNotFound, "The order doesn't exist");
-
+            Order pendingOrder = userSession.PendingOrder;
+            
             pendingOrder.Status = OrderStatus.Paid;
             pendingOrder.PaidAt = DateTime.UtcNow;
+
+            userSession.PendingOrder = null;
 
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
             int? cartId = await _dbContext.Carts
                 .AsNoTracking()
-                .Where(c => c.UserId == userId)
+                .Where(c => c.UserId == userSession.UserId)
                 .Select(c => (int?)c.Id)
                 .FirstOrDefaultAsync();
 
             await _dbContext.CartItems
                 .Where(ci => ci.Cart.Id == cartId)
                 .ExecuteDeleteAsync();
-
-            await _orderStorage.DeleteStateAsync(request.UserSessionId);
 
             return OrderResponse.Success("The payment was successful");
         }
@@ -205,18 +189,16 @@ public class OrderService
 
         try
         {
-            int? userId = await _userStorage.GetUserIdAsync(request.UserSessionId);
-            if (userId is null)
-                throw new OrderException(OrderStatusCode.UserNotFound, "User session wasn't found");
+            UserSession? userSession = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(us => us.UId == request.UserSessionId)
+                .FirstOrDefaultAsync();
+            if (userSession is null)
+                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "User session wasn't found");
 
-            await _userStorage.RefreshSessionTimeAsync(request.UserSessionId);
-
-            OrderResponse response = await CancelOrderAsync(request.UserSessionId);
-            return response;
-        }
-        catch (OrderException orderException)
-        {
-            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
+            return userSession.OrderId is null
+                ? OrderResponse.Success("The order was canceled")
+                : await CancelOrderAsync(userSession.OrderId.Value);
         }
         catch (Exception)
         {
@@ -225,24 +207,8 @@ public class OrderService
     }
 
 
-    private async Task<OrderResponse> CancelOrderAsync(string userSessionId)
+    private async Task<OrderResponse> CancelOrderAsync(int orderId)
     {
-        int? orderId;
-        try
-        {
-            orderId = await _orderStorage.GetOrderIdAsync(userSessionId);
-            if (orderId is null)
-                return OrderResponse.Success("The order doesn't exist");
-        }
-        catch (OrderException orderException)
-        {
-            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
-        }
-        catch (Exception)
-        {
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
-        }
-
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
@@ -268,8 +234,6 @@ public class OrderService
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            await _orderStorage.DeleteStateAsync(userSessionId);
-
             return OrderResponse.Success("The order was canceled");
         }
         catch (OrderException orderException)
@@ -289,7 +253,10 @@ public class OrderService
     {
         try
         {
-            int? orderId = await _orderStorage.GetOrderIdAsync(userSessionId);
+            int? orderId = await _dbContext.UserSessions
+                .Where(us => us.UId == userSessionId)
+                .Select(us => us.OrderId)
+                .FirstOrDefaultAsync();
             if (orderId is null)
                 return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "The order wasn't found");
 

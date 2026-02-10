@@ -3,7 +3,6 @@ using Backend.API.Background;
 using Backend.Application.Services;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Redis;
-using Backend.DataAccess.Storages;
 using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
@@ -17,7 +16,6 @@ public static class ServiceCollectionExtensions
     {
         services
             .ConnectPostgres(config)
-            .ConnectRedis(config)
             .AddSettings(config)
             .AddApplicationServices()
             .AddApplicationControllers()
@@ -74,10 +72,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<WishlistService>();
         services.AddScoped<OrderService>();
         services.AddScoped<OrdersCleanupService>();
-
-        services.AddScoped<UserSessionStorage>();
-        services.AddScoped<OrderIndexStorage>();
-
+        
         services.AddHostedService<OrdersCleanupBackgroundService>();
 
         return services;
