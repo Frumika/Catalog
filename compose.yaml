@@ -53,8 +53,6 @@
     build:
       context: ./Infrastructure/Nginx
       dockerfile: Dockerfile
-    expose:
-      - "80"
     volumes:
       - ./Resources/ProductImages:/usr/share/nginx/static/images:ro
     networks:
