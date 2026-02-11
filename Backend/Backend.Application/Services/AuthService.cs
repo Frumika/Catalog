@@ -89,7 +89,7 @@ public class AuthService
             UserSession userSession = new()
             {
                 UId = sessionUId,
-                User = user
+                UserId = user.Id
             };
 
             _dbContext.UserSessions.Add(userSession);

@@ -70,7 +70,7 @@
       context: ./Infrastructure/Nginx
       dockerfile: Dockerfile
     ports:
-      - "5779:80"
+      - "5780:80"
     volumes:
       - ./Resources/ProductImages:/usr/share/nginx/static/images:ro
     networks:
