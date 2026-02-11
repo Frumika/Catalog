@@ -10,7 +10,7 @@ public class Product
 
     public int MakerId { get; set; }
     public int CategoryId { get; set; }
-    
+
     public Maker Maker { get; set; } = null!;
     public Category Category { get; set; } = null!;
 
@@ -18,4 +18,5 @@ public class Product
     public ICollection<OrderedProduct> OrderedProducts { get; set; } = null!;
     public ICollection<CartItem> CartItems { get; set; } = null!;
     public ICollection<WishlistItem> WishlistItems { get; set; } = null!;
+    public ICollection<Review> Reviews { get; set; } = null!;
 }

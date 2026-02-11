@@ -12,6 +12,7 @@ public class MainDbContext : DbContext
     public DbSet<UserSession> UserSessions { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<ProductImage> ProductImages { get; set; }
+    public DbSet<Review> Reviews { get; set; }
     public DbSet<Category> Categories { get; set; }
     public DbSet<Maker> Makers { get; set; }
     public DbSet<Order> Orders { get; set; }
@@ -164,6 +165,41 @@ public class MainDbContext : DbContext
 
             entity.HasIndex(pi => new { pi.ProductId, pi.Position }).IsUnique();
             entity.HasIndex(pi => pi.ProductId);
+        });
+
+        modelBuilder.Entity<Review>(entity =>
+        {
+            entity.ToTable("reviews");
+
+            entity.HasKey(r => new { r.UserId, r.ProductId });
+
+            entity.Property(r => r.UserId)
+                .HasColumnName("user_id")
+                .IsRequired();
+
+            entity.Property(r => r.ProductId)
+                .HasColumnName("product_id")
+                .IsRequired();
+
+            entity.Property(r => r.Score)
+                .HasColumnName("score")
+                .IsRequired();
+
+            entity.Property(r => r.Text)
+                .HasColumnName("text");
+
+            entity.HasOne(r => r.User)
+                .WithMany(u => u.Reviews)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(r => r.Product)
+                .WithMany(p => p.Reviews)
+                .HasForeignKey(r => r.ProductId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasIndex(r => r.UserId);
+            entity.HasIndex(r => r.ProductId);
         });
 
         modelBuilder.Entity<Category>(entity =>

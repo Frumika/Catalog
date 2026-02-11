@@ -10,4 +10,5 @@ public class User
     public Wishlist Wishlist { get; set; } = null!;
     public ICollection<Order> Orders { get; set; } = null!;
     public ICollection<UserSession> UserSessions { get; set; } = null!;
+    public ICollection<Review> Reviews { get; set; } = null!;
 }
