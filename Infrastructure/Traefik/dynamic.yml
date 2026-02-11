@@ -30,4 +30,4 @@ http:
     nginx:
       loadBalancer:
         servers:
-          - url: "http://nginx:80"  
+          - url: "http://nginx"  

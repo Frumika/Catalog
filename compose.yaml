@@ -26,7 +26,6 @@
       - "5777:5777"
     depends_on:
       - postgres
-      - redis
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://0.0.0.0:5777
@@ -47,21 +46,6 @@
       - app-network
     volumes:
       - catalog-postgres-data:/var/lib/postgresql/data
-
-  redis:
-    container_name: redis
-    image: redis:7
-    restart: always
-    ports:
-      - "5779:6379"
-    networks:
-      - app-network
-    healthcheck:
-      test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      retries: 5
-      start_period: 10s
-      timeout: 5s
   
   nginx:
     container_name: nginx
@@ -69,8 +53,8 @@
     build:
       context: ./Infrastructure/Nginx
       dockerfile: Dockerfile
-    ports:
-      - "5780:80"
+    expose:
+      - "80"
     volumes:
       - ./Resources/ProductImages:/usr/share/nginx/static/images:ro
     networks:
