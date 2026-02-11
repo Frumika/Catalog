@@ -59,15 +59,16 @@ public class OrderService
                 .Select(c => c.Id)
                 .FirstAsync();
 
-            var cartItems = await _dbContext.CartItems
+            List<CartItem> cartItems = await _dbContext.CartItems
                 .Where(ci => ci.CartId == cartId)
+                .OrderBy(ci => ci.AddedAt)
                 .Include(ci => ci.Product)
                 .ToListAsync();
             if (cartItems.Count == 0)
                 throw new OrderException(OrderStatusCode.CartNotFound, "The cart is empty");
 
             decimal totalPrice = 0m;
-            foreach (var cartItem in cartItems)
+            foreach (CartItem cartItem in cartItems)
             {
                 Product product = cartItem.Product;
 
@@ -147,7 +148,7 @@ public class OrderService
         try
         {
             Order pendingOrder = userSession.PendingOrder;
-            
+
             pendingOrder.Status = OrderStatus.Paid;
             pendingOrder.PaidAt = DateTime.UtcNow;
 
