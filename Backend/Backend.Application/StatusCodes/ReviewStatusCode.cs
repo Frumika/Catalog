@@ -5,6 +5,7 @@ public enum ReviewStatusCode
     Success,
     UserNotFound,
     ProductNotFound,
+    ReviewNotFound,
     BadRequest,
     UnknownError
 }
