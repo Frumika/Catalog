@@ -7,6 +7,7 @@ public class Review
 
     public int Score { get; set; }
     public string? Text { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public User User { get; set; } = null!;
     public Product Product { get; set; } = null!;

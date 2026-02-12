@@ -188,6 +188,10 @@ public class MainDbContext : DbContext
             entity.Property(r => r.Text)
                 .HasColumnName("text");
 
+            entity.Property(r => r.CreatedAt)
+                .HasColumnName("created_at")
+                .IsRequired();
+
             entity.HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(r => r.UserId)
