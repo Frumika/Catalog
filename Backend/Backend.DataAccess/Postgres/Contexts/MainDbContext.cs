@@ -171,7 +171,11 @@ public class MainDbContext : DbContext
         {
             entity.ToTable("reviews");
 
-            entity.HasKey(r => new { r.UserId, r.ProductId });
+            entity.HasKey(r => r.Id);
+            entity.Property(r => r.Id)
+                .HasColumnName("id")
+                .ValueGeneratedOnAdd()
+                .IsRequired();
 
             entity.Property(r => r.UserId)
                 .HasColumnName("user_id")
@@ -192,6 +196,10 @@ public class MainDbContext : DbContext
                 .HasColumnName("created_at")
                 .IsRequired();
 
+            entity.Property(r => r.UpdatedAt)
+                .HasColumnName("updated_at")
+                .HasDefaultValue(null);
+
             entity.HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
                 .HasForeignKey(r => r.UserId)
@@ -204,6 +212,7 @@ public class MainDbContext : DbContext
 
             entity.HasIndex(r => r.UserId);
             entity.HasIndex(r => r.ProductId);
+            entity.HasIndex(r => new { r.UserId, r.ProductId }).IsUnique();
         });
 
         modelBuilder.Entity<Category>(entity =>
