@@ -120,4 +120,31 @@ public class ReviewService
             return ReviewResponse.Fail(ReviewStatusCode.UnknownError, "Internal server error");
         }
     }
+
+    public async Task<ReviewResponse> DeleteReviewAsync(DeleteRequest request)
+    {
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return ReviewResponse.Fail(ReviewStatusCode.BadRequest, result.Message);
+
+        try
+        {
+            int? userId = await _dbContext.UserSessions
+                .Where(us => us.UId == request.UserSessionId)
+                .Select(us => (int?)us.UserId)
+                .FirstOrDefaultAsync();
+            if (userId is null)
+                return ReviewResponse.Fail(ReviewStatusCode.UserNotFound, "The user wasn't found");
+
+            await _dbContext.Reviews
+                .Where(r => r.UserId == userId && r.Id == request.ReviewId)
+                .ExecuteDeleteAsync();
+
+            return ReviewResponse.Success("The review was deleted");
+        }
+        catch (Exception)
+        {
+            return ReviewResponse.Fail(ReviewStatusCode.UnknownError, "Internal server error");
+        }
+    }
 }
