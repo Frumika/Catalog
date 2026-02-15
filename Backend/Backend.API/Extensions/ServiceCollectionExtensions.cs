@@ -5,6 +5,7 @@ using Backend.DataAccess.Postgres.Contexts;
 using Backend.DataAccess.Redis;
 using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi;
 using StackExchange.Redis;
 
 
@@ -73,7 +74,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<OrderService>();
         services.AddScoped<OrdersCleanupService>();
         services.AddScoped<ReviewService>();
-        
+
         services.AddHostedService<OrdersCleanupBackgroundService>();
 
         return services;
@@ -91,7 +92,15 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection AddSwagger(this IServiceCollection services)
     {
-        services.AddSwaggerGen(options => { options.CustomSchemaIds(type => type.FullName); });
+        services.AddSwaggerGen(options =>
+        {
+            options.CustomSchemaIds(type => type.FullName);
+            options.AddServer(new OpenApiServer
+            {
+                Url = "http://localhost:5700",
+                Description = "Reverse proxy server"
+            });
+        });
         return services;
     }
 }
