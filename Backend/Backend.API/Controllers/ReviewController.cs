@@ -38,6 +38,13 @@ public class ReviewController : ControllerBase
         var response = await _reviewService.DeleteReviewAsync(request);
         return ToHttpResponse(response);
     }
+    
+    [HttpPost("get/list")]
+    public async Task<IActionResult> GetReviewList(GetListRequest request)
+    {
+        var response = await _reviewService.GetReviewListAsync(request);
+        return ToHttpResponse(response);
+    }
 
     private IActionResult ToHttpResponse(ReviewResponse response)
     {
@@ -48,6 +55,8 @@ public class ReviewController : ControllerBase
             ReviewStatusCode.UserNotFound => NotFound(response),
             ReviewStatusCode.ProductNotFound => NotFound(response),
             ReviewStatusCode.ReviewNotFound => NotFound(response),
+            
+            ReviewStatusCode.ReviewAlreadyExist => Conflict(response),
 
             ReviewStatusCode.BadRequest => BadRequest(response),
 

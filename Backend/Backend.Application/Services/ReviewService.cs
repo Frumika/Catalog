@@ -40,6 +40,11 @@ public class ReviewService
             if (!isProductWasOrdered)
                 return ReviewResponse.Fail(ReviewStatusCode.ProductNotFound, "The product wasn't purchased");
 
+            bool isReviewAlreadyExist = await _dbContext.Reviews
+                .AnyAsync(r => r.ProductId == request.ProductId && r.UserId == userId);
+            if (isReviewAlreadyExist)
+                return ReviewResponse.Fail(ReviewStatusCode.ReviewNotFound, "The review was already existed");
+
             Review review = new()
             {
                 UserId = (int)userId,
@@ -141,6 +146,40 @@ public class ReviewService
                 .ExecuteDeleteAsync();
 
             return ReviewResponse.Success("The review was deleted");
+        }
+        catch (Exception)
+        {
+            return ReviewResponse.Fail(ReviewStatusCode.UnknownError, "Internal server error");
+        }
+    }
+
+    public async Task<ReviewResponse> GetReviewListAsync(GetListRequest request)
+    {
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return ReviewResponse.Fail(ReviewStatusCode.BadRequest, result.Message);
+
+        try
+        {
+            int? userId = await _dbContext.UserSessions
+                .Where(us => us.UId == request.UserSessionId)
+                .Select(us => (int?)us.UserId)
+                .FirstOrDefaultAsync();
+            
+            int pageNumber = request.PageNumber - 1;
+
+            List<ReviewDto> reviews = await _dbContext.Reviews
+                .AsNoTracking()
+                .Where(r => r.ProductId == request.ProductId)
+                .OrderByDescending(r => r.UserId == userId)
+                .ThenByDescending(r => r.CreatedAt)
+                .Skip(pageNumber * request.PageSize)
+                .Take(request.PageSize)
+                .Select(r => new ReviewDto(r))
+                .ToListAsync();
+
+            int totalCount = await _dbContext.Reviews.CountAsync(r => r.ProductId == request.ProductId);
+            return ReviewResponse.Success(new ReviewListDto { Reviews = reviews, TotalCount = totalCount });
         }
         catch (Exception)
         {

@@ -7,4 +7,17 @@ public class ReviewDto
     public string? Text { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+
+    public ReviewDto()
+    {
+    }
+
+    public ReviewDto(Domain.Models.Review review)
+    {
+        Id = review.Id;
+        Score = review.Score;
+        Text = review.Text;
+        CreatedAt = review.CreatedAt;
+        UpdatedAt = review.UpdatedAt;
+    }
 }
