@@ -2,11 +2,9 @@
 using Backend.API.Background;
 using Backend.Application.Services;
 using Backend.DataAccess.Postgres.Contexts;
-using Backend.DataAccess.Redis;
 using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
-using StackExchange.Redis;
 
 
 namespace Backend.API.Extensions;
@@ -30,15 +28,6 @@ public static class ServiceCollectionExtensions
     {
         string? connectionString = config["Databases:Postgres:Main"];
         services.AddDbContext<MainDbContext>(options => options.UseNpgsql(connectionString));
-        return services;
-    }
-
-    private static IServiceCollection ConnectRedis(this IServiceCollection services, IConfiguration config)
-    {
-        string connectionString = config["Databases:Redis:Main"] ?? string.Empty;
-        IConnectionMultiplexer connection = ConnectionMultiplexer.Connect(connectionString);
-
-        services.AddSingleton(new RedisDbProvider(connection));
         return services;
     }
 
