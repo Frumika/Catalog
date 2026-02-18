@@ -31,9 +31,11 @@ public class CatalogService
                 .Where(p => p.Id == id)
                 .Select(p => new ProductExtendedDto
                 {
-                    Id = p.Id,
+                    ProductId = p.Id,
                     ProductName = p.Name,
                     Price = p.Price,
+                    ReviewCount = p.Reviews.Count,
+                    AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
                     ProductDescription = p.Description,
                     MakerName = p.Maker.Name,
                     MakerDescription = p.Maker.Description,
@@ -84,9 +86,11 @@ public class CatalogService
                 .Take(request.PageSize)
                 .Select(p => new ProductDto
                 {
-                    Id = p.Id,
-                    Name = p.Name,
+                    ProductId = p.Id,
+                    ProductName = p.Name,
                     Price = p.Price,
+                    ReviewCount = p.Reviews.Count,
+                    AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
                     ImageUrl = p.ProductImages
                         .OrderBy(pi => pi.Position)
                         .Select(pi => pi.Path)
