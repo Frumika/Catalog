@@ -24,8 +24,8 @@ http:
           interval: 5s
           timeout: 2s
         servers:
-          - url: "http://api-server:5777"
-          - url: "http://host.docker.internal:5777"
+          - url: "http://api-server:8001"
+          - url: "http://host.docker.internal:8001"
     
     nginx:
       loadBalancer:

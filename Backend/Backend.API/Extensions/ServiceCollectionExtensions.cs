@@ -87,7 +87,7 @@ public static class ServiceCollectionExtensions
             options.AddServer(
                 new OpenApiServer
                 {
-                    Url = "http://localhost:8001",
+                    Url = "http://localhost:8000",
                     Description = "Reverse proxy server"
                 }
             );
