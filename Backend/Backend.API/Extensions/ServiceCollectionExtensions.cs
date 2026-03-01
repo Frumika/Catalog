@@ -84,11 +84,13 @@ public static class ServiceCollectionExtensions
         services.AddSwaggerGen(options =>
         {
             options.CustomSchemaIds(type => type.FullName);
-            options.AddServer(new OpenApiServer
-            {
-                Url = "http://localhost:5700",
-                Description = "Reverse proxy server"
-            });
+            options.AddServer(
+                new OpenApiServer
+                {
+                    Url = "http://localhost:8001",
+                    Description = "Reverse proxy server"
+                }
+            );
         });
         return services;
     }

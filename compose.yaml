@@ -6,7 +6,7 @@
     command:
       - "--configFile=/etc/traefik/static.yml"
     ports:
-      - "5700:80"
+      - "8000:80"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -23,7 +23,7 @@
       context: ./Backend/
       dockerfile: Dockerfile
     ports:
-      - "5777:5777"
+      - "8001:8001"
     depends_on:
       - postgres
     environment:
@@ -41,7 +41,7 @@
       POSTGRES_PASSWORD: 1234
       POSTGRES_DB: main_db
     ports:
-      - "5778:5432"
+      - "8002:5432"
     networks:
       - app-network
     volumes:
