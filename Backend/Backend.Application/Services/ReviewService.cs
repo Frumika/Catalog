@@ -165,7 +165,7 @@ public class ReviewService
                 .Where(us => us.UId == request.UserSessionId)
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
-            
+
             int pageNumber = request.PageNumber - 1;
 
             List<ReviewDto> reviews = await _dbContext.Reviews
@@ -175,7 +175,14 @@ public class ReviewService
                 .ThenByDescending(r => r.CreatedAt)
                 .Skip(pageNumber * request.PageSize)
                 .Take(request.PageSize)
-                .Select(r => new ReviewDto(r))
+                .Select(r => new ReviewDto
+                {
+                    Score = r.Score,
+                    Text = r.Text,
+                    CreatedAt = r.CreatedAt,
+                    UpdatedAt = r.UpdatedAt,
+                    UserLogin = r.User.Login
+                })
                 .ToListAsync();
 
             int totalCount = await _dbContext.Reviews.CountAsync(r => r.ProductId == request.ProductId);
