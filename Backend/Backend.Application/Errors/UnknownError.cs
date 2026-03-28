@@ -2,5 +2,5 @@
 
 public record UnknownError : Error
 {
-    public override string ToString() => nameof(UnknownError);
+    public override string Code => "unknown_error";
 }

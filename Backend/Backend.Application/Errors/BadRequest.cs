@@ -2,15 +2,15 @@
 
 public record BadRequest : Error
 {
-    public override string ToString() => nameof(BadRequest);
+    public override string Code => "bad_request";
 }
 
 public record IncorrectQuantity : BadRequest
 {
-    public override string ToString() => nameof(IncorrectQuantity);
+    public override string Code => "incorrect_quantity";
 }
 
 public record IncorrectCategory : BadRequest
 {
-    public override string ToString() => nameof(IncorrectCategory);
+    public override string Code => "incorrect_category";
 }

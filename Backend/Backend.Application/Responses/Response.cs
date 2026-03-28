@@ -8,7 +8,7 @@ public class Response
 {
     public bool IsSuccess => Error is null;
     public string? Message { get; set; }
-    public string? Code => Error?.ToString();
+    public string? Code => Error?.Code;
     public object? Data { get; init; }
     [JsonIgnore] public Error? Error { get; set; }
 

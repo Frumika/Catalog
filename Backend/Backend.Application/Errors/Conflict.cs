@@ -4,15 +4,15 @@ public abstract record Conflict : Error;
 
 public record UserAlreadyExists : Conflict
 {
-    public override string ToString() => nameof(UserAlreadyExists);
+    public override string Code => "user_already_exists";
 }
 
 public record ReviewAlreadyExists : Conflict
 {
-    public override string ToString() => nameof(ReviewAlreadyExists);
+    public override string Code => "review_already_exists";
 }
 
 public record InvalidOrderStatus : Conflict
 {
-    public override string ToString() => nameof(InvalidOrderStatus);
+    public override string Code => "invalid_order_status";
 }
