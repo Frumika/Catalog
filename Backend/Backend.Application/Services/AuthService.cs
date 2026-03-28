@@ -1,9 +1,10 @@
-﻿using Backend.Application.DTO.Requests.Auth;
-using Backend.Application.DTO.Requests.Base;
-using Backend.Application.DTO.Responses;
+﻿using Backend.Application.DTO.Auth;
 using Backend.Application.Errors;
 using Backend.Application.Exceptions;
 using Backend.Application.Logic;
+using Backend.Application.Requests.Auth;
+using Backend.Application.Requests.Base;
+using Backend.Application.Responses;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -96,7 +97,7 @@ public class AuthService
             _dbContext.UserSessions.Add(userSession);
             await _dbContext.SaveChangesAsync();
 
-            return Response.Success(new DTO.Entities.Auth.UserSessionDto
+            return Response.Success(new UserSessionDto
             {
                 SessionId = sessionUId,
                 Login = user.Login

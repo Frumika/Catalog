@@ -1,0 +1,11 @@
+﻿namespace Backend.Application.DTO.Review;
+
+public class ReviewDto
+{
+    public int Id { get; set; }
+    public int Score { get; set; }
+    public string? Text { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? UpdatedAt { get; set; }
+    public string UserLogin { get; set; } = string.Empty;
+}

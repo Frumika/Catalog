@@ -1,12 +1,12 @@
-﻿using Backend.Application.DTO.Entities.Cart;
-using Backend.Application.DTO.Requests.Base;
-using Backend.Application.DTO.Requests.Cart;
-using Backend.Application.DTO.Responses;
+﻿using Backend.Application.DTO.Cart;
 using Backend.Application.Errors;
+using Backend.Application.Requests.Base;
+using Backend.Application.Requests.Cart;
+using Backend.Application.Responses;
 using Backend.DataAccess.Postgres.Contexts;
 using Microsoft.EntityFrameworkCore;
 using CartItem = Backend.Domain.Models.CartItem;
-using ResponseCartItem = Backend.Application.DTO.Entities.Cart.CartItem;
+using ResponseCartItem = Backend.Application.DTO.Cart.CartItem;
 
 
 namespace Backend.Application.Services;

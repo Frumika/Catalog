@@ -1,8 +1,8 @@
-﻿using Backend.Application.DTO.Entities.Catalog;
-using Backend.Application.DTO.Requests.Base;
-using Backend.Application.DTO.Requests.Catalog;
-using Backend.Application.DTO.Responses;
+﻿using Backend.Application.DTO.Catalog;
 using Backend.Application.Errors;
+using Backend.Application.Requests.Base;
+using Backend.Application.Requests.Catalog;
+using Backend.Application.Responses;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;

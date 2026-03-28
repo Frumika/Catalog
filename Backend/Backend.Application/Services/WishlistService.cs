@@ -1,11 +1,11 @@
-﻿using Backend.Application.DTO.Entities.Wishlist;
-using Backend.Application.DTO.Requests.Base;
-using Backend.Application.DTO.Requests.Wishlist;
-using Backend.Application.DTO.Responses;
+﻿using Backend.Application.DTO.Wishlist;
 using Backend.Application.Errors;
+using Backend.Application.Requests.Base;
+using Backend.Application.Requests.Wishlist;
+using Backend.Application.Responses;
 using Backend.DataAccess.Postgres.Contexts;
 using Microsoft.EntityFrameworkCore;
-using ResponseWishlistItem = Backend.Application.DTO.Entities.Wishlist.WishlistItem;
+using ResponseWishlistItem = Backend.Application.DTO.Wishlist.WishlistItem;
 using WishlistItem = Backend.Domain.Models.WishlistItem;
 
 

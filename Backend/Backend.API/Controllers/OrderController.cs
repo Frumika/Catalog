@@ -1,5 +1,5 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.DTO.Requests.Order;
+using Backend.Application.Requests.Order;
 using Backend.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 

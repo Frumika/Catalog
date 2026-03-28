@@ -1,5 +1,5 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.DTO.Requests.Catalog;
+using Backend.Application.Requests.Catalog;
 using Backend.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 

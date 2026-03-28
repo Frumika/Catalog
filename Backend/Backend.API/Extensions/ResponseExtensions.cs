@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using Backend.Application.DTO.Responses;
 using Backend.Application.Errors;
+using Backend.Application.Responses;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.API.Extensions;

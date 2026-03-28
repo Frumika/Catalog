@@ -1,5 +1,5 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.DTO.Requests.Review;
+using Backend.Application.Requests.Review;
 using Backend.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
