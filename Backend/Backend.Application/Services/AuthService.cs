@@ -1,8 +1,9 @@
 ﻿using Backend.Application.DTO.Requests.Auth;
+using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Responses;
+using Backend.Application.Errors;
 using Backend.Application.Exceptions;
 using Backend.Application.Logic;
-using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +21,11 @@ public class AuthService
         _dbContext = dbContext;
     }
 
-    public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
+    public async Task<Response> RegisterAsync(RegisterRequest request)
     {
-        var validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid) 
+            return Response.Fail(new BadRequest());
 
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
@@ -34,7 +35,7 @@ public class AuthService
                 .AnyAsync(user => user.Login == request.Login);
 
             if (isUserExist)
-                throw new AuthException(AuthStatusCode.UserAlreadyExists, "User already exists");
+                throw new ServiceException(new UserAlreadyExists(), "User already exists");
 
             User user = new()
             {
@@ -52,25 +53,25 @@ public class AuthService
             await transaction.CommitAsync();
             await _dbContext.SaveChangesAsync();
 
-            return AuthResponse.Success("User registered");
+            return Response.Success("User registered");
         }
-        catch (AuthException e)
+        catch (ServiceException e)
         {
             await transaction.RollbackAsync();
-            return AuthResponse.Fail(e.StatusCode, e.Message);
+            return Response.Fail(e.Error, e.Message);
         }
         catch (Exception)
         {
             await transaction.RollbackAsync();
-            return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<AuthResponse> LoginAsync(LoginRequest request)
+    public async Task<Response> LoginAsync(LoginRequest request)
     {
-        var validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -79,10 +80,10 @@ public class AuthService
                 .FirstOrDefaultAsync(u => u.Login == request.Login);
 
             if (user is null)
-                return AuthResponse.Fail(AuthStatusCode.UserNotFound, "The user wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
-                return AuthResponse.Fail(AuthStatusCode.InvalidPassword, "Password is incorrect");
+                return Response.Fail(new InvalidPassword(), "Password is incorrect");
 
             string sessionUId = Guid.NewGuid().ToString();
 
@@ -95,7 +96,7 @@ public class AuthService
             _dbContext.UserSessions.Add(userSession);
             await _dbContext.SaveChangesAsync();
 
-            return AuthResponse.Success(new DTO.Entities.Auth.UserSessionDto
+            return Response.Success(new DTO.Entities.Auth.UserSessionDto
             {
                 SessionId = sessionUId,
                 Login = user.Login
@@ -103,15 +104,15 @@ public class AuthService
         }
         catch (Exception)
         {
-            return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<AuthResponse> LogoutSessionAsync(LogoutRequest request)
+    public async Task<Response> LogoutSessionAsync(LogoutRequest request)
     {
-        var validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -119,19 +120,19 @@ public class AuthService
                 .Where(us => us.UId == request.SessionId)
                 .ExecuteDeleteAsync();
 
-            return AuthResponse.Success("The user has been logged out");
+            return Response.Success("The user has been logged out");
         }
         catch (Exception)
         {
-            return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<AuthResponse> LogoutAllSessionsAsync(LogoutRequest request)
+    public async Task<Response> LogoutAllSessionsAsync(LogoutRequest request)
     {
-        var validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return AuthResponse.Fail(AuthStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -142,17 +143,17 @@ public class AuthService
                 .FirstOrDefaultAsync();
 
             if (userId is null)
-                return AuthResponse.Fail(AuthStatusCode.UserNotFound, "User not found");
+                return Response.Fail(new UserNotFound(), "User not found");
 
             await _dbContext.UserSessions
                 .Where(us => us.UserId == userId)
                 .ExecuteDeleteAsync();
 
-            return AuthResponse.Success("The user has been logged out of all sessions");
+            return Response.Success("The user has been logged out of all sessions");
         }
         catch (Exception)
         {
-            return AuthResponse.Fail(AuthStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 }

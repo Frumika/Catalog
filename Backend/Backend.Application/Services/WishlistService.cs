@@ -2,7 +2,7 @@
 using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Wishlist;
 using Backend.Application.DTO.Responses;
-using Backend.Application.StatusCodes;
+using Backend.Application.Errors;
 using Backend.DataAccess.Postgres.Contexts;
 using Microsoft.EntityFrameworkCore;
 using ResponseWishlistItem = Backend.Application.DTO.Entities.Wishlist.WishlistItem;
@@ -20,11 +20,11 @@ public class WishlistService
         _dbContext = dbContext;
     }
 
-    public async Task<WishlistResponse> GetWishlistAsync(GetWishlistRequest request)
+    public async Task<Response> GetWishlistAsync(GetWishlistRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return WishlistResponse.Fail(WishlistStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -34,7 +34,7 @@ public class WishlistService
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return WishlistResponse.Fail(WishlistStatusCode.UserNotFound, "The user session wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             int wishlistId = await _dbContext.Wishlists
                 .AsNoTracking()
@@ -54,19 +54,19 @@ public class WishlistService
                 })
                 .ToListAsync();
 
-            return WishlistResponse.Success(new WishlistDto { WishlistItems = wishlistItems });
+            return Response.Success(new WishlistDto { WishlistItems = wishlistItems });
         }
         catch (Exception)
         {
-            return WishlistResponse.Fail(WishlistStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
     
-    public async Task<WishlistResponse> AddProductAsync(AddProductRequest request)
+    public async Task<Response> AddProductAsync(AddProductRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return WishlistResponse.Fail(WishlistStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -76,7 +76,7 @@ public class WishlistService
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return WishlistResponse.Fail(WishlistStatusCode.UserNotFound, "The user session wasn't found");
+                return Response.Fail(new UserNotFound(), "The user session wasn't found");
 
             int wishlistId = await _dbContext.Wishlists
                 .AsNoTracking()
@@ -90,7 +90,7 @@ public class WishlistService
                 .Select(p => (int?)p.Id)
                 .FirstOrDefaultAsync();
             if (productId is null)
-                return WishlistResponse.Fail(WishlistStatusCode.ProductNotFound, "The product wasn't found");
+                return Response.Fail(new ProductNotFound(), "The product wasn't found");
 
             bool isCartItemExists = await _dbContext.WishlistItems
                 .AnyAsync(wi => wi.WishlistId == wishlistId && wi.ProductId == request.ProductId);
@@ -107,19 +107,19 @@ public class WishlistService
                 await _dbContext.SaveChangesAsync();
             }
 
-            return WishlistResponse.Success("The product was added");
+            return Response.Success("The product was added");
         }
         catch (Exception)
         {
-            return WishlistResponse.Fail(WishlistStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
     
-    public async Task<WishlistResponse> RemoveProductAsync(RemoveProductRequest request)
+    public async Task<Response> RemoveProductAsync(RemoveProductRequest request)
     {
         ValidationResult validationResult = request.Validate();
         if (!validationResult.IsValid)
-            return WishlistResponse.Fail(WishlistStatusCode.BadRequest, validationResult.Message);
+            return Response.Fail(new BadRequest(), validationResult.Message);
 
         try
         {
@@ -129,7 +129,7 @@ public class WishlistService
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return WishlistResponse.Fail(WishlistStatusCode.UserNotFound, "User session wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             int wishlistId = await _dbContext.Carts
                 .AsNoTracking()
@@ -145,11 +145,11 @@ public class WishlistService
                 await _dbContext.SaveChangesAsync();
             }
 
-            return WishlistResponse.Success("The product was deleted");
+            return Response.Success("The product was deleted");
         }
         catch (Exception)
         {
-            return WishlistResponse.Fail(WishlistStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 }

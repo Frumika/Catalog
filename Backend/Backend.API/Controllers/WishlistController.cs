@@ -1,7 +1,6 @@
-﻿using Backend.Application.DTO.Requests.Wishlist;
-using Backend.Application.DTO.Responses;
+﻿using Backend.API.Extensions;
+using Backend.Application.DTO.Requests.Wishlist;
 using Backend.Application.Services;
-using Backend.Application.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -22,37 +21,20 @@ public class WishlistController : ControllerBase
     public async Task<IActionResult> GetWishlist([FromBody] GetWishlistRequest request)
     {
         var response = await _wishlistService.GetWishlistAsync(request);
-        return ToHttpResponse(response);
+        return response.ToHttpResponse();
     }
 
     [HttpPost("product/add")]
     public async Task<IActionResult> AddProduct([FromBody] AddProductRequest request)
     {
         var response = await _wishlistService.AddProductAsync(request);
-        return ToHttpResponse(response);
+        return response.ToHttpResponse();
     }
 
     [HttpDelete("product/remove")]
     public async Task<IActionResult> RemoveProduct([FromBody] RemoveProductRequest request)
     {
         var response = await _wishlistService.RemoveProductAsync(request);
-        return ToHttpResponse(response);
-    }
-
-    private IActionResult ToHttpResponse(WishlistResponse response)
-    {
-        return response.Code switch
-        {
-            WishlistStatusCode.Success => Ok(response),
-            
-            WishlistStatusCode.UserNotFound => NotFound(response),
-            WishlistStatusCode.ProductNotFound => NotFound(response),
-
-            WishlistStatusCode.BadRequest => BadRequest(response),
-
-            WishlistStatusCode.UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
-
-            _ => BadRequest(response)
-        };
+        return response.ToHttpResponse();
     }
 }

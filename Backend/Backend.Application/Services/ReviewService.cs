@@ -2,7 +2,7 @@
 using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Review;
 using Backend.Application.DTO.Responses;
-using Backend.Application.StatusCodes;
+using Backend.Application.Errors;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
@@ -20,11 +20,11 @@ public class ReviewService
     }
 
 
-    public async Task<ReviewResponse> LeaveReviewAsync(LeaveRequest request)
+    public async Task<Response> LeaveReviewAsync(LeaveRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
-            return ReviewResponse.Fail(ReviewStatusCode.BadRequest, result.Message);
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -33,17 +33,17 @@ public class ReviewService
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return ReviewResponse.Fail(ReviewStatusCode.UserNotFound, "The user wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             bool isProductWasOrdered = await _dbContext.OrderedProducts
                 .AnyAsync(op => op.ProductId == request.ProductId && op.Order.UserId == userId);
             if (!isProductWasOrdered)
-                return ReviewResponse.Fail(ReviewStatusCode.ProductNotFound, "The product wasn't purchased");
+                return Response.Fail(new ProductNotFound(), "The product wasn't purchased");
 
             bool isReviewAlreadyExist = await _dbContext.Reviews
                 .AnyAsync(r => r.ProductId == request.ProductId && r.UserId == userId);
             if (isReviewAlreadyExist)
-                return ReviewResponse.Fail(ReviewStatusCode.ReviewNotFound, "The review was already existed");
+                return Response.Fail(new ReviewAlreadyExists(), "The review was already existed");
 
             Review review = new()
             {
@@ -57,26 +57,28 @@ public class ReviewService
             _dbContext.Add(review);
             await _dbContext.SaveChangesAsync();
 
-            return ReviewResponse.Success(new ReviewDto
-            {
-                Id = review.Id,
-                Score = review.Score,
-                Text = review.Text,
-                CreatedAt = review.CreatedAt,
-                UpdatedAt = review.UpdatedAt
-            });
+            return Response.Success(
+                new ReviewDto
+                {
+                    Id = review.Id,
+                    Score = review.Score,
+                    Text = review.Text,
+                    CreatedAt = review.CreatedAt,
+                    UpdatedAt = review.UpdatedAt
+                }
+            );
         }
         catch (Exception)
         {
-            return ReviewResponse.Fail(ReviewStatusCode.UnknownError, "Interval server error");
+            return Response.Fail(new UnknownError(), "Interval server error");
         }
     }
 
-    public async Task<ReviewResponse> UpdateReviewAsync(UpdateRequest request)
+    public async Task<Response> UpdateReviewAsync(UpdateRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
-            return ReviewResponse.Fail(ReviewStatusCode.BadRequest, result.Message);
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -85,12 +87,12 @@ public class ReviewService
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return ReviewResponse.Fail(ReviewStatusCode.UserNotFound, "The user wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             Review? review = await _dbContext.Reviews
                 .FirstOrDefaultAsync(r => r.Id == request.ReviewId && r.UserId == userId);
             if (review is null)
-                return ReviewResponse.Fail(ReviewStatusCode.ReviewNotFound, "The review wasn't found");
+                return Response.Fail(new ReviewNotFound(), "The review wasn't found");
 
             bool isChanged = false;
             if (review.Score != request.Score)
@@ -111,26 +113,28 @@ public class ReviewService
                 await _dbContext.SaveChangesAsync();
             }
 
-            return ReviewResponse.Success(new ReviewDto
-            {
-                Id = review.Id,
-                Score = review.Score,
-                Text = review.Text,
-                CreatedAt = review.CreatedAt,
-                UpdatedAt = review.UpdatedAt
-            });
+            return Response.Success(
+                new ReviewDto
+                {
+                    Id = review.Id,
+                    Score = review.Score,
+                    Text = review.Text,
+                    CreatedAt = review.CreatedAt,
+                    UpdatedAt = review.UpdatedAt
+                }
+            );
         }
         catch (Exception)
         {
-            return ReviewResponse.Fail(ReviewStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<ReviewResponse> DeleteReviewAsync(DeleteRequest request)
+    public async Task<Response> DeleteReviewAsync(DeleteRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
-            return ReviewResponse.Fail(ReviewStatusCode.BadRequest, result.Message);
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -139,25 +143,25 @@ public class ReviewService
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return ReviewResponse.Fail(ReviewStatusCode.UserNotFound, "The user wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             await _dbContext.Reviews
                 .Where(r => r.UserId == userId && r.Id == request.ReviewId)
                 .ExecuteDeleteAsync();
 
-            return ReviewResponse.Success("The review was deleted");
+            return Response.Success("The review was deleted");
         }
         catch (Exception)
         {
-            return ReviewResponse.Fail(ReviewStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<ReviewResponse> GetReviewListAsync(GetListRequest request)
+    public async Task<Response> GetReviewListAsync(GetListRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
-            return ReviewResponse.Fail(ReviewStatusCode.BadRequest, result.Message);
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -186,11 +190,11 @@ public class ReviewService
                 .ToListAsync();
 
             int totalCount = await _dbContext.Reviews.CountAsync(r => r.ProductId == request.ProductId);
-            return ReviewResponse.Success(new ReviewListDto { Reviews = reviews, TotalCount = totalCount });
+            return Response.Success(new ReviewListDto { Reviews = reviews, TotalCount = totalCount });
         }
         catch (Exception)
         {
-            return ReviewResponse.Fail(ReviewStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 }

@@ -2,7 +2,7 @@
 using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Cart;
 using Backend.Application.DTO.Responses;
-using Backend.Application.StatusCodes;
+using Backend.Application.Errors;
 using Backend.DataAccess.Postgres.Contexts;
 using Microsoft.EntityFrameworkCore;
 using CartItem = Backend.Domain.Models.CartItem;
@@ -20,11 +20,11 @@ public class CartService
         _dbContext = dbContext;
     }
 
-    public async Task<CartResponse> GetCartAsync(GetCartRequest request)
+    public async Task<Response> GetCartAsync(GetCartRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -34,7 +34,7 @@ public class CartService
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return CartResponse.Fail(CartStatusCode.UserNotFound, "The user session wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
@@ -57,19 +57,19 @@ public class CartService
 
             decimal totalPrice = cartItems.Sum(c => c.TotalPrice);
 
-            return CartResponse.Success(new CartDto { CartItems = cartItems, TotalPrice = totalPrice });
+            return Response.Success(new CartDto { CartItems = cartItems, TotalPrice = totalPrice });
         }
         catch (Exception)
         {
-            return CartResponse.Fail(CartStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<CartResponse> AddProductAsync(AddProductRequest request)
+    public async Task<Response> AddProductAsync(AddProductRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -79,7 +79,7 @@ public class CartService
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return CartResponse.Fail(CartStatusCode.UserNotFound, "The user session wasn't found");
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
 
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
@@ -93,7 +93,7 @@ public class CartService
                 .Select(p => (int?)p.Id)
                 .FirstOrDefaultAsync();
             if (productId is null)
-                return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product wasn't found");
+                return Response.Fail(new ProductNotFound(), "The product wasn't found");
 
             bool isCartItemExists = await _dbContext.CartItems
                 .AnyAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
@@ -111,19 +111,19 @@ public class CartService
                 await _dbContext.SaveChangesAsync();
             }
 
-            return CartResponse.Success("The product was added");
+            return Response.Success("The product was added");
         }
         catch (Exception)
         {
-            return CartResponse.Fail(CartStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<CartResponse> UpdateProductQuantityAsync(UpdateProductQuantityRequest request)
+    public async Task<Response> UpdateProductQuantityAsync(UpdateProductQuantityRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         if (request.Quantity == 0) return await RemoveProductAsync(new RemoveProductRequest(request));
 
@@ -133,7 +133,7 @@ public class CartService
             .Select(ui => (int?)ui.UserId)
             .FirstOrDefaultAsync();
         if (userId is null)
-            return CartResponse.Fail(CartStatusCode.UserNotFound, "The user session wasn't found");
+            return Response.Fail(new UserNotFound(), "The user wasn't found");
 
         int cartId = await _dbContext.Carts
             .AsNoTracking()
@@ -144,7 +144,7 @@ public class CartService
         CartItem? cartItem = await _dbContext.CartItems
             .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
         if (cartItem is null)
-            return CartResponse.Fail(CartStatusCode.ProductNotFound, "The product in the cart wasn't found");
+            return Response.Fail(new ProductNotFound(), "The product in the cart wasn't found");
 
         if (cartItem.Quantity != request.Quantity)
         {
@@ -152,14 +152,14 @@ public class CartService
             await _dbContext.SaveChangesAsync();
         }
 
-        return CartResponse.Success("Product quantity was updated");
+        return Response.Success("Product quantity was updated");
     }
 
-    public async Task<CartResponse> RemoveProductAsync(RemoveProductRequest request)
+    public async Task<Response> RemoveProductAsync(RemoveProductRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -169,7 +169,7 @@ public class CartService
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return CartResponse.Fail(CartStatusCode.UserNotFound, "User session wasn't found");
+                return Response.Fail(new UserNotFound(), "User wasn't found");
 
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
@@ -185,19 +185,19 @@ public class CartService
                 await _dbContext.SaveChangesAsync();
             }
 
-            return CartResponse.Success("The product was deleted");
+            return Response.Success("The product was deleted");
         }
         catch (Exception)
         {
-            return CartResponse.Fail(CartStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
-    public async Task<CartResponse> ClearCartAsync(DeleteCartRequest request)
+    public async Task<Response> ClearCartAsync(DeleteCartRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return CartResponse.Fail(CartStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -207,7 +207,7 @@ public class CartService
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
-                return CartResponse.Fail(CartStatusCode.UserNotFound, "User session wasn't found");
+                return Response.Fail(new UserNotFound(), "User session wasn't found");
 
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
@@ -219,11 +219,11 @@ public class CartService
                 .Where(ci => ci.CartId == cartId)
                 .ExecuteDeleteAsync();
 
-            return CartResponse.Success("The cart was deleted");
+            return Response.Success("The cart was deleted");
         }
         catch (Exception)
         {
-            return CartResponse.Fail(CartStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 }

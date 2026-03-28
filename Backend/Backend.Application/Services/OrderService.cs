@@ -2,8 +2,8 @@
 using Backend.Application.DTO.Requests.Base;
 using Backend.Application.DTO.Requests.Order;
 using Backend.Application.DTO.Responses;
+using Backend.Application.Errors;
 using Backend.Application.Exceptions;
-using Backend.Application.StatusCodes;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
 using Backend.Domain.Settings;
@@ -24,11 +24,11 @@ public class OrderService
         _dbContext = dbContext;
     }
 
-    public async Task<OrderResponse> MakeOrderAsync(MakeOrderRequest request)
+    public async Task<Response> MakeOrderAsync(MakeOrderRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         UserSession? userSession;
         try
@@ -38,13 +38,13 @@ public class OrderService
                 .FirstOrDefaultAsync();
 
             if (userSession is null)
-                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
+                return Response.Fail(new UserNotFound(), "The user session wasn't found");
 
             if (userSession.OrderId is not null) await CancelOrderAsync(userSession.OrderId.Value);
         }
         catch (Exception)
         {
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
 
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -65,7 +65,7 @@ public class OrderService
                 .Include(ci => ci.Product)
                 .ToListAsync();
             if (cartItems.Count == 0)
-                throw new OrderException(OrderStatusCode.CartNotFound, "The cart is empty");
+                throw new ServiceException(new CartNotFound(), "The cart is empty");
 
             decimal totalPrice = 0m;
             foreach (CartItem cartItem in cartItems)
@@ -73,8 +73,8 @@ public class OrderService
                 Product product = cartItem.Product;
 
                 if (product.Quantity < cartItem.Quantity)
-                    throw new OrderException(
-                        OrderStatusCode.IncorrectQuantity,
+                    throw new ServiceException(
+                        new IncorrectQuantity(),
                         "The quantity of the product is insufficient"
                     );
 
@@ -105,26 +105,26 @@ public class OrderService
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return OrderResponse.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
+            return Response.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
         }
-        catch (OrderException orderException)
+        catch (ServiceException e)
         {
             await transaction.RollbackAsync();
-            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
+            return Response.Fail(e.Error, e.Message);
         }
         catch (Exception)
         {
             await transaction.RollbackAsync();
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
 
-    public async Task<OrderResponse> PayOrderAsync(PayOrderRequest request)
+    public async Task<Response> PayOrderAsync(PayOrderRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         UserSession? userSession;
         try
@@ -134,14 +134,14 @@ public class OrderService
                 .Include(us => us.PendingOrder)
                 .FirstOrDefaultAsync();
             if (userSession is null)
-                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "The user session wasn't found");
+                return Response.Fail(new UserSessionNotFound(), "The user session wasn't found");
 
             if (userSession.PendingOrder is null)
-                return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "Order wasn't found");
+                return Response.Fail(new OrderNotFound(), "Order wasn't found");
         }
         catch (Exception)
         {
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
 
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
@@ -167,26 +167,26 @@ public class OrderService
                 .Where(ci => ci.Cart.Id == cartId)
                 .ExecuteDeleteAsync();
 
-            return OrderResponse.Success("The payment was successful");
+            return Response.Success("The payment was successful");
         }
-        catch (OrderException orderException)
+        catch (ServiceException e)
         {
             await transaction.RollbackAsync();
-            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
+            return Response.Fail(e.Error, e.Message);
         }
         catch (Exception)
         {
             await transaction.RollbackAsync();
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
 
-    public async Task<OrderResponse> CancelOrderAsync(CancelOrderRequest request)
+    public async Task<Response> CancelOrderAsync(CancelOrderRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return OrderResponse.Fail(OrderStatusCode.BadRequest, validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -195,20 +195,20 @@ public class OrderService
                 .Where(us => us.UId == request.UserSessionId)
                 .FirstOrDefaultAsync();
             if (userSession is null)
-                return OrderResponse.Fail(OrderStatusCode.UserSessionNotFound, "User session wasn't found");
+                return Response.Fail(new UserSessionNotFound(), "User session wasn't found");
 
             return userSession.OrderId is null
-                ? OrderResponse.Success("The order was canceled")
+                ? Response.Success("The order was canceled")
                 : await CancelOrderAsync(userSession.OrderId.Value);
         }
         catch (Exception)
         {
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
 
-    private async Task<OrderResponse> CancelOrderAsync(int orderId)
+    private async Task<Response> CancelOrderAsync(int orderId)
     {
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
@@ -219,10 +219,10 @@ public class OrderService
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order is null)
-                return OrderResponse.Success("The order doesn't exist");
+                return Response.Success("The order doesn't exist");
 
             if (order.Status != OrderStatus.Pending)
-                throw new OrderException(OrderStatusCode.InvalidOrderStatus, "The order has already been paid");
+                throw new ServiceException(new InvalidOrderStatus(), "The order has already been paid");
 
 
             foreach (OrderedProduct orderedProduct in order.OrderedProducts)
@@ -235,22 +235,22 @@ public class OrderService
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return OrderResponse.Success("The order was canceled");
+            return Response.Success("The order was canceled");
         }
-        catch (OrderException orderException)
+        catch (ServiceException e)
         {
             await transaction.RollbackAsync();
-            return OrderResponse.Fail(orderException.StatusCode, orderException.Message);
+            return Response.Fail(e.Error, e.Message);
         }
         catch (Exception)
         {
             await transaction.RollbackAsync();
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 
 
-    private async Task<OrderResponse> GetPendingOrderAsync(string userSessionId)
+    private async Task<Response> GetPendingOrderAsync(string userSessionId)
     {
         try
         {
@@ -259,7 +259,7 @@ public class OrderService
                 .Select(us => us.OrderId)
                 .FirstOrDefaultAsync();
             if (orderId is null)
-                return OrderResponse.Fail(OrderStatusCode.OrderNotFound, "The order wasn't found");
+                return Response.Fail(new OrderNotFound(), "The order wasn't found");
 
             var orderItems = await _dbContext.OrderedProducts
                 .AsNoTracking()
@@ -277,11 +277,11 @@ public class OrderService
             foreach (var orderItem in orderItems)
                 totalPrice += orderItem.TotalPrice;
 
-            return OrderResponse.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
+            return Response.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
         }
         catch (Exception)
         {
-            return OrderResponse.Fail(OrderStatusCode.UnknownError, "Internal server error");
+            return Response.Fail(new UnknownError(), "Internal server error");
         }
     }
 }

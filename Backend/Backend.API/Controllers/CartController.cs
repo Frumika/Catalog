@@ -1,7 +1,6 @@
-﻿using Backend.Application.DTO.Requests.Cart;
-using Backend.Application.DTO.Responses;
+﻿using Backend.API.Extensions;
+using Backend.Application.DTO.Requests.Cart;
 using Backend.Application.Services;
-using Backend.Application.StatusCodes;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -23,52 +22,35 @@ public class CartController : ControllerBase
     public async Task<IActionResult> GetCart([FromBody] GetCartRequest request)
     {
         var response = await _cartService.GetCartAsync(request);
-        return ToHttpResponse(response);
+        return response.ToHttpResponse();
     }
 
     [HttpDelete("clear")]
     public async Task<IActionResult> ClearCart([FromBody] DeleteCartRequest request)
     {
         var response = await _cartService.ClearCartAsync(request);
-        return ToHttpResponse(response);
+        return response.ToHttpResponse();
     }
 
     [HttpPost("product/add")]
     public async Task<IActionResult> AddProduct([FromBody] AddProductRequest request)
     {
         var response = await _cartService.AddProductAsync(request);
-        return ToHttpResponse(response);
+        return response.ToHttpResponse();
     }
 
     [HttpPatch("product/quantity/update")]
     public async Task<IActionResult> UpdateProductQuantityProduct([FromBody] UpdateProductQuantityRequest request)
     {
         var response = await _cartService.UpdateProductQuantityAsync(request);
-        return ToHttpResponse(response);
+        return response.ToHttpResponse();
     }
 
     [HttpDelete("product/remove")]
     public async Task<IActionResult> RemoveProduct([FromBody] RemoveProductRequest request)
     {
         var response = await _cartService.RemoveProductAsync(request);
-        return ToHttpResponse(response);
+        return response.ToHttpResponse();
     }
-
-
-    private IActionResult ToHttpResponse(CartResponse response)
-    {
-        return response.Code switch
-        {
-            CartStatusCode.Success => Ok(response),
-            
-            CartStatusCode.UserNotFound => NotFound(response),
-            CartStatusCode.ProductNotFound => NotFound(response),
-
-            CartStatusCode.BadRequest => BadRequest(response),
-
-            CartStatusCode.UnknownError => StatusCode(StatusCodes.Status500InternalServerError, response),
-
-            _ => BadRequest(response)
-        };
-    }
+    
 }
