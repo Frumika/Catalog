@@ -117,9 +117,9 @@ public class WishlistService
     
     public async Task<Response> RemoveProductAsync(RemoveProductRequest request)
     {
-        ValidationResult validationResult = request.Validate();
-        if (!validationResult.IsValid)
-            return Response.Fail(new BadRequest(), validationResult.Message);
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
 
         try
         {

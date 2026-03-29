@@ -26,7 +26,7 @@ public class AuthService
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid) 
-            return Response.Fail(new BadRequest());
+            return Response.Fail(new BadRequest(), result.Message);
 
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
