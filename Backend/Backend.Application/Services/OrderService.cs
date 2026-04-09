@@ -1,9 +1,9 @@
 ﻿using Backend.Application.DTO.Order;
-using Backend.Application.Errors;
 using Backend.Application.Exceptions;
 using Backend.Application.Requests.Base;
 using Backend.Application.Requests.Order;
 using Backend.Application.Responses;
+using Backend.Application.Statuses;
 using Backend.DataAccess.Postgres.Contexts;
 using Backend.Domain.Models;
 using Backend.Domain.Settings;

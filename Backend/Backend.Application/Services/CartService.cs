@@ -1,8 +1,8 @@
 ﻿using Backend.Application.DTO.Cart;
-using Backend.Application.Errors;
 using Backend.Application.Requests.Base;
 using Backend.Application.Requests.Cart;
 using Backend.Application.Responses;
+using Backend.Application.Statuses;
 using Backend.DataAccess.Postgres.Contexts;
 using Microsoft.EntityFrameworkCore;
 using CartItem = Backend.Domain.Models.CartItem;

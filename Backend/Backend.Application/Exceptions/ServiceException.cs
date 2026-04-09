@@ -1,13 +1,12 @@
-﻿using Backend.Application.Errors;
-
+﻿using Backend.Application.Statuses;
 
 namespace Backend.Application.Exceptions;
 
 public class ServiceException : Exception
 {
-    public readonly Error Error;
+    public readonly Status Error;
     
-    public ServiceException(Error error, string message) : base(message)
+    public ServiceException(Status error, string message) : base(message)
     {
         Error = error;
     }

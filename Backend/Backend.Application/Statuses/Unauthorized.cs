@@ -1,6 +1,6 @@
-﻿namespace Backend.Application.Errors;
+﻿namespace Backend.Application.Statuses;
 
-public abstract record Unauthorized : Error;
+public abstract record Unauthorized : Status;
 
 public record InvalidPassword : Unauthorized
 {

@@ -1,6 +1,6 @@
-﻿namespace Backend.Application.Errors;
+﻿namespace Backend.Application.Statuses;
 
-public abstract record NotFound : Error;
+public abstract record NotFound : Status;
 
 public record UserNotFound : NotFound
 {

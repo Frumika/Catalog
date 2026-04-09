@@ -1,6 +1,6 @@
-﻿namespace Backend.Application.Errors;
+﻿namespace Backend.Application.Statuses;
 
-public abstract record Conflict : Error;
+public abstract record Conflict : Status;
 
 public record UserAlreadyExists : Conflict
 {

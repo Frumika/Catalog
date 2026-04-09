@@ -1,16 +1,15 @@
 ﻿using System.Text.Json.Serialization;
-using Backend.Application.Errors;
+using Backend.Application.Statuses;
 
 
 namespace Backend.Application.Responses;
 
 public class Response
 {
-    public bool IsSuccess => Error is null;
-    public string? Message { get; set; }
-    public string? Code => Error?.Code;
+    public string Code => Status.Code;
+    public string? Message { get; init; }
     public object? Data { get; init; }
-    [JsonIgnore] public Error? Error { get; set; }
+    [JsonIgnore] public Status Status { get; init; } = null!;
 
     private Response()
     {
@@ -21,7 +20,7 @@ public class Response
         return new Response
         {
             Message = message,
-            Error = null,
+            Status = new Success(),
             Data = data
         };
     }
@@ -31,24 +30,18 @@ public class Response
         return new Response
         {
             Message = message,
-            Error = null,
+            Status = new Success(),
             Data = null
         };
     }
 
-    public static Response Fail(Error error, string? message = null)
+    public static Response Fail(Status status, string? message = null)
     {
         return new Response
         {
             Message = message,
-            Error = error,
+            Status = status,
             Data = null
         };
     }
 }
-
-
-
-
-
-

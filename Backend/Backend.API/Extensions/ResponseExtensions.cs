@@ -1,7 +1,7 @@
-﻿using System.Net;
-using Backend.Application.Errors;
-using Backend.Application.Responses;
+﻿using Backend.Application.Responses;
+using Backend.Application.Statuses;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace Backend.API.Extensions;
 
@@ -9,10 +9,9 @@ public static class ResponseExtensions
 {
     public static IActionResult ToHttpResponse(this Response response)
     {
-        if (response.IsSuccess) return new OkObjectResult(response);
-
-        return response.Error switch
+        return response.Status switch
         {
+            Success => new OkObjectResult(response),
             BadRequest => new BadRequestObjectResult(response),
             NotFound => new NotFoundObjectResult(response),
             Unauthorized => new UnauthorizedObjectResult(response),

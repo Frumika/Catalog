@@ -1,6 +1,6 @@
-﻿namespace Backend.Application.Errors;
+﻿namespace Backend.Application.Statuses;
 
-public record BadRequest : Error
+public record BadRequest : Status
 {
     public override string Code => "bad_request";
 }
