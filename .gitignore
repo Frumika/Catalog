@@ -1,3 +1,7 @@
+# =========================================================================
+# Backend Part (.NET)
+# =========================================================================
+
 # Rider / IntelliJ
 .idea/
 *.sln.iml
@@ -31,3 +35,38 @@ Thumbs.db
 *.dotMemory
 
 /Resources
+
+# =========================================================================
+# Frontend Part (React + Vite + TypeScript)
+# =========================================================================
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Vite / Build outputs
+dist/
+dist-ssr/
+*.local
+
+# Vite cache
+.vite/
+
+# TS / Type check cache
+*.tsbuildinfo
+
+# Linters and formatters cache
+.eslintcache
+
+# Local env files (содержат секреты и ключи, их нельзя в Git)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Test coverage
+coverage/
+
+# Text editors configuration
+.cascade/
