@@ -1,0 +1,16 @@
+.size16 {
+    display: inline-flex;
+    width: 16px;
+    height: 16px;
+}
+
+.size24 {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+}
+
+.size16 svg, .size24 svg {
+    width: 100%;
+    height: 100%;
+}

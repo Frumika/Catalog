@@ -1,0 +1,41 @@
+.button {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    gap: 8px;
+}
+
+.primary {
+    background-color: #005bff;
+    color: #ffffff;
+}
+.primary:hover {
+    background-color: #004bde;
+}
+
+.secondary {
+    background-color: #e8f2ff;
+    color: #005bff;
+}
+
+.ghost {
+    background: transparent;
+    color: #242424;
+}
+.ghost:hover {
+    color: #005bff;
+}
+
+.fullWidth {
+    display: flex;
+    width: 100%;
+}
+
+.iconOnly {
+    padding: 8px;
+}
