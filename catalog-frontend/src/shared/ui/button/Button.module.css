@@ -14,20 +14,13 @@
     background-color: #005bff;
     color: #ffffff;
 }
+
 .primary:hover {
     background-color: #004bde;
 }
 
 .secondary {
     background-color: #e8f2ff;
-    color: #005bff;
-}
-
-.ghost {
-    background: transparent;
-    color: #242424;
-}
-.ghost:hover {
     color: #005bff;
 }
 
@@ -38,4 +31,19 @@
 
 .iconOnly {
     padding: 8px;
+}
+
+.small {
+    padding: 6px 10px;
+    font-size: 12px;
+}
+
+.medium {
+    padding: 8px 14px;
+    font-size: 14px;
+}
+
+.large {
+    padding: 12px 20px;
+    font-size: 16px;
 }
