@@ -1,9 +1,6 @@
 .badge {
     position: absolute;
 
-    /*top: -4px;*/
-    /*right: -6px;*/
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -16,19 +13,29 @@
 
     animation: pulse 0.15s ease;
     user-select: none;
+
+    z-index: 2;
 }
 
 .dot {
     width: 8px;
     height: 8px;
-    /*top: -2px;*/
-    /*right: -2px;*/
+
+    top: -3px;
+    right: -3px;
 }
 
 .value {
-    min-width: 8px;
-    height: 8px;
-    padding: 6px;
-    /*top: -7px;*/
-    /*right: -9px;*/
+    height: 16px;
+    min-width: 16px;
+    padding: 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+
+    top: -5px;
+    right: -8px;
+}
+
+.overflow {
+    right: -14px;
 }

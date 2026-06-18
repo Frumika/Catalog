@@ -5,7 +5,7 @@ import styles from './Icon.module.css';
 export const Icon = (
     {
         children,
-        size = "small",
+        size = "medium",
         interactive = false,
         className,
     }: IconProps) => {

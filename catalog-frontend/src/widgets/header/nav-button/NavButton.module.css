@@ -10,14 +10,20 @@
     font-weight: 600;
 
     background: transparent;
-    color: #081b2b;
-
+    color: #99A3AE;
     border: none;
 
     width: 76px;
+
+    cursor: pointer;
 }
 
 .navButton:hover {
     color: var(--color-primary);
     transition: color 0.15s ease-in;
+}
+
+.iconWrapper{
+    position: relative;
+    display: inline-flex;
 }

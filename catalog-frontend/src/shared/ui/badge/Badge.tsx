@@ -12,16 +12,18 @@ export const Badge = (
     if (value === 0) return null;
 
     const hasValue = value !== undefined;
+    const hasOverflow = hasValue && value > max;
 
     const badgeClasses = [
         styles.badge,
         hasValue ? styles.value : styles.dot,
+        hasOverflow ? styles.overflow : null,
         className,
     ].filter(Boolean).join(' ');
 
     let displayValue: string | null;
 
-    if (hasValue && value > max) {
+    if (hasOverflow) {
         displayValue = `${max}+`;
     } else {
         displayValue = value ? value.toString() : null;
