@@ -2,7 +2,7 @@ import {AppRoutes} from "@/app/routes/routes.tsx";
 import {Input} from "@/shared/ui/input";
 import {Logo} from "@/shared/ui/logo";
 import {Button} from "@/shared/ui/button";
-import {NavButton} from "@/widgets/header/nav-button";
+import {NavButton} from "@/widgets/header/ui/nav-button";
 import {Icon} from "@/shared/ui/icon";
 
 import CatalogIcon from "@/shared/assets/catalog.svg?react";

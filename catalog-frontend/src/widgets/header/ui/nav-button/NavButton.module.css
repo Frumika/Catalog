@@ -10,7 +10,7 @@
     font-weight: 600;
 
     background: transparent;
-    color: #99A3AE;
+    color: var(--color-text-secondary);
     border: none;
 
     width: 76px;
@@ -23,7 +23,7 @@
     transition: color 0.15s ease-in;
 }
 
-.iconWrapper{
+.iconWrapper {
     position: relative;
     display: inline-flex;
 }
