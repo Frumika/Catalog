@@ -1,11 +1,26 @@
-import type { ReactNode } from 'react';
+import type {IconProps} from "@/shared/ui/icon/Icon.types.ts";
 import styles from './Icon.module.css';
 
-interface IconProps {
-    children: ReactNode;
-    size?: 16 | 24;
-}
 
-export const Icon = ({ children, size = 16 }: IconProps) => (
-    <span className={styles[`size${size}`]}>{children}</span>
-);
+export const Icon = (
+    {
+        children,
+        size = "small",
+        interactive = false,
+        className,
+    }: IconProps) => {
+
+    const iconClasses = [
+        styles.icon,
+        styles[size],
+        interactive ? styles.interactive : null,
+        className,
+    ].filter(Boolean).join(' ');
+
+    return (
+        <span
+            className={iconClasses}>
+            {children}
+        </span>
+    );
+};

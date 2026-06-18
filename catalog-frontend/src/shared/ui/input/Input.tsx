@@ -1,5 +1,5 @@
 import type {InputProps} from "@/shared/ui/input/Input.types.ts";
-import styles from "./Input.module.css"
+import styles from "./Input.module.css";
 import type {ChangeEvent} from "react";
 
 export const Input = (

@@ -11,26 +11,26 @@
 }
 
 .primary {
-    background-color: #005bff;
+    background-color: var(--color-primary);
     color: #ffffff;
 }
 
 .primary:hover {
-    background-color: #004bde;
+    background-color: #0050E0;
 }
 
 .secondary {
-    background-color: #e8f2ff;
-    color: #005bff;
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+}
+
+.secondary:hover {
+    background-color: #D3E7FF;
 }
 
 .fullWidth {
     display: flex;
     width: 100%;
-}
-
-.iconOnly {
-    padding: 8px;
 }
 
 .small {
@@ -46,4 +46,9 @@
 .large {
     padding: 12px 20px;
     font-size: 16px;
+    font-weight: 600;
+}
+
+.iconOnly {
+    padding: 8px;
 }

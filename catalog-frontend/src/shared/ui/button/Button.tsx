@@ -3,16 +3,17 @@ import styles from './Button.module.css';
 
 export const Button = (
     {
-        children,
         icon,
         variant = 'primary',
         size = 'medium',
         fullWidth = false,
+        children,
         className,
         ...props
     }: ButtonProps) => {
 
     const isIconOnly = !children && !!icon;
+
     const buttonClasses = [
         styles.button,
         styles[variant],
@@ -24,9 +25,10 @@ export const Button = (
 
     return (
         <button
-            className={buttonClasses} {...props}>
-            {icon && <span className={styles.iconWrapper}>{icon}</span>}
-            {children && <span className={styles.content}>{children}</span>}
+            {...props}
+            className={buttonClasses}>
+            {icon}
+            {children}
         </button>
     );
 };

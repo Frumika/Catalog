@@ -1,0 +1,23 @@
+.navButton {
+    display: inline-flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    font-family: var(--font-main), sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+
+    background: transparent;
+    color: #081b2b;
+
+    border: none;
+
+    width: 76px;
+}
+
+.navButton:hover {
+    color: var(--color-primary);
+    transition: color 0.15s ease-in;
+}
