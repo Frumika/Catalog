@@ -1,8 +1,7 @@
-import type {SearchBarProps} from "@/widgets/header/ui/search-bar/SearchBar.types.ts";
+import type {SearchBarProps} from "@/features/search/search-bar/SearchBar.types.ts";
 import type {KeyboardEvent} from 'react';
 import {Input} from '@/shared/ui/input';
 import {Button} from '@/shared/ui/button';
-import {Icon} from "@/shared/ui/icon";
 import styles from "./SearchBar.module.css";
 import SearchIcon from "@/shared/assets/search.svg?react";
 import CrossIcon from "@/shared/assets/cross.svg?react";
@@ -18,15 +17,23 @@ export const SearchBar = (
         className,
     }: SearchBarProps) => {
 
+    const hasValue = value.length > 0;
+
     const handleKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             onSearch?.(value);
         }
-    }
+    };
 
     const searchBarStyles = [
         styles.searchBar,
         className,
+    ].filter(Boolean).join(' ');
+
+    const deleteButtonStyles = [
+        styles.deleteButton,
+        hasValue ? null : styles.deleteButton__hidden,
+
     ].filter(Boolean).join(' ');
 
     return (
@@ -41,10 +48,10 @@ export const SearchBar = (
                 />
 
                 <Button
-                    className={styles.deleteButton}
+                    className={deleteButtonStyles}
                     variant="ghost"
-                    size="small"
-                    icon={<Icon><CrossIcon/></Icon>}
+                    size="medium"
+                    icon={<CrossIcon/>}
                     onClick={() => onClear?.()}
                 />
             </span>
@@ -53,7 +60,7 @@ export const SearchBar = (
                 className={styles.searchButton}
                 variant="primary"
                 size="medium"
-                icon={<Icon><SearchIcon/></Icon>}
+                icon={<SearchIcon/>}
                 onClick={() => onSearch?.(value)}
             />
         </span>

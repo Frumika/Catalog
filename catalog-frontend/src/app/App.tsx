@@ -2,8 +2,7 @@ import {AppRoutes} from "@/app/routes/routes.tsx";
 import {Logo} from "@/shared/ui/logo";
 import {Button} from "@/shared/ui/button";
 import {NavButton} from "@/widgets/header/ui/nav-button";
-import {Icon} from "@/shared/ui/icon";
-import {SearchBar} from "@/widgets/header/ui/search-bar";
+import {SearchBar} from "@/features/search/search-bar";
 import CatalogIcon from "@/shared/assets/catalog.svg?react";
 import ProfileIcon from "@/shared/assets/profile.svg?react";
 import OrderIcon from "@/shared/assets/order.svg?react";
@@ -30,30 +29,30 @@ function App() {
 
             <Button
                 variant="primary"
-                size="large"
-                icon={<Icon><CatalogIcon/></Icon>}>
+                size="medium"
+                icon={<CatalogIcon/>}>
                 Каталог
             </Button>
 
             <NavButton
-                icon={<Icon><ProfileIcon/></Icon>}>
+                icon={<ProfileIcon/>}>
                 Войти
             </NavButton>
 
             <NavButton
-                icon={<Icon><OrderIcon/></Icon>}
+                icon={<OrderIcon/>}
                 badgeValue={100}>
                 Заказы
             </NavButton>
 
             <NavButton
-                icon={<Icon><WishIcon/></Icon>}
+                icon={<WishIcon/>}
                 badgeValue={5}>
                 Избранное
             </NavButton>
 
             <NavButton
-                icon={<Icon><CartIcon/></Icon>}
+                icon={<CartIcon/>}
                 badgeValue={10}>
                 Корзина
             </NavButton>

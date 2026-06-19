@@ -48,8 +48,9 @@
 }
 
 .medium {
-    padding: 8px 14px;
-    font-size: 14px;
+    padding: 10px 16px;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 .large {
@@ -58,6 +59,14 @@
     font-weight: 600;
 }
 
-.iconOnly {
+:where(.iconOnly.small) {
+    padding: 6px;
+}
+
+:where(.iconOnly.medium) {
     padding: 8px;
+}
+
+:where(.iconOnly.large) {
+    padding: 12px;
 }

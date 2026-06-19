@@ -12,21 +12,17 @@
     display: block;
 }
 
-.small {
+.small svg{
     width: 16px;
     height: 16px;
 }
 
-.medium {
+.medium svg{
     width: 24px;
     height: 24px;
 }
 
-.large {
+.large svg{
     width: 32px;
     height: 32px;
-}
-
-.interactive {
-    color: inherit;
 }

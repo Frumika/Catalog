@@ -6,16 +6,12 @@ export const Icon = (
     {
         children,
         size = "medium",
-        interactive = false,
         className,
     }: IconProps) => {
 
     const iconClasses = [
         styles.icon,
         styles[size],
-
-        // Todo: Почему то не оказывает влияния
-        interactive ? styles.interactive : null,
         className,
     ].filter(Boolean).join(' ');
 
