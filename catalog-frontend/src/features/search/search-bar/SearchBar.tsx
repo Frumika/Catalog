@@ -37,8 +37,8 @@ export const SearchBar = (
     ].filter(Boolean).join(' ');
 
     return (
-        <span className={searchBarStyles}>
-            <span className={styles.wrapper}>
+        <div className={searchBarStyles}>
+            <div className={styles.wrapper}>
                 <Input
                     className={styles.input}
                     value={value}
@@ -54,7 +54,7 @@ export const SearchBar = (
                     icon={<CrossIcon/>}
                     onClick={() => onClear?.()}
                 />
-            </span>
+            </div>
 
             <Button
                 className={styles.searchButton}
@@ -63,6 +63,6 @@ export const SearchBar = (
                 icon={<SearchIcon/>}
                 onClick={() => onSearch?.(value)}
             />
-        </span>
+        </div>
     );
 };

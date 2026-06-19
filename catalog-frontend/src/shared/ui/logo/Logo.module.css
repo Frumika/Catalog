@@ -1,6 +1,5 @@
 .logo {
-    display: inline-flex;
-
+    display: flex;
     align-items: center;
     border: none;
     background: none;
@@ -10,7 +9,7 @@
     cursor: pointer;
 }
 
-.enabled:hover .image{
+.enabled:hover .image {
     color: #0050E0;
     transition: color 0.15s ease-in;
 }
