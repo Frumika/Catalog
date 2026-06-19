@@ -1,9 +1,15 @@
 :root {
-    --color-background-page: #f5f7fa;
-    --color-primary: #005bff;
-    --color-secondary: #ebf7ff;
-    --color-text-secondary: #99A3AE;
+    --backgroundMain: #ffffff;
+    --backgroundPage: #f5f7fa;
+
+    --colorPrimary: #005bff;
+    --colorSecondary: #ebf7ff;
+    --colorGhost: #99a3ae;
+
+    --textPrimary: #070707;
+    --textPlaceholcer: #9aa4ae;
+    --textSecondary: #99a3ae;
 
 
-    --font-main: 'Roboto', 'SF Pro Display', 'Helvetica Neue', Arial;
+    --fontMain: 'Roboto', 'SF Pro Display', 'Helvetica Neue', Arial;
 }

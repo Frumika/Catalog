@@ -1,24 +1,32 @@
 import {AppRoutes} from "@/app/routes/routes.tsx";
-import {Input} from "@/shared/ui/input";
 import {Logo} from "@/shared/ui/logo";
 import {Button} from "@/shared/ui/button";
 import {NavButton} from "@/widgets/header/ui/nav-button";
 import {Icon} from "@/shared/ui/icon";
-
+import {SearchBar} from "@/widgets/header/ui/search-bar";
 import CatalogIcon from "@/shared/assets/catalog.svg?react";
 import ProfileIcon from "@/shared/assets/profile.svg?react";
 import OrderIcon from "@/shared/assets/order.svg?react";
 import WishIcon from "@/shared/assets/wish.svg?react";
 import CartIcon from "@/shared/assets/cart.svg?react";
+import {useState} from "react";
 
 
 function App() {
+    const [query, setQuery] = useState('');
+
     return (
         <main>
             <h1>Каталог продукции</h1>
-            <Input
-                onChange={(value) => console.log(value)}>
-            </Input>
+
+
+            <SearchBar
+                value={query}
+                placeholder={"Ищите на Wildboars"}
+                onChange={setQuery}
+                onSearch={() => console.log(query)}
+                onClear={() => setQuery("")}
+            />
 
             <Button
                 variant="primary"

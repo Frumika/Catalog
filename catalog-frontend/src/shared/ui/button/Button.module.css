@@ -11,7 +11,7 @@
 }
 
 .primary {
-    background-color: var(--color-primary);
+    background-color: var(--colorPrimary);
     color: #ffffff;
 }
 
@@ -20,12 +20,21 @@
 }
 
 .secondary {
-    background-color: var(--color-secondary);
-    color: var(--color-primary);
+    background-color: var(--colorSecondary);
+    color: var(--colorPrimary);
 }
 
 .secondary:hover {
     background-color: #D3E7FF;
+}
+
+.ghost {
+    background-color: transparent;
+    color: var(--colorGhost);
+}
+
+.ghost:hover {
+    color: var(--colorPrimary);
 }
 
 .fullWidth {

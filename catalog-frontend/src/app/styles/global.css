@@ -7,6 +7,6 @@
 }
 
 body{
-    font-family: var(--font-main), sans-serif;
-    background-color: var(--color-background-page);
+    font-family: var(--fontMain), sans-serif;
+    background-color: var(--backgroundPage);
 }

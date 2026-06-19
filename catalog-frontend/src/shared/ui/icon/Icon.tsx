@@ -13,6 +13,8 @@ export const Icon = (
     const iconClasses = [
         styles.icon,
         styles[size],
+
+        // Todo: Почему то не оказывает влияния
         interactive ? styles.interactive : null,
         className,
     ].filter(Boolean).join(' ');

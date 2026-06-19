@@ -1,0 +1,41 @@
+.searchBar {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 12px;
+    background: var(--colorPrimary);
+
+    height: 44px;
+    min-width: 580px;
+}
+
+.wrapper {
+    border: 2px solid var(--colorPrimary);
+
+    display: flex;
+    align-items: center;
+
+    height: 100%;
+    width: 100%;
+    background: var(--backgroundMain);
+
+    border-radius: inherit;
+}
+
+.input {
+    padding: 0 0 0 8px;
+}
+
+.deleteButton {
+    /*height: 100%;*/
+    /*aspect-ratio: 1 / 1;*/
+    border-radius: inherit;
+    /*padding:0;*/
+}
+
+.deleteButton:hover {
+    color: #667685;
+}
+
+.searchButton {
+    padding: 8px 28px;
+}

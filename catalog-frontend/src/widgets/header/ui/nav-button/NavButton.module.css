@@ -5,12 +5,12 @@
     justify-content: center;
     align-items: center;
 
-    font-family: var(--font-main), sans-serif;
+    font-family: var(--fontMain), sans-serif;
     font-size: 12px;
     font-weight: 600;
 
     background: transparent;
-    color: var(--color-text-secondary);
+    color: var(--textSecondary);
     border: none;
 
     width: 76px;
@@ -19,7 +19,7 @@
 }
 
 .navButton:hover {
-    color: var(--color-primary);
+    color: var(--colorPrimary);
     transition: color 0.15s ease-in;
 }
 

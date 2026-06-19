@@ -18,5 +18,5 @@
 .image {
     height: 40px;
     width: auto;
-    color: var(--color-primary);
+    color: var(--colorPrimary);
 }
