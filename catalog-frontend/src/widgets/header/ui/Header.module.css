@@ -1,6 +1,9 @@
-.headerContainer {
-    border: 2px solid greenyellow;
+.header {
+    display: flex;
+    background: var(--backgroundPage);
+}
 
+.content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -13,9 +16,7 @@
     border-radius: 0 0 32px 32px;
 }
 
-.headerUpper {
-    border: 2px solid lightblue;
-
+.upper {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -25,9 +26,7 @@
     width: 100%;
 }
 
-.headerBottom {
-    border: 2px solid red;
-
+.bottom {
     display: flex;
     flex-direction: row;
     justify-content: start;
@@ -40,8 +39,10 @@
 
 .navItemContainer {
     display: flex;
+    align-items: center;
+    height: 44px;
 }
 
-.searchBar{
+.searchBar {
     width: 100%;
 }

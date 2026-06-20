@@ -19,15 +19,13 @@ export const NavButton = (
     ].filter(Boolean).join(' ');
 
     return (
-        <button
-            {...props}
-            className={navButtonStyles}>
-            <span className={styles.iconWrapper}>
-                {icon && <Icon size={"medium"}>{icon}</Icon>}
-                <Badge value={badgeValue}/>
+        <button {...props} className={navButtonStyles}>
+            <span className={styles.content}>
+                {icon && <Icon size="medium">{icon}</Icon>}
+                {children}
             </span>
 
-            {children}
+            <Badge value={badgeValue}/>
         </button>
     )
 };

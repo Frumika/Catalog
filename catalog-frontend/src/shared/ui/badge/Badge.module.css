@@ -15,27 +15,25 @@
     user-select: none;
 
     z-index: 2;
+
+    left: calc(50% + 2px);
+    vertical-align: top;
 }
 
 .dot {
     width: 8px;
     height: 8px;
 
-    top: -3px;
-    right: -3px;
+    top: 4px;
+    left: calc(50% + 8px);
 }
 
 .value {
     height: 16px;
     min-width: 16px;
     padding: 0 4px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
 
-    top: -5px;
-    right: -8px;
-}
-
-.overflow {
-    right: -14px;
+    top: 0;
 }

@@ -17,7 +17,6 @@ export const Badge = (
     const badgeClasses = [
         styles.badge,
         hasValue ? styles.value : styles.dot,
-        hasOverflow ? styles.overflow : null,
         className,
     ].filter(Boolean).join(' ');
 
