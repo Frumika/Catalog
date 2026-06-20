@@ -1,0 +1,47 @@
+.headerContainer {
+    border: 2px solid greenyellow;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    background-color: var(--backgroundMain);
+
+    gap: 5px;
+
+    padding: 8px 24px 14px 24px;
+    border-radius: 0 0 32px 32px;
+}
+
+.headerUpper {
+    border: 2px solid lightblue;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    gap: 12px;
+
+    width: 100%;
+}
+
+.headerBottom {
+    border: 2px solid red;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+
+    width: 100%;
+    gap: 12px;
+
+    padding: 8px 0 4px 0;
+}
+
+.navItemContainer {
+    display: flex;
+}
+
+.searchBar{
+    width: 100%;
+}
