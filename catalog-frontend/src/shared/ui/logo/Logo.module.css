@@ -1,21 +1,24 @@
 .logo {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     border: none;
     background: none;
+    height: 44px;
+    gap: 5px;
+    color: var(--colorPrimary);
 }
 
 .enabled {
     cursor: pointer;
 }
 
-.enabled:hover .image {
+.enabled:hover {
     color: #0050E0;
     transition: color 0.15s ease-in;
 }
 
-.image {
-    height: 40px;
-    width: auto;
-    color: var(--colorPrimary);
+.icon {
+}
+
+.text {
 }

@@ -1,6 +1,7 @@
 import type {LogoProps} from "@/shared/ui/logo/Logo.types.ts";
 import styles from "./Logo.module.css";
-import LogoIcon from "@/shared/assets/logo.svg?react"
+import LogoPic from "@/shared/assets/logo-pic.svg?react";
+import LogoText from "@/shared/assets/logo-text.svg?react";
 
 
 export const Logo = (
@@ -8,6 +9,7 @@ export const Logo = (
         disabled = false,
         className,
         onClick,
+        hideText = false,
         ...props
     }: LogoProps
 ) => {
@@ -26,7 +28,8 @@ export const Logo = (
             disabled={disabled}
             onClick={onClick}
         >
-            <LogoIcon className={styles.image}/>
+            <LogoPic className={styles.icon}/>
+            {!hideText && <LogoText className={styles.text} />}
         </button>
     );
 }
