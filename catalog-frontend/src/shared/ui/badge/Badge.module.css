@@ -1,5 +1,6 @@
 .badge {
     position: absolute;
+    z-index: 2;
 
     display: inline-flex;
     align-items: center;
@@ -8,24 +9,15 @@
 
     background: #f1117e;
     color: #ffffff;
-
     border-radius: 50px;
 
     animation: pulse 0.15s ease;
     user-select: none;
-
-    z-index: 2;
-
-    left: calc(50% + 2px);
-    vertical-align: top;
 }
 
 .dot {
     width: 8px;
     height: 8px;
-
-    top: 4px;
-    left: calc(50% + 8px);
 }
 
 .value {
@@ -34,6 +26,10 @@
     padding: 0 4px;
     font-size: 12px;
     font-weight: 600;
+}
 
-    top: 0;
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
 }

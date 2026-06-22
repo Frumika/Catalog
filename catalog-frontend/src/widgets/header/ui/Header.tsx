@@ -46,25 +46,29 @@ export const Header = (
                         <div className={styles.navItemContainer}>
 
                             <NavButton
-                                icon={<ProfileIcon/>}>
+                                icon={<ProfileIcon/>}
+                                hideText={false}>
                                 Войти
                             </NavButton>
 
                             <NavButton
                                 icon={<OrderIcon/>}
-                                badgeValue={100}>
+                                badgeValue={100}
+                                hideText={false}>
                                 Заказы
                             </NavButton>
 
                             <NavButton
                                 icon={<WishIcon/>}
-                                badgeValue={5}>
+                                badgeValue={5}
+                                hideText={false}>
                                 Избранное
                             </NavButton>
 
                             <NavButton
                                 icon={<CartIcon/>}
-                                badgeValue={10}>
+                                badgeValue={10}
+                                hideText={false}>
                                 Корзина
                             </NavButton>
                         </div>

@@ -10,11 +10,13 @@ export const NavButton = (
         badgeValue,
         children,
         className,
+        hideText = false,
         ...props
     }: NavButtonProps) => {
 
     const navButtonStyles = [
         styles.navButton,
+        hideText ? styles.hideText : null,
         className,
     ].filter(Boolean).join(' ');
 
@@ -22,7 +24,7 @@ export const NavButton = (
         <button {...props} className={navButtonStyles}>
             <span className={styles.content}>
                 {icon && <Icon size="medium">{icon}</Icon>}
-                {children}
+                {!hideText && <span>{children}</span>}
             </span>
 
             <Badge value={badgeValue}/>

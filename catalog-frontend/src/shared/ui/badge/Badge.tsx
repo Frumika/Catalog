@@ -4,34 +4,32 @@ import styles from "./Badge.module.css"
 
 export const Badge = (
     {
+        variant = "value",
         value,
         max = 99,
+        visible = true,
         className,
     }: BadgeProps) => {
 
-    if (value === 0) return null;
+    if (!visible) return null;
 
-    const hasValue = value !== undefined;
-    const hasOverflow = hasValue && value > max;
+    if (variant === 'value' && (value === undefined || value <= 0)) {
+        return null;
+    }
+
+    const isValueMode = variant === 'value';
+    const hasOverflow = isValueMode && value !== undefined && value > max;
+    const displayValue = hasOverflow ? `${max}+` : value;
 
     const badgeClasses = [
         styles.badge,
-        hasValue ? styles.value : styles.dot,
+        isValueMode ? styles.value : styles.dot,
         className,
     ].filter(Boolean).join(' ');
 
-    let displayValue: string | null;
-
-    if (hasOverflow) {
-        displayValue = `${max}+`;
-    } else {
-        displayValue = value ? value.toString() : null;
-    }
-
     return (
-        <span className={badgeClasses}
-              key={value}>
-            {displayValue}
+        <span className={badgeClasses} key={value}>
+            {isValueMode ? displayValue : null}
         </span>
     );
 };

@@ -15,6 +15,10 @@
     cursor: pointer;
 }
 
+.hideText{
+    width: 44px;
+}
+
 .navButton:hover {
     color: var(--colorPrimary);
     transition: color 0.15s ease-in;

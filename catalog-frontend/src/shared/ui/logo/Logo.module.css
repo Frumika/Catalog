@@ -6,6 +6,7 @@
     height: 44px;
     gap: 5px;
     color: var(--colorPrimary);
+    transition: color 0.15s ease-in;
 }
 
 .enabled {
@@ -14,7 +15,6 @@
 
 .enabled:hover {
     color: #0050E0;
-    transition: color 0.15s ease-in;
 }
 
 .icon {
