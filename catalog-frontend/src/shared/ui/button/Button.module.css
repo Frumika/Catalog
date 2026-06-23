@@ -8,6 +8,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     gap: 8px;
+
+    padding: var(--button-padding);
 }
 
 .primary {
@@ -43,30 +45,30 @@
 }
 
 .small {
-    padding: 6px 10px;
+    --button-padding: 6px 10px;
     font-size: 14px;
 }
 
 .medium {
-    padding: 10px 16px;
+    --button-padding: 10px 16px;
     font-size: 16px;
     font-weight: 600;
 }
 
 .large {
-    padding: 12px 20px;
+    --button-padding: 12px 20px;
     font-size: 16px;
     font-weight: 600;
 }
 
-:where(.iconOnly.small) {
-    padding: 6px;
+.iconOnly.small {
+    --button-padding: 6px;
 }
 
-:where(.iconOnly.medium) {
-    padding: 8px;
+.iconOnly.medium {
+    --button-padding: 10px;
 }
 
-:where(.iconOnly.large) {
-    padding: 12px;
+.iconOnly.large {
+    --button-padding: 12px;
 }
