@@ -1,12 +1,11 @@
 import {useState} from "react";
 import {Logo} from "@/shared/ui/logo";
-import {Button} from "@/shared/ui/button";
+import {CatalogButton} from "@/widgets/header/ui/catalog-button";
 import {SearchBar} from "@/features/search/search-bar";
 import {NavButton} from "@/widgets/header/ui/nav-button";
 import {CategoryButton} from "@/widgets/header/ui/category-button";
 import {ContentContainer} from "@/shared/ui/content-container";
 
-import CatalogIcon from "@/shared/assets/catalog.svg?react";
 import ProfileIcon from "@/shared/assets/profile.svg?react";
 import OrderIcon from "@/shared/assets/order.svg?react";
 import WishIcon from "@/shared/assets/wish.svg?react";
@@ -27,12 +26,7 @@ export const Header = (
                     <div className={styles.upper}>
                         <Logo/>
 
-                        <Button
-                            variant="primary"
-                            size="medium"
-                            icon={<CatalogIcon/>}>
-                            Каталог
-                        </Button>
+                        <CatalogButton />
 
                         <SearchBar
                             className={styles.searchBar}
@@ -44,7 +38,6 @@ export const Header = (
                         />
 
                         <div className={styles.navItemContainer}>
-
                             <NavButton
                                 icon={<ProfileIcon/>}
                                 hideText={false}>
