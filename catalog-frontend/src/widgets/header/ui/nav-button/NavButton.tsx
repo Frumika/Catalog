@@ -8,16 +8,23 @@ export const NavButton = (
     {
         icon,
         badgeValue,
+        badgeVisible = true,
         children,
         className,
         hideText = false,
         ...props
     }: NavButtonProps) => {
 
+    const badgeVariant = badgeValue !== undefined ? "value" : "dot";
+
     const navButtonStyles = [
         styles.navButton,
         hideText ? styles.hideText : null,
         className,
+    ].filter(Boolean).join(' ');
+
+    const badgeStyles = [
+        badgeVariant === "value" ? styles.badgeValue : styles.badgeDot,
     ].filter(Boolean).join(' ');
 
     return (
@@ -27,7 +34,12 @@ export const NavButton = (
                 {!hideText && <span>{children}</span>}
             </span>
 
-            <Badge value={badgeValue}/>
+            <Badge
+                className={badgeStyles}
+                value={badgeValue}
+                visible={badgeVisible}
+                variant={badgeVariant}
+            />
         </button>
     )
 };

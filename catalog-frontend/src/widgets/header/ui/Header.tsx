@@ -53,7 +53,7 @@ export const Header = (
 
                             <NavButton
                                 icon={<OrderIcon/>}
-                                badgeValue={100}
+                                badgeValue={150}
                                 hideText={false}>
                                 Заказы
                             </NavButton>

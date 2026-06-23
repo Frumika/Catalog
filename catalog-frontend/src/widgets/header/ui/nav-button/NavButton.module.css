@@ -36,3 +36,18 @@
 
     text-align: center;
 }
+
+.badgeValue{
+    top: 0;
+    left: calc(50% + 2px);
+}
+
+.badgeDot{
+    top: 4px;
+    left: calc(50% + 8px);
+}
+
+.hideText .badgeValue{
+    left: auto;
+    right: 0;
+}
