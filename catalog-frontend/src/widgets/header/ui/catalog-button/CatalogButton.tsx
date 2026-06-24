@@ -5,11 +5,13 @@ import CatalogIcon from "@/shared/assets/catalog.svg?react";
 
 export const CatalogButton = (
     {
-        hideText = false
+        hideText = false,
+        ...props
     }: CatalogButtonProps
 ) => {
     return (
         <Button
+            {...props}
             variant="primary"
             size="medium"
             icon={<CatalogIcon/>}>

@@ -24,9 +24,9 @@ export const Header = (
             <ContentContainer>
                 <div className={styles.content}>
                     <div className={styles.upper}>
-                        <Logo/>
+                        <Logo hideText={true}/>
 
-                        <CatalogButton />
+                        <CatalogButton hideText={true}/>
 
                         <SearchBar
                             className={styles.searchBar}
@@ -96,5 +96,4 @@ export const Header = (
             </ContentContainer>
         </header>
     );
-
 }
