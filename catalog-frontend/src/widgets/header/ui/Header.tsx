@@ -12,6 +12,7 @@ import WishIcon from "@/shared/assets/wish.svg?react";
 import CartIcon from "@/shared/assets/cart.svg?react";
 
 import styles from "./Header.module.css"
+import {DeliveryLocation} from "@/features/delivery-location";
 
 
 export const Header = (
@@ -24,9 +25,9 @@ export const Header = (
             <ContentContainer>
                 <div className={styles.content}>
                     <div className={styles.upper}>
-                        <Logo hideText={true}/>
+                        <Logo hideText={false}/>
 
-                        <CatalogButton hideText={true}/>
+                        <CatalogButton hideText={false}/>
 
                         <SearchBar
                             className={styles.searchBar}
@@ -68,29 +69,33 @@ export const Header = (
                     </div>
 
                     <div className={styles.bottom}>
-                        <CategoryButton
-                            onClick={() => {
-                            }}>
-                            Одежда
-                        </CategoryButton>
+                        <div className={styles.categoryItemContainer}>
+                            <CategoryButton
+                                onClick={() => {
+                                }}>
+                                Одежда
+                            </CategoryButton>
 
-                        <CategoryButton
-                            onClick={() => {
-                            }}>
-                            Электроника
-                        </CategoryButton>
+                            <CategoryButton
+                                onClick={() => {
+                                }}>
+                                Электроника
+                            </CategoryButton>
 
-                        <CategoryButton
-                            onClick={() => {
-                            }}>
-                            Дом и сад
-                        </CategoryButton>
+                            <CategoryButton
+                                onClick={() => {
+                                }}>
+                                Дом и сад
+                            </CategoryButton>
 
-                        <CategoryButton
-                            onClick={() => {
-                            }}>
-                            Сертификаты
-                        </CategoryButton>
+                            <CategoryButton
+                                onClick={() => {
+                                }}>
+                                Сертификаты
+                            </CategoryButton>
+                        </div>
+
+                        <DeliveryLocation/>
                     </div>
                 </div>
             </ContentContainer>

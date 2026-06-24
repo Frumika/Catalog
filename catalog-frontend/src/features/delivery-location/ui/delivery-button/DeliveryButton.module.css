@@ -1,0 +1,32 @@
+.deliveryButton {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    border: none;
+    background: none;
+
+    font-family: var(--fontMain), sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+
+    cursor: pointer;
+
+    gap: 4px;
+}
+
+.emptyAddress{
+    font-weight: 600;
+}
+
+.label {
+    color: rgba(0, 26, 52, 0.4);
+}
+
+.destination {
+    color: var(--textAccent);
+}
+
+:where(.emptyAddress .label) {
+    color: rgba(0, 26, 51, 0.6);
+}

@@ -1,0 +1,30 @@
+.deliveryModal {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 80vh;
+    max-width: 450px;
+    width: 450px;
+
+    background: white;
+    padding: 20px;
+    border-radius: 32px
+}
+
+.header {
+    width: 100%;
+}
+
+.closeButton{
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+}
+
+.title{
+
+}
+
