@@ -1,6 +1,6 @@
 import type {CloseButtonProps} from "./CloseButton.types.ts";
 import {Icon} from "@/shared/ui/icon";
-import CrossIcon from "@/shared/assets/cross.svg?react";
+import CrossIcon from "@/shared/assets/icons/cross.svg?react";
 
 import styles from "./CloseButton.module.css";
 

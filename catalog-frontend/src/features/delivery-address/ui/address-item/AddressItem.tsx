@@ -1,5 +1,5 @@
 import type {AddressItemProps} from "./AddressItem.types.ts";
-import KebabMenuIcon from "@/shared/assets/kebab-menu.svg?react";
+import KebabMenuIcon from "@/shared/assets/icons/kebab-menu.svg?react";
 import styles from "./AddressItem.module.css";
 import {Button} from "@/shared/ui/button";
 

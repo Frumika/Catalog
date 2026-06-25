@@ -6,10 +6,10 @@ import {NavButton} from "@/widgets/header/ui/nav-button";
 import {CategoryButton} from "@/widgets/header/ui/category-button";
 import {ContentContainer} from "@/shared/ui/content-container";
 
-import ProfileIcon from "@/shared/assets/profile.svg?react";
-import OrderIcon from "@/shared/assets/order.svg?react";
-import WishIcon from "@/shared/assets/wish.svg?react";
-import CartIcon from "@/shared/assets/cart.svg?react";
+import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
+import OrderIcon from "@/shared/assets/icons/order.svg?react";
+import WishIcon from "@/shared/assets/icons/wish.svg?react";
+import CartIcon from "@/shared/assets/icons/cart.svg?react";
 
 import styles from "./Header.module.css"
 import {DeliveryAddress} from "@/features/delivery-address";

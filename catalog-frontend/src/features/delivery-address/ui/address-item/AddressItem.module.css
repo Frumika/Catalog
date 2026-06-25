@@ -24,7 +24,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding: 16px 48px 0 16px;
+    padding: 16px 35px 0 16px;
     margin-bottom: 8px;
 }
 
@@ -39,7 +39,7 @@
 .id {
     color: var(--textPrimary);
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 500;
     letter-spacing: 0;
     line-height: 16px;
 }

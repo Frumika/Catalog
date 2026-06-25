@@ -12,5 +12,13 @@
     --textSecondary: #99a3ae;
 
 
-    --fontMain: 'Roboto', 'SF Pro Display', 'Helvetica Neue', Arial;
+    --fontMain: 'Onest', 'Roboto', 'SF Pro Display', 'Helvetica Neue', Arial;
+}
+
+@font-face {
+    font-family: 'Onest';
+    src: url('@/shared/assets/fonts/Onest-VariableFont_wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
 }

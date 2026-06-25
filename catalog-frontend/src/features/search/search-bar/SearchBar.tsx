@@ -3,8 +3,8 @@ import type {KeyboardEvent} from 'react';
 import {Input} from '@/shared/ui/input';
 import {Button} from '@/shared/ui/button';
 import styles from "./SearchBar.module.css";
-import SearchIcon from "@/shared/assets/search.svg?react";
-import CrossIcon from "@/shared/assets/cross.svg?react";
+import SearchIcon from "@/shared/assets/icons/search.svg?react";
+import CrossIcon from "@/shared/assets/icons/cross.svg?react";
 
 
 export const SearchBar = (
