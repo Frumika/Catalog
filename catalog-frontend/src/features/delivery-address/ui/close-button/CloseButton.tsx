@@ -1,11 +1,11 @@
-import type {CloseButtonProps} from "../close-button/CloseButton.types.ts";
+import type {CloseButtonProps} from "./CloseButton.types.ts";
 import {Icon} from "@/shared/ui/icon";
 import CrossIcon from "@/shared/assets/cross.svg?react";
 
 import styles from "./CloseButton.module.css";
 
 
-export const CloseButton = (
+export const    CloseButton = (
     {
         onClick,
         className,

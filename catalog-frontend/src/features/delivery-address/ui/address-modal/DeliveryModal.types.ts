@@ -1,4 +1,4 @@
-export interface DeliveryModalProps {
+export interface AddressModalProps {
     selectedAddress?: string;
     isOpen: boolean;
     onClose?: () => void;

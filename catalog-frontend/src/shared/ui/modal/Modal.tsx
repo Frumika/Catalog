@@ -27,7 +27,7 @@ export const Modal = (
     const modalStyles = [
         styles.modal,
         className
-    ].filter(Boolean).join(' ')
+    ].filter(Boolean).join(' ');
 
     return createPortal(
         <div

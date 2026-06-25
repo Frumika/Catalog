@@ -12,7 +12,7 @@ import WishIcon from "@/shared/assets/wish.svg?react";
 import CartIcon from "@/shared/assets/cart.svg?react";
 
 import styles from "./Header.module.css"
-import {DeliveryLocation} from "@/features/delivery-location";
+import {DeliveryAddress} from "@/features/delivery-address";
 
 
 export const Header = (
@@ -95,7 +95,7 @@ export const Header = (
                             </CategoryButton>
                         </div>
 
-                        <DeliveryLocation/>
+                        <DeliveryAddress/>
                     </div>
                 </div>
             </ContentContainer>

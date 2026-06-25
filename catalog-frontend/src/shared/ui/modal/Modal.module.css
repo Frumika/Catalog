@@ -10,9 +10,10 @@
 }
 
 .modal {
+    display: flex;
+    flex-direction: column;
     background: var(--backgroundMain);
-    border-radius: 16px;
-    overflow: auto;
+    border-radius: 32px;
     max-height: 90vh;
     max-width: 90vw;
 }

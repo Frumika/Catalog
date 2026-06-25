@@ -17,6 +17,8 @@
     color: rgba(0, 26, 52, 0.4);
 
     transition: all 0.2s ease;
+
+    cursor: pointer;
 }
 
 .closeButton:hover {

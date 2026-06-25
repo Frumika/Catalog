@@ -1,13 +1,13 @@
-import type {DeliveryButtonProps} from "./DeliveryButton.types.ts";
-import styles from "./DeliveryButton.module.css";
+import type {AddressButtonProps} from "./AddressButton.types.ts";
+import styles from "./AddressButton.module.css";
 
 
-export const DeliveryButton = (
+export const AddressButton = (
     {
         address,
         className,
         ...props
-    }: DeliveryButtonProps
+    }: AddressButtonProps
 ) => {
 
     const hasAddress = !!address;
@@ -15,7 +15,7 @@ export const DeliveryButton = (
     const destination: string = hasAddress ? address : "Выбрать";
 
     const deliveryButtonStyles = [
-        styles.deliveryButton,
+        styles.addressButton,
         !hasAddress && styles.emptyAddress,
         className,
     ].filter(Boolean).join(' ');
