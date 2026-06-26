@@ -1,7 +1,7 @@
 import {useState} from "react";
 
 
-export const useDeliveryLocation = () => {
+export const useDeliveryAddress = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
 

@@ -1,4 +1,4 @@
-import type {AddressModalProps} from "./DeliveryModal.types.ts";
+import type {AddressModalProps} from "./AddressModal.types.ts";
 import {Modal} from "@/shared/ui/modal";
 import {CloseButton} from "../close-button/CloseButton.tsx";
 import {AddressItem} from "../address-item/AddressItem.tsx";
@@ -13,6 +13,7 @@ export const AddressModal = (
         onClose,
         onSelect,
         selectedAddressId,
+        addresses,
     }: AddressModalProps
 ) => {
 
@@ -24,7 +25,7 @@ export const AddressModal = (
             </div>
 
             <div className={styles.main}>
-                {MOCK_ADDRESSES.map(
+                {addresses?.map(
                     point => (
                         <AddressItem
                             key={point.id}

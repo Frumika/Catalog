@@ -1,11 +1,11 @@
-import {useDeliveryLocation} from "@/features/delivery-address/model/useDeliveryLocation.ts";
-import {AddressButton} from "@/features/delivery-address/ui/address-button/AddressButton.tsx";
-import {AddressModal} from "@/features/delivery-address/ui/address-modal/AddressModal.tsx";
-import {MOCK_ADDRESSES} from "@/features/delivery-address/model/addresses.ts";
+import {useDeliveryAddress} from "@/features/select-delivery-address/model/useDeliveryAddress.ts";
+import {MOCK_ADDRESSES} from "@/features/select-delivery-address/model/addresses.ts";
+import {AddressButton} from "@/features/select-delivery-address/ui/address-button/AddressButton.tsx";
+import {AddressModal} from "@/features/select-delivery-address/ui/address-modal/AddressModal.tsx";
 
 
 export const DeliveryAddress = () => {
-    const {isOpen, selectedAddressId, open, close, selectAddress} = useDeliveryLocation();
+    const {isOpen, selectedAddressId, open, close, selectAddress} = useDeliveryAddress();
 
     const selectedPoint = MOCK_ADDRESSES.find(
         point => point.id === selectedAddressId

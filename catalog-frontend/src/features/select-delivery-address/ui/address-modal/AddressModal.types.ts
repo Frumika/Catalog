@@ -3,4 +3,5 @@ export interface AddressModalProps {
     onClose: () => void;
     onSelect: (id: string) => void;
     selectedAddressId: string | null;
+    addresses?: string[];
 }

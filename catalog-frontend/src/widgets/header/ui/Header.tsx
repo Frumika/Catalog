@@ -12,7 +12,7 @@ import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
 
 import styles from "./Header.module.css"
-import {DeliveryAddress} from "@/features/delivery-address";
+import {DeliveryAddress} from "@/features/select-delivery-address/ui/DeliveryAddress.tsx";
 
 
 export const Header = (
