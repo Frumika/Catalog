@@ -1,7 +1,4 @@
 .addressModal {
-    display: flex;
-    flex-direction: column;
-
     max-width: 450px;
     min-width: 330px;
     height: min(80vh, 700px);

@@ -4,12 +4,15 @@ import {CloseButton} from "../close-button/CloseButton.tsx";
 import {AddressItem} from "../address-item/AddressItem.tsx";
 import {Button} from "@/shared/ui/button";
 import styles from "./AddressModal.module.css";
+import {MOCK_ADDRESSES} from "@/features/delivery-address/model/addresses.ts";
 
 
 export const AddressModal = (
     {
         isOpen,
         onClose,
+        onSelect,
+        selectedAddressId,
     }: AddressModalProps
 ) => {
 
@@ -21,32 +24,17 @@ export const AddressModal = (
             </div>
 
             <div className={styles.main}>
-                <AddressItem
-                    id={"318-645"}
-                    selected={true}
-                    address={"Брянск, Красноармейская ул., 81"}
-                    shelfLife={14}
-                />
-                <AddressItem
-                    id={"140-25-48"}
-                    address={"Брянск, ул. Костычева, 23к1"}
-                    shelfLife={14}
-                />
-                <AddressItem
-                    id={"397-909"}
-                    address={"Москва, 11-я Парковая ул., 8"}
-                    shelfLife={14}
-                />
-                <AddressItem
-                    id={"948-43"}
-                    address={"Брянск, Красноармейская ул., 41"}
-                    shelfLife={14}
-                />
-                <AddressItem
-                    id={"104-252"}
-                    address={"Санкт-Петербург, ул. Салова, 61"}
-                    shelfLife={14}
-                />
+                {MOCK_ADDRESSES.map(
+                    point => (
+                        <AddressItem
+                            key={point.id}
+                            id={point.id}
+                            address={point.address}
+                            shelfLife={point.shelfLife}
+                            selected={selectedAddressId === point.id}
+                            onSelect={onSelect}
+                        />
+                    ))}
             </div>
 
             <div className={styles.footer}>

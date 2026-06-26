@@ -1,5 +1,6 @@
 export interface AddressModalProps {
-    selectedAddress?: string;
     isOpen: boolean;
-    onClose?: () => void;
+    onClose: () => void;
+    onSelect: (id: string) => void;
+    selectedAddressId: string | null;
 }

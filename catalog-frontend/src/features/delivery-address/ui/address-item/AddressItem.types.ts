@@ -3,6 +3,6 @@ export interface AddressItemProps {
     address: string,
     shelfLife: number,
     selected?: boolean,
-    onClick?: () => void
+    onSelect?: (id: string) => void
     className?: string,
 }

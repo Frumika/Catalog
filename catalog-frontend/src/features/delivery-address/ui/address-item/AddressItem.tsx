@@ -10,7 +10,7 @@ export const AddressItem = (
         address,
         shelfLife,
         selected = false,
-        onClick,
+        onSelect,
         className
     }: AddressItemProps
 ) => {
@@ -24,7 +24,7 @@ export const AddressItem = (
     return (
         <div
             className={addressItemStyles}
-            onClick={onClick}
+            onClick={() => onSelect?.(id)}
         >
             <header className={styles.header}>
                 <span className={styles.title}>Пункт выдачи</span>
