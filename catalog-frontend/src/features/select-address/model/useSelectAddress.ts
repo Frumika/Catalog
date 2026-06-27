@@ -1,15 +1,25 @@
 import {useState} from "react";
+import {useDeliveryAddress} from "@/entities/delivery-address";
 
 
 export const useSelectAddress = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+    const {
+        addresses,
+        currentAddress,
+        error,
+        selectAddress,
+        deleteAddress,
+    } = useDeliveryAddress();
 
     return {
         isOpen,
-        selectedAddressId,
-        open: () => setIsOpen(true),
+        addresses,
+        currentAddress,
+        error,
+        open:  () => setIsOpen(true),
         close: () => setIsOpen(false),
-        selectAddress: (id: string) => setSelectedAddressId(id),
+        selectAddress: async (id: string) => await selectAddress(id),
+        deleteAddress,
     };
 };

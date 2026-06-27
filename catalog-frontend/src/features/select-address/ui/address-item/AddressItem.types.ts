@@ -1,7 +1,8 @@
+import type {DeliveryAddress} from "@/entities/delivery-address";
+
+
 export interface AddressItemProps {
-    id: string,
-    address: string,
-    shelfLife: number,
+    deliveryAddress: DeliveryAddress,
     selected?: boolean,
     onSelect?: (id: string) => void
     className?: string,

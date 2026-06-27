@@ -4,16 +4,16 @@ import {CloseButton} from "../close-button/CloseButton.tsx";
 import {AddressItem} from "../address-item/AddressItem.tsx";
 import {Button} from "@/shared/ui/button";
 import styles from "./AddressModal.module.css";
-import {MOCK_ADDRESSES} from "@/features/delivery-address/model/addresses.ts";
 
 
 export const AddressModal = (
     {
+        addresses,
+        selectedAddress,
         isOpen,
         onClose,
         onSelect,
-        selectedAddressId,
-        addresses,
+        onDelete
     }: AddressModalProps
 ) => {
 
@@ -26,13 +26,11 @@ export const AddressModal = (
 
             <div className={styles.main}>
                 {addresses?.map(
-                    point => (
+                    deliveryAddress => (
                         <AddressItem
-                            key={point.id}
-                            id={point.id}
-                            address={point.address}
-                            shelfLife={point.shelfLife}
-                            selected={selectedAddressId === point.id}
+                            key={deliveryAddress.id}
+                            deliveryAddress={deliveryAddress}
+                            selected={selectedAddress?.id === deliveryAddress.id}
                             onSelect={onSelect}
                         />
                     ))}
@@ -45,10 +43,13 @@ export const AddressModal = (
                     size="large"
                     fullWidth>
                     <div className={styles.buttonContent}>
-                        <span className={styles.buttonTitle}>Добавить</span>
+                        <span className={styles.buttonTitle}>
+                            Добавить
+                        </span>
+
                         <span className={styles.buttonDescription}>
-                        адрес доставки, пункт выдачи, постамат
-                    </span>
+                            адрес доставки, пункт выдачи, постамат
+                        </span>
                     </div>
                 </Button>
             </div>

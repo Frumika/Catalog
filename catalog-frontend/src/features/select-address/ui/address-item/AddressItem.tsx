@@ -6,9 +6,7 @@ import {Button} from "@/shared/ui/button";
 
 export const AddressItem = (
     {
-        id,
-        address,
-        shelfLife,
+        deliveryAddress,
         selected = false,
         onSelect,
         className
@@ -24,16 +22,21 @@ export const AddressItem = (
     return (
         <div
             className={addressItemStyles}
-            onClick={() => onSelect?.(id)}
+            onClick={() => onSelect?.(deliveryAddress.id)}
         >
             <header className={styles.header}>
                 <span className={styles.title}>Пункт выдачи</span>
-                <span className={styles.id}>{`№ ${id}`}</span>
+                <span className={styles.id}>{`№ ${deliveryAddress.id}`}</span>
             </header>
 
             <div className={styles.description}>
-                <span className={styles.address}>{address}</span>
-                <span className={styles.shelfLife}>{`Срок хранения заказа – ${shelfLife} дней`}</span>
+                <span className={styles.address}>
+                    {deliveryAddress.address}
+                </span>
+
+                <span className={styles.shelfLife}>
+                    {`Срок хранения заказа – ${deliveryAddress.shelfLifetime} дней`}
+                </span>
             </div>
 
             <Button
