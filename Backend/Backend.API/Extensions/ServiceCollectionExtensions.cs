@@ -63,6 +63,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<OrderService>();
         services.AddScoped<OrdersCleanupService>();
         services.AddScoped<ReviewService>();
+        services.AddScoped<PickupPointService>();
 
         services.AddHostedService<OrdersCleanupBackgroundService>();
 

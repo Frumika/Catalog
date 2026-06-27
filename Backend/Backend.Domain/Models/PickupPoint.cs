@@ -8,6 +8,9 @@ public class PickupPoint
     public string StreetName { get; set; } = string.Empty;
     public string House { get; set; } = string.Empty;
     public string? Building { get; set; }
+    
+    //Todo: дописать в MainDbContext
+    public int ShelfLifetime { get; set; }
     public DateTime AddedAt { get; set; }
 
     public ICollection<UserPickupPoint> UserPickupPoints { get; set; } = new List<UserPickupPoint>();

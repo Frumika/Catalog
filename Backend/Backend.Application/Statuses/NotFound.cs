@@ -31,3 +31,8 @@ public record ReviewNotFound : NotFound
 {
     public override string Code => "review_not_found";
 }
+
+public record PickupPointNotFound : NotFound
+{
+    public override string Code => "pickup_point_not_found";
+}

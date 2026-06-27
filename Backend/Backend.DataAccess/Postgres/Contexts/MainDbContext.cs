@@ -6,19 +6,21 @@ namespace Backend.DataAccess.Postgres.Contexts;
 
 public class MainDbContext : DbContext
 {
-    public DbSet<User> Users { get; set; }
-    public DbSet<UserSession> UserSessions { get; set; }
-    public DbSet<Product> Products { get; set; }
-    public DbSet<ProductImage> ProductImages { get; set; }
-    public DbSet<Review> Reviews { get; set; }
-    public DbSet<Category> Categories { get; set; }
-    public DbSet<Maker> Makers { get; set; }
-    public DbSet<Order> Orders { get; set; }
-    public DbSet<OrderedProduct> OrderedProducts { get; set; }
-    public DbSet<Cart> Carts { get; set; }
-    public DbSet<CartItem> CartItems { get; set; }
-    public DbSet<Wishlist> Wishlists { get; set; }
-    public DbSet<WishlistItem> WishlistItems { get; set; }
+    public DbSet<User> Users => Set<User>();
+    public DbSet<UserSession> UserSessions => Set<UserSession>();
+    public DbSet<Product> Products => Set<Product>();
+    public DbSet<ProductImage> ProductImages => Set<ProductImage>();
+    public DbSet<Review> Reviews => Set<Review>();
+    public DbSet<Category> Categories => Set<Category>();
+    public DbSet<Maker> Makers => Set<Maker>();
+    public DbSet<Order> Orders => Set<Order>();
+    public DbSet<OrderedProduct> OrderedProducts => Set<OrderedProduct>();
+    public DbSet<Cart> Carts => Set<Cart>();
+    public DbSet<CartItem> CartItems => Set<CartItem>();
+    public DbSet<Wishlist> Wishlists => Set<Wishlist>();
+    public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
+    public DbSet<PickupPoint> PickupPoints => Set<PickupPoint>();
+    public DbSet<UserPickupPoint> UserPickupPoints => Set<UserPickupPoint>();
 
     public MainDbContext(DbContextOptions<MainDbContext> options) : base(options)
     {
