@@ -1,6 +1,6 @@
-export interface Address {
+export interface DeliveryAddress {
     id: string;
-    name: string;
+    address: string;
     shelfLifetime: number;
     selectedAt: string;
 }

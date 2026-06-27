@@ -5,6 +5,7 @@ import {SearchBar} from "@/features/search/search-bar";
 import {NavButton} from "@/widgets/header/ui/nav-button";
 import {CategoryButton} from "@/widgets/header/ui/category-button";
 import {ContentContainer} from "@/shared/ui/content-container";
+import {SelectAddress} from "@/features/select-address/ui/SelectAddress.tsx";
 
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
 import OrderIcon from "@/shared/assets/icons/order.svg?react";
@@ -12,7 +13,6 @@ import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
 
 import styles from "./Header.module.css"
-import {DeliveryAddress} from "@/features/select-delivery-address/ui/DeliveryAddress.tsx";
 
 
 export const Header = (
@@ -95,7 +95,7 @@ export const Header = (
                             </CategoryButton>
                         </div>
 
-                        <DeliveryAddress/>
+                        <SelectAddress/>
                     </div>
                 </div>
             </ContentContainer>
