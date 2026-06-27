@@ -1,4 +1,4 @@
-import type {SearchBarProps} from "@/features/search/search-bar/SearchBar.types.ts";
+import type {SearchBarProps} from "@/features/search-bar/ui/SearchBar.types.ts";
 import type {KeyboardEvent} from 'react';
 import {Input} from '@/shared/ui/input';
 import {Button} from '@/shared/ui/button';
