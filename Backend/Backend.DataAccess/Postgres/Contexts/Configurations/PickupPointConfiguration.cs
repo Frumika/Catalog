@@ -22,12 +22,12 @@ public class PickupPointConfiguration : IEntityTypeConfiguration<PickupPoint>
 
         entity.Property(pp => pp.StreetType)
             .HasColumnName("street_type")
+            .HasConversion<string>()
             .HasMaxLength(30)
             .IsRequired();
 
         entity.Property(pp => pp.StreetName)
             .HasColumnName("street_name")
-            .HasConversion<string>()
             .HasMaxLength(150)
             .IsRequired();
 
