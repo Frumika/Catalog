@@ -39,7 +39,11 @@ public class PickupPointConfiguration : IEntityTypeConfiguration<PickupPoint>
         entity.Property(pp => pp.Building)
             .HasColumnName("building")
             .HasMaxLength(30);
-        
+
+        entity.Property(pp => pp.ShelfLifetime)
+            .HasColumnName("shelf_lifetime")
+            .IsRequired();
+
         entity.Property(pp => pp.AddedAt)
             .HasColumnName("created_at")
             .IsRequired();

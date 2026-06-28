@@ -2,7 +2,7 @@
 
 namespace Backend.Application.Requests.PickupPoint;
 
-public class UpdateSelectedPointRequest
+public class RemovePointRequest
 {
     public string UserSessionId { get; set; } = string.Empty;
     public int PickupPointId { get; set; }
