@@ -5,7 +5,7 @@ import {SearchBar} from "@/features/search-bar";
 import {NavButton} from "@/widgets/header/ui/nav-button";
 import {CategoryButton} from "@/widgets/header/ui/category-button";
 import {ContentContainer} from "@/shared/ui/content-container";
-import {SelectAddress} from "@/features/select-address/ui/SelectAddress.tsx";
+import {SelectPickupPoint} from "@/features/select-address/ui/SelectPickupPoint.tsx";
 
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
 import OrderIcon from "@/shared/assets/icons/order.svg?react";
@@ -95,7 +95,7 @@ export const Header = (
                             </CategoryButton>
                         </div>
 
-                        <SelectAddress/>
+                        <SelectPickupPoint/>
                     </div>
                 </div>
             </ContentContainer>

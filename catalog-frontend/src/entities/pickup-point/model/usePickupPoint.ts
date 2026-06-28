@@ -1,15 +1,15 @@
 import {useEffect, useState} from "react";
-import type {DeliveryAddress} from "@/entities/delivery-address/model/DeliveryAddress.types.ts";
-import {DeliveryAddressApi} from "@/entities/delivery-address/api/deliveryAddressApi.ts";
+import type {PickupPoint} from "@/entities/pickup-point/model/PickupPoint.types.ts";
+import {PickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
 
-export const useDeliveryAddress = () => {
-    const [addresses, setAddresses] = useState<DeliveryAddress[]>([]);
+export const usePickupPoint = () => {
+    const [addresses, setAddresses] = useState<PickupPoint[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         setIsLoading(true);
-        DeliveryAddressApi
+        PickupPointApi
             .getAll()
             .then(address => setAddresses(address))
             .catch(error => setError(error))
@@ -17,7 +17,7 @@ export const useDeliveryAddress = () => {
     }, []);
 
     const selectAddress = async (id: string) => {
-        const sort = (arr: DeliveryAddress[]) =>
+        const sort = (arr: PickupPoint[]) =>
             [...arr].sort((a, b) => {
                 if (!a.selectedAt) return 1;
                 if (!b.selectedAt) return -1;
@@ -32,7 +32,7 @@ export const useDeliveryAddress = () => {
         );
 
         try {
-            const updated = await DeliveryAddressApi.select(id);
+            const updated = await PickupPointApi.select(id);
             setAddresses(prev => sort(prev.map(a => a.id === id ? updated : a)));
         } catch (e) {
             setError('Не удалось выбрать адрес');
@@ -43,7 +43,7 @@ export const useDeliveryAddress = () => {
         setAddresses(prev => prev.filter(a => a.id !== id));
 
         try {
-            await DeliveryAddressApi.delete(id);
+            await PickupPointApi.delete(id);
         } catch (e) {
             setError('Не удалось удалить адрес');
         }

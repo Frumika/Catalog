@@ -1,17 +1,17 @@
-import type {DeliveryAddress} from "@/entities/delivery-address/model/DeliveryAddress.types.ts";
+import type {PickupPoint} from "@/entities/pickup-point/model/PickupPoint.types.ts";
 
 
-const BASE_URL = '/api/delivery-address';
+const BASE_URL = '/api/pickup-point';
 
-export const DeliveryAddressApi = {
+export const PickupPointApi = {
 
-    getAll: async (): Promise<DeliveryAddress[]> => {
+    getAll: async (): Promise<PickupPoint[]> => {
         const response = await fetch(BASE_URL);
         if (!response.ok) throw new Error('Не удалось загрузить адреса');
         return response.json();
     },
 
-    select: async (id: string): Promise<DeliveryAddress> => {
+    select: async (id: string): Promise<PickupPoint> => {
         const response = await fetch(`${BASE_URL}/select/${id}`, {method: 'PATCH'});
         if (!response.ok) throw new Error('Не удалось выбрать адрес');
         return response.json();
@@ -22,7 +22,7 @@ export const DeliveryAddressApi = {
         if (!response.ok) throw new Error('Не удалось удалить адрес');
     },
 
-    add: async (address: string): Promise<DeliveryAddress> => {
+    add: async (address: string): Promise<PickupPoint> => {
         const res = await fetch(BASE_URL, {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

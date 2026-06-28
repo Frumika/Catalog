@@ -1,8 +1,8 @@
-import type {DeliveryAddress} from "@/entities/delivery-address";
+import type {PickupPoint} from "@/entities/pickup-point";
 
 
 export interface AddressItemProps {
-    deliveryAddress: DeliveryAddress,
+    deliveryAddress: PickupPoint,
     selected?: boolean,
     onSelect?: (id: string) => void
     className?: string,

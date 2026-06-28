@@ -1,9 +1,9 @@
 import {AddressButton} from "./address-button/AddressButton.tsx";
 import {AddressModal} from "./address-modal/AddressModal.tsx";
-import {useSelectAddress} from "../model/useSelectAddress.ts";
+import {useSelectPickupPoint} from "../model/useSelectPickupPoint.ts";
 
 
-export const SelectAddress = () => {
+export const SelectPickupPoint = () => {
     const {
         isOpen,
         addresses,
@@ -12,7 +12,7 @@ export const SelectAddress = () => {
         close,
         selectAddress,
         deleteAddress,
-    } = useSelectAddress();
+    } = useSelectPickupPoint();
 
     return (
         <>
@@ -26,7 +26,7 @@ export const SelectAddress = () => {
                 addresses={addresses}
                 selectedAddress={currentAddress}
                 onSelect={selectAddress}
-                onDelete={deleteAddress}
+                onRemove={deleteAddress}
             />
         </>
     );

@@ -13,7 +13,7 @@ export const AddressModal = (
         isOpen,
         onClose,
         onSelect,
-        onDelete
+        onRemove
     }: AddressModalProps
 ) => {
 

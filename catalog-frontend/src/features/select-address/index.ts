@@ -1,1 +1,1 @@
-export {DeliveryAddress} from "@/features/delivery-address/ui/DeliveryAddress.tsx";
+export {SelectPickupPoint} from "./ui/SelectPickupPoint.tsx";

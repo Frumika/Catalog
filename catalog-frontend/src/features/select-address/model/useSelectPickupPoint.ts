@@ -1,8 +1,8 @@
 import {useState} from "react";
-import {useDeliveryAddress} from "@/entities/delivery-address";
+import {usePickupPoint} from "@/entities/pickup-point";
 
 
-export const useSelectAddress = () => {
+export const useSelectPickupPoint = () => {
     const [isOpen, setIsOpen] = useState(false);
     const {
         addresses,
@@ -10,7 +10,7 @@ export const useSelectAddress = () => {
         error,
         selectAddress,
         deleteAddress,
-    } = useDeliveryAddress();
+    } = usePickupPoint();
 
     return {
         isOpen,

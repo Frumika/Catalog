@@ -1,4 +1,4 @@
-export interface DeliveryAddress {
+export interface PickupPoint {
     id: string;
     address: string;
     shelfLifetime: number;
