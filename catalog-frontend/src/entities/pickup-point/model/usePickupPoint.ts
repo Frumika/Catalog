@@ -1,11 +1,12 @@
 import {useEffect, useState} from "react";
 import type {PickupPoint} from "@/entities/pickup-point/model/PickupPoint.types.ts";
 import {pickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
+import {ApiError, toApiError} from "@/shared/api";
 
 export const usePickupPoint = () => {
     const [addresses, setAddresses] = useState<PickupPoint[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [error, setError] = useState<ApiError | null>(null);
 
     useEffect(() => {
         setIsLoading(true);
@@ -24,6 +25,8 @@ export const usePickupPoint = () => {
                 return new Date(b.selectedAt).getTime() - new Date(a.selectedAt).getTime();
             });
 
+        const previous = addresses;
+
         setAddresses(prev =>
             sort(prev.map(address => ({
                 ...address,
@@ -34,18 +37,22 @@ export const usePickupPoint = () => {
         try {
             const updated = await pickupPointApi.select(id);
             setAddresses(prev => sort(prev.map(a => a.id === id ? updated : a)));
-        } catch (e) {
-            setError('Не удалось выбрать адрес');
+        } catch (error) {
+            setError(toApiError(error));
+            setAddresses(previous);
         }
     };
 
     const deleteAddress = async (id: string) => {
+        const previous = addresses;
+
         setAddresses(prev => prev.filter(a => a.id !== id));
 
         try {
             await pickupPointApi.delete(id);
-        } catch (e) {
-            setError('Не удалось удалить адрес');
+        } catch (error) {
+            setError(toApiError(error));
+            setAddresses(previous);
         }
     };
 

@@ -51,7 +51,7 @@ public class PickupPointService
                         SelectedAt = x.SelectedAt
                     }
                 )
-                .OrderBy(x => x.SelectedAt)
+                .OrderByDescending(x => x.SelectedAt)
                 .ToList();
 
             return Response.Success(points);
