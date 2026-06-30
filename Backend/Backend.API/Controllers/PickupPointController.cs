@@ -17,10 +17,10 @@ public class PickupPointController : ControllerBase
         _pickupPointService = pickupPointService;
     }
 
-    [HttpGet("all")]
-    public async Task<IActionResult> GetAll(GetPickupPointsRequest request)
+    [HttpGet("all/{sessionId}")]
+    public async Task<IActionResult> GetAll([FromRoute] string sessionId)
     {
-        var response = await _pickupPointService.GetPointsAsync(request);
+        var response = await _pickupPointService.GetPointsAsync(sessionId);
         return response.ToHttpResponse();
     }
 

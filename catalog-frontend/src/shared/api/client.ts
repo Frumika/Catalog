@@ -1,67 +1,63 @@
-import {session} from "@/shared/api/session.ts";
-
-type RequestBody = Record<string, unknown>;
+import {session} from "./session.ts";
+import type {ApiResponse, RequestBody} from "./types.ts";
 
 
 const BASE_URL = "http://localhost:8000/";
 
-async function request<T>(
+async function request<TData>(
     url: string,
     method: string,
     body: RequestBody = {},
     authorization = false,
     headers?: HeadersInit
-): Promise<T> {
+): Promise<ApiResponse<TData>> {
+
+    let fullUrl = BASE_URL + url;
     const resultBody: RequestBody = {...body};
 
     if (authorization) {
         const sessionId = session.get();
         if (sessionId) {
-            resultBody.UserSessionId = sessionId;
+            if (method === 'GET') {
+                fullUrl += `/${sessionId}`;
+            } else {
+                resultBody.UserSessionId = sessionId;
+            }
         }
     }
 
-    const response = await fetch(
-        BASE_URL + url,
-        {
-            method,
-            headers: {
-                'Content-Type': 'application/json',
-                ...headers,
-            },
-            body: JSON.stringify(resultBody),
-        }
-    );
+    const response = await fetch(fullUrl, {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers,
+        },
+        ...(method !== 'GET' && {body: JSON.stringify(resultBody)}),
+    });
 
-    if (!response.ok) {
-        throw new Error(`${method} ${url} — ${response.status}`);
-    }
+    const result = await response.json() as Omit<ApiResponse<TData>, 'ok'>;
 
-    const finalResponse: T = await response.json() as T;
-
-    console.log(`Raw response: ${response}`);
-    console.log(`Response body: ${finalResponse}`);
-
-    return finalResponse;
+    return {...result, ok: response.ok};
 }
 
 export const apiClient = {
-    get<T>(url: string, authorization = false, headers?: HeadersInit): Promise<T> {
-        return request<T>(url, 'GET', {}, authorization, headers);
-    },
-    post<T>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit): Promise<T> {
-        return request<T>(url, 'POST', body, authorization, headers);
+    get<TData>(url: string, authorization = false, headers?: HeadersInit) {
+        return request<TData>(url, 'GET', {}, authorization, headers);
     },
 
-    put<T>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit): Promise<T> {
-        return request<T>(url, 'PUT', body, authorization, headers);
+    post<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+        return request<TData>(url, 'POST', body, authorization, headers);
     },
 
-    patch<T>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit): Promise<T> {
-        return request<T>(url, 'PATCH', body, authorization, headers);
+    put<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+        return request<TData>(url, 'PUT', body, authorization, headers);
     },
 
-    delete<T>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit): Promise<T> {
-        return request<T>(url, 'DELETE', body, authorization, headers);
+    patch<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+        return request<TData>(url, 'PATCH', body, authorization, headers);
+    },
+
+    delete<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+        return request<TData>(url, 'DELETE', body, authorization, headers);
     },
 };

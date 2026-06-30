@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import type {PickupPoint} from "@/entities/pickup-point/model/PickupPoint.types.ts";
-import {PickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
+import {pickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
 
 export const usePickupPoint = () => {
     const [addresses, setAddresses] = useState<PickupPoint[]>([]);
@@ -9,7 +9,7 @@ export const usePickupPoint = () => {
 
     useEffect(() => {
         setIsLoading(true);
-        PickupPointApi
+        pickupPointApi
             .getAll()
             .then(address => setAddresses(address))
             .catch(error => setError(error))
@@ -32,7 +32,7 @@ export const usePickupPoint = () => {
         );
 
         try {
-            const updated = await PickupPointApi.select(id);
+            const updated = await pickupPointApi.select(id);
             setAddresses(prev => sort(prev.map(a => a.id === id ? updated : a)));
         } catch (e) {
             setError('Не удалось выбрать адрес');
@@ -43,7 +43,7 @@ export const usePickupPoint = () => {
         setAddresses(prev => prev.filter(a => a.id !== id));
 
         try {
-            await PickupPointApi.delete(id);
+            await pickupPointApi.delete(id);
         } catch (e) {
             setError('Не удалось удалить адрес');
         }

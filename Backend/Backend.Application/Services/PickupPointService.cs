@@ -19,17 +19,13 @@ public class PickupPointService
         _dbContext = dbContext;
     }
 
-    public async Task<Response> GetPointsAsync(GetPickupPointsRequest request)
+    public async Task<Response> GetPointsAsync(string sessionId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
         try
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.UId == sessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)

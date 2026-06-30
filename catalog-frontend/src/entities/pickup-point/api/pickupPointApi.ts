@@ -2,19 +2,34 @@ import type {PickupPoint} from "@/entities/pickup-point/model/PickupPoint.types.
 import {apiClient} from "@/shared/api";
 
 
-const ENDPOINT = 'api/pickup-point';
+const ENDPOINT = 'api/pickup_point';
 
-export const PickupPointApi = {
+export const pickupPointApi = {
+    getAll: async (): Promise<PickupPoint[]> => {
+        let response = await apiClient.get<PickupPoint[]>(
+            `${ENDPOINT}/all`,
+            true
+        );
 
-    getAll: (): Promise<PickupPoint[]> =>
-        apiClient.get<PickupPoint[]>(`${ENDPOINT}/all`),
+        return response.data as PickupPoint[];
+    },
 
-    select: (id: string): Promise<PickupPoint> =>
-        apiClient.patch<PickupPoint>(`${ENDPOINT}/select/${id}`),
+    select: async (id: string): Promise<PickupPoint> => {
+        let response = await apiClient.patch<PickupPoint>(
+            `${ENDPOINT}/select/${id}`,
+            {id},
+            true
+        );
 
-    delete: (id: string): Promise<void> =>
-        apiClient.delete<void>(`${ENDPOINT}/remove/${id}`),
+        return response.data as PickupPoint;
+    },
 
-    add: (address: string): Promise<PickupPoint> =>
-        apiClient.post<PickupPoint>(ENDPOINT, {address}),
+    delete: async (id: string): Promise<void> => {
+        let response = await apiClient.delete<void>(`${ENDPOINT}/remove/${id}`,)
+    },
+
+    add: async (address: string): Promise<PickupPoint> => {
+        let response = await apiClient.post<PickupPoint>(ENDPOINT, {address})
+        return response.data as PickupPoint;
+    }
 }
