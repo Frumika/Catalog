@@ -1,16 +1,16 @@
-import type {AddressItemProps} from "./AddressItem.types.ts";
+import type {AddressCardProps} from "./AddressCard.types.ts";
 import KebabMenuIcon from "@/shared/assets/icons/kebab-menu.svg?react";
-import styles from "./AddressItem.module.css";
+import styles from "./AddressCard.module.css";
 import {Button} from "@/shared/ui/button";
 
 
-export const AddressItem = (
+export const AddressCard = (
     {
         deliveryAddress,
         selected = false,
         onSelect,
         className
-    }: AddressItemProps
+    }: AddressCardProps
 ) => {
 
     const addressItemStyles = [

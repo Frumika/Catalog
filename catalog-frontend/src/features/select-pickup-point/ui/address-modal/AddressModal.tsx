@@ -1,7 +1,7 @@
 import type {AddressModalProps} from "./AddressModal.types.ts";
 import {Modal} from "@/shared/ui/modal";
 import {CloseButton} from "../close-button/CloseButton.tsx";
-import {AddressItem} from "../address-item/AddressItem.tsx";
+import {AddressCard} from "@/features/select-pickup-point/ui/address-card/AddressCard.tsx";
 import {Button} from "@/shared/ui/button";
 import styles from "./AddressModal.module.css";
 
@@ -27,7 +27,7 @@ export const AddressModal = (
             <div className={styles.main}>
                 {addresses?.map(
                     deliveryAddress => (
-                        <AddressItem
+                        <AddressCard
                             key={deliveryAddress.id}
                             deliveryAddress={deliveryAddress}
                             selected={selectedAddress?.id === deliveryAddress.id}

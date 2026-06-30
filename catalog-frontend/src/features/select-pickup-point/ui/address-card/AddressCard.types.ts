@@ -1,7 +1,7 @@
 import type {PickupPoint} from "@/entities/pickup-point";
 
 
-export interface AddressItemProps {
+export interface AddressCardProps {
     deliveryAddress: PickupPoint,
     selected?: boolean,
     onSelect?: (id: string) => void
