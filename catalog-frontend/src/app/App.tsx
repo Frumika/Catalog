@@ -1,4 +1,4 @@
-import {AppRoutes} from "@/app/routes/routes.tsx";
+import {AppRoutes} from "@/app/routes/AppRoutes.tsx";
 import {Header} from "@/widgets/header";
 
 

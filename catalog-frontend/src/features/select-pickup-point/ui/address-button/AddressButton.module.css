@@ -8,19 +8,20 @@
 
     font-family: var(--fontMain), sans-serif;
     font-size: 14px;
-    font-weight: 400;
+    font-weight: 00;
 
     cursor: pointer;
 
     gap: 4px;
 }
 
-.emptyAddress{
+.emptyAddress {
     font-weight: 600;
 }
 
 .label {
     color: rgba(0, 26, 52, 0.4);
+    font-weight: 500;
 }
 
 .destination {
