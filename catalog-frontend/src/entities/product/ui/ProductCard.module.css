@@ -1,0 +1,47 @@
+.productCard {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+    background: var(--layerBackground);
+
+    border: none;
+    border-radius: 16px;
+
+    width: calc(20% - 8px);
+}
+
+.imageWrapper {
+    border: 2px solid red;
+
+    border-radius: 14px 14px 0 0;
+    margin: 4px 4px 0 0;
+    min-height: 150px;
+    padding-bottom: 8px;
+}
+
+.contentWrapper {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    justify-content: flex-start;
+    width: 100%;
+    color: var(--textPrimary);
+    padding: 0 10px 10px;
+}
+
+.price {
+    display: flex;
+}
+
+.productName {
+
+}
+
+.feedback {
+    display: flex;
+}
+
+.wishlistButton {
+    position: absolute;
+}
