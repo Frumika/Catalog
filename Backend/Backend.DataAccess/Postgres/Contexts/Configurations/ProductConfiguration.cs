@@ -7,7 +7,7 @@ namespace Backend.DataAccess.Postgres.Contexts.Configurations;
 public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     private const string MoneyType = "numeric(10,2)";
-    
+
     public void Configure(EntityTypeBuilder<Product> entity)
     {
         entity.ToTable("products");
@@ -36,6 +36,11 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         entity.Property(p => p.Price)
             .HasColumnName("price")
             .HasColumnType(MoneyType)
+            .IsRequired();
+
+        entity.Property(p => p.DiscountPercent)
+            .HasColumnName("discount_percent")
+            .HasDefaultValue(0)
             .IsRequired();
 
         entity.Property(p => p.Quantity)

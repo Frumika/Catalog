@@ -45,7 +45,7 @@ public class PickupPointConfiguration : IEntityTypeConfiguration<PickupPoint>
             .IsRequired();
 
         entity.Property(pp => pp.AddedAt)
-            .HasColumnName("created_at")
+            .HasColumnName("added_at")
             .IsRequired();
     }
 }
