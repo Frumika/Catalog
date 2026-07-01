@@ -34,6 +34,8 @@ public class CatalogService
                     ProductId = p.Id,
                     ProductName = p.Name,
                     Price = p.Price,
+                    DiscountPrice = Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 2),
+                    DiscountPercent = p.DiscountPercent,
                     ReviewCount = p.Reviews.Count,
                     AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
                     ProductDescription = p.Description,
@@ -89,6 +91,8 @@ public class CatalogService
                     ProductId = p.Id,
                     ProductName = p.Name,
                     Price = p.Price,
+                    DiscountPrice = Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 2),
+                    DiscountPercent = p.DiscountPercent,
                     ReviewCount = p.Reviews.Count,
                     AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
                     ImageUrl = p.ProductImages
