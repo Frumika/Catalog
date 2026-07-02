@@ -12,7 +12,7 @@ async function request<TData>(
     headers?: HeadersInit
 ): Promise<ApiResponse<TData>> {
 
-    let fullUrl = BASE_URL + url;
+    let fullUrl = getFullUrl(url);
     const resultBody: RequestBody = {...body};
 
     if (authorization) {
@@ -61,3 +61,5 @@ export const apiClient = {
         return request<TData>(url, 'DELETE', body, authorization, headers);
     },
 };
+
+export const getFullUrl = (path: string): string => new URL(path, BASE_URL).toString();

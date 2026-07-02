@@ -10,7 +10,7 @@ export const useProductPreview = () => {
 
     useEffect(() => {
         productApi
-            .products()
+            .products(1, 5)
             .then(products => setProducts(products))
             .catch(error => setError(error))
             .finally()

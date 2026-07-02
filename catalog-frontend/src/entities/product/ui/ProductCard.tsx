@@ -9,6 +9,7 @@ import StarIcon from "@/shared/assets/icons/star.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
+import {getFullUrl} from "@/shared/api";
 
 
 interface ProductCardProps {
@@ -33,10 +34,6 @@ export const ProductCard = (
     ].filter(Boolean).join(' ');
 
     const hasDiscount = product.discountPercent !== 0;
-    const priceStyles = [
-        styles.price,
-        hasDiscount ? styles.oldPrice : null,
-    ].filter(Boolean).join(' ');
 
     return (
         <div className={productCardStyles}>
@@ -44,8 +41,7 @@ export const ProductCard = (
                 <img
                     className={styles.image}
                     onClick={onClick}
-                    src={image}
-                    alt={""}
+                    src={`${getFullUrl(product.imageUrl)}`}
                 />
             </a>
 
@@ -56,7 +52,7 @@ export const ProductCard = (
                             {`${product.discountPrice}₽`}
                         </span>}
 
-                    <span className={priceStyles}>
+                    <span className={hasDiscount ? styles.oldPrice : styles.price}>
                         {`${product.price}₽`}
                     </span>
 
@@ -93,12 +89,14 @@ export const ProductCard = (
 
 
                 {hasButton &&
-                    <Button
-                        className={styles.cartButton}
-                        size={"small"}
-                        icon={<CartIcon/>}>
-                        В корзину
-                    </Button>}
+                    <div className={styles.cartButton}>
+                        <Button
+                            fullWidth={true}
+                            size={"small"}
+                            icon={<CartIcon/>}>
+                            В корзину
+                        </Button>
+                    </div>}
             </div>
 
 
@@ -106,11 +104,8 @@ export const ProductCard = (
                     onClick={(event) => {
                         event.stopPropagation();
                     }}>
-                <Icon size={"large"}>
-                    <WishIcon/>
-                </Icon>
+                <Icon><WishIcon/></Icon>
             </button>
-
         </div>
     );
 }

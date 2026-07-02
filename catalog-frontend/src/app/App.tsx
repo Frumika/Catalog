@@ -1,7 +1,7 @@
 import {AppRoutes} from "@/app/routes/AppRoutes.tsx";
 import {Header} from "@/widgets/header";
-import {ProductCard} from "@/entities/product";
 import type {ProductPreview} from "@/entities/product/model/Product.types.ts";
+import {ProductCard} from "@/entities/product";
 
 
 function App() {
@@ -25,8 +25,11 @@ function App() {
     return (
         <main>
             <Header/>
-            <ProductCard product={product1}/>
-            <ProductCard product={product2}/>
+            <div>
+                <ProductCard product={product1}/>
+                <ProductCard product={product2}/>
+            </div>
+
             <AppRoutes/>
         </main>
     )
