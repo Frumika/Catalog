@@ -2,16 +2,26 @@
     --backgroundMain: #ffffff;
     --backgroundPage: #f5f7fa;
 
+    --colorMain: #ffffff;
+
     --colorPrimary: #005bff;
     --colorSecondary: #ebf7ff;
     --colorGhost: #99a3ae;
 
     --textPrimary: #070707;
-    --textAccent: #005bff;
+    --textSecondary: rgba(0, 26, 51, 0.6);
+    --textTertiary: rgba(0, 26, 52, 0.4);
+    --textAction: #005bff;
+    --textAccent: #f1117e;
+    --textPositive: #00c451;
+    --textWarning: #ffa800;
+    --textNegative: #f53c14;
     --textPlaceholcer: #9aa4ae;
-    --textSecondary: #99a3ae;
+    --textOriginalpriceAvailable: #99a3ae;
 
     --layerBackground: #ffffff;
+
+    --graphicRating: #ffa800;
 
 
     --fontMain: 'Onest', 'Roboto', 'SF Pro Display', 'Helvetica Neue', Arial;

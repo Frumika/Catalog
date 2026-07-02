@@ -2,6 +2,8 @@ interface Product {
     productId: number;
     productName: string;
     price: number;
+    discountPrice: number;
+    discountPercent: number;
     reviewCount: number;
     averageScore: number;
 }
