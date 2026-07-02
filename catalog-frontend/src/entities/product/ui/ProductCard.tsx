@@ -1,6 +1,5 @@
 import type {ProductPreview} from "../model/Product.types.ts";
 import styles from "./ProductCard.module.css";
-import image from "../../../shared/assets/images/test.png"
 
 import {Button} from "@/shared/ui/button";
 import {Icon} from "@/shared/ui/icon";
@@ -42,6 +41,7 @@ export const ProductCard = (
                     className={styles.image}
                     onClick={onClick}
                     src={`${getFullUrl(product.imageUrl)}`}
+                    alt={""}
                 />
             </a>
 
