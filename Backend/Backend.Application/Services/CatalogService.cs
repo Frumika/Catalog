@@ -1,4 +1,5 @@
-﻿using Backend.Application.DTO.Catalog;
+﻿using Backend.Application.DTO.Base;
+using Backend.Application.DTO.Catalog;
 using Backend.Application.Requests.Base;
 using Backend.Application.Requests.Catalog;
 using Backend.Application.Responses;
@@ -102,7 +103,15 @@ public class CatalogService
                 })
                 .ToListAsync();
 
-            return Response.Success(new ProductListDto(products, totalCount));
+            return Response.Success(
+                new PagedResultDto<ProductDto>
+                {
+                    Items = products,
+                    TotalCount = totalCount,
+                    PageNumber = request.PageNumber,
+                    PageSize = request.PageSize
+                }
+            );
         }
         catch (Exception)
         {
