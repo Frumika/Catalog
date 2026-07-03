@@ -13,7 +13,7 @@ function App() {
         discountPercent: 80,
         reviewCount: 5,
         averageScore: 4.4,
-        imageUrl: "images/iphone_15_pro_1.png",
+        imageUrl: "http://localhost:8000/images/iphone_15_pro_1.png",
     }
 
     const product2: ProductPreview = {

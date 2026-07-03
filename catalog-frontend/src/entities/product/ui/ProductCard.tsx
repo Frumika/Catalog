@@ -8,7 +8,6 @@ import StarIcon from "@/shared/assets/icons/star.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
-import {getFullUrl} from "@/shared/api";
 
 
 interface ProductCardProps {
@@ -40,7 +39,7 @@ export const ProductCard = (
                 <img
                     className={styles.image}
                     onClick={onClick}
-                    src={`${getFullUrl(product.imageUrl)}`}
+                    src={product.imageUrl}
                     alt={""}
                 />
             </a>
