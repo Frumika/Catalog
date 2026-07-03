@@ -4,7 +4,7 @@ import type {ProductPreview} from "./Product.types.ts";
 import {ApiError, toApiError} from "@/shared/api";
 
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 8;
 
 interface UseProductListResult {
     products: ProductPreview[];
