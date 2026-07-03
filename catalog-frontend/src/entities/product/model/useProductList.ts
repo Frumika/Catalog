@@ -31,12 +31,15 @@ export const useProductList = (): UseProductListResult => {
         setError(null);
 
         try {
-            const data = await productApi.products(page, PAGE_SIZE);
-            setProducts(prev => [...prev, ...data]);
-            setHasMore(data.length === PAGE_SIZE);
+            const result = await productApi.products(page, PAGE_SIZE);
+            setProducts(prev => [...prev, ...result.items]);
+
+            const loadedCount = page * PAGE_SIZE;
+            setHasMore(loadedCount < result.totalCount);
+
             pageRef.current = page;
-        } catch (error) {
-            setError(toApiError(error));
+        } catch (err) {
+            setError(toApiError(err));
         } finally {
             setIsLoading(false);
             isFetchingRef.current = false;
@@ -44,12 +47,12 @@ export const useProductList = (): UseProductListResult => {
     }, []);
 
     useEffect(() => {
-        fetchPage(1);
+        void fetchPage(1);
     }, [fetchPage]);
 
     const loadMore = useCallback(() => {
         if (!hasMore) return;
-        fetchPage(pageRef.current + 1);
+        void fetchPage(pageRef.current + 1);
     }, [hasMore, fetchPage]);
 
     return {products, isLoading, error, hasMore, loadMore};
