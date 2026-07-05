@@ -2,5 +2,5 @@
 
 public class ProductDto : BaseProductDto
 {
-    public string ImageUrl { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
 }

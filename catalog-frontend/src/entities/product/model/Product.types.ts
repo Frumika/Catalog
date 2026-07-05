@@ -1,20 +1,10 @@
-interface Product {
-    productId: number;
-    productName: string;
-    price: number;
-    discountPrice: number;
-    discountPercent: number;
-    reviewCount: number;
-    averageScore: number;
-}
+import type {ProductDetailsDto, ProductPreviewDto} from "../api/Product.dto.ts";
 
-export interface ProductPreview extends Product {
+
+export interface ProductPreview extends Omit<ProductPreviewDto, 'imageUrl'> {
     imageUrl: string;
 }
 
-export interface ProductDetails extends Product {
-    productDescription: string | null;
+export interface ProductDetails extends Omit<ProductDetailsDto, 'imageUrls'> {
     imageUrls: string[];
-    makerName: string;
-    makerDescription: string | null;
 }

@@ -99,7 +99,7 @@ public class CatalogService
                     ImageUrl = p.ProductImages
                         .OrderBy(pi => pi.Position)
                         .Select(pi => pi.Path)
-                        .FirstOrDefault() ?? string.Empty
+                        .FirstOrDefault()
                 })
                 .ToListAsync();
 

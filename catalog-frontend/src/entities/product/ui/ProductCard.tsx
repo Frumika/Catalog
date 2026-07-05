@@ -32,6 +32,7 @@ export const ProductCard = (
     ].filter(Boolean).join(' ');
 
     const hasDiscount = product.discountPercent !== 0;
+    const hasReview = product.reviewCount > 0;
 
     return (
         <div className={productCardStyles}>
@@ -66,26 +67,27 @@ export const ProductCard = (
                     {product.productName}
                 </span>
 
-                <div className={styles.feedback}>
-                    <Icon className={styles.starIcon}
-                          size={"small"}>
-                        <StarIcon/>
-                    </Icon>
+                {hasReview &&
+                    <div className={styles.feedback}>
+                        <Icon className={styles.starIcon}
+                              size={"small"}>
+                            <StarIcon/>
+                        </Icon>
 
-                    <span className={styles.averageScore}>
+                        <span className={styles.averageScore}>
                         {product.averageScore}
                     </span>
 
-                    <Icon className={styles.reviewIcon}
-                          size={"small"}>
-                        <ReviewIcon/>
-                    </Icon>
+                        <Icon className={styles.reviewIcon}
+                              size={"small"}>
+                            <ReviewIcon/>
+                        </Icon>
 
-                    <span className={styles.reviewCountText}>
+                        <span className={styles.reviewCountText}>
                         {`${product.reviewCount} отзывов`}
                     </span>
-                </div>
-
+                    </div>
+                }
 
                 {hasButton &&
                     <div className={styles.cartButton}>
@@ -97,7 +99,6 @@ export const ProductCard = (
                         </Button>
                     </div>}
             </div>
-
 
             <button className={styles.wishlistButton}
                     onClick={(event) => {
