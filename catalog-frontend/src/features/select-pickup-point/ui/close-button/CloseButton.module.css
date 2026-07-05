@@ -1,21 +1,5 @@
 .closeButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-
     height: 32px;
-    min-width: 32px;
+    width: 32px;
     border-radius: 50px;
-
-    background: var(--bgPrimary);
-    color: var(--graphicTertiary);
-
-    transition: all 0.2s ease;
-
-    cursor: pointer;
-}
-
-.closeButton:hover {
-    background: var(--bgPrimaryDark);
 }

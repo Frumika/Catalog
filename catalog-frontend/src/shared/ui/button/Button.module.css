@@ -40,17 +40,10 @@
 }
 
 .neutral {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: none;
-    border-radius: 50px;
+    border-radius: 12px;
 
     background: var(--bgOverlap);
     color: var(--graphicTertiary);
-
-    transition: all 0.2s ease;
-    cursor: pointer;
 }
 
 .neutral:hover {

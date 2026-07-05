@@ -1,11 +1,10 @@
 import type {CloseButtonProps} from "./CloseButton.types.ts";
-import {Icon} from "@/shared/ui/icon";
+import {Button} from "@/shared/ui/button";
+import styles from "./CloseButton.module.css";
 import CrossIcon from "@/shared/assets/icons/cross.svg?react";
 
-import styles from "./CloseButton.module.css";
 
-
-export const    CloseButton = (
+export const CloseButton = (
     {
         onClick,
         className,
@@ -19,12 +18,12 @@ export const    CloseButton = (
     ].filter(Boolean).join(' ');
 
     return (
-        <button
+        <Button
             {...props}
+            variant={"neutral"}
             className={closeButtonStyles}
+            icon={<CrossIcon/>}
             onClick={onClick}
-        >
-            <Icon size={"medium"}><CrossIcon/></Icon>
-        </button>
+        />
     );
 }
