@@ -1,0 +1,105 @@
+.footer {
+    background-color: var(--bgPrimary);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+    gap: 40px;
+    border-radius: 32px 32px 0 0;
+}
+
+.upperContent {
+    display: flex;
+    justify-content: space-between;
+}
+
+.imageWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.image {
+    width: 68px;
+    height: 68px;
+}
+
+.imageText {
+    color: var(--textTertiary);
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+}
+
+.linkButtonWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: start;
+    max-width: 300px;
+    min-width: 202px;
+}
+
+.bottomContent {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.textWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 4px;
+}
+
+.textRules {
+    width: 100%;
+    word-break: break-word;
+    color: var(--textTertiary);
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.textRules:hover {
+    color: var(--textAction);
+}
+
+.textRecommendations {
+    color: var(--textTertiary);
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+    font-weight: 400;
+    width: 100%;
+    word-break: break-word;
+}
+
+.textRecommendationLink {
+    color: var(--textAction);
+    cursor: pointer;
+}
+
+.mediaWrapper{
+    display: flex;
+    height: 44px;
+    gap: 32px;
+}
+
+.socialMedia {
+    display: flex;
+    gap: 16px;
+}
+
+.socialMediaButton{
+    border-radius: 12px;
+    height: 44px;
+}

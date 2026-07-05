@@ -3,6 +3,7 @@ import {Header} from "@/widgets/header";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {ProductList} from "@/features/product-list";
 import styles from "./HomePage.module.css"
+import {Footer} from "@/widgets/footer";
 
 
 export const HomePage = () => {
@@ -11,6 +12,7 @@ export const HomePage = () => {
     return (
         <>
             <Header/>
+
             <main className={styles.main}>
                 <ContentContainer>
                     <ProductList
@@ -20,6 +22,8 @@ export const HomePage = () => {
                     />
                 </ContentContainer>
             </main>
+
+            <Footer/>
         </>
     );
 };

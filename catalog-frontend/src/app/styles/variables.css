@@ -5,16 +5,17 @@
     --bgPrimary: #f5f7fa;
     --bgPrimaryDark: #ebeef2;
     --bgModalOverlay: rgba(3, 8, 13, 0.24);
+    --bgOverlap: rgba(204, 214, 228, 0.4);
 
     --colorMain: #ffffff;
 
     --graphicPrimary: #005bff;
     --graphicPrimaryDark: #0050E0;
     --graphicSecondary: #ebf7ff;
-    --graphicGhost: #99a3ae;
     --graphicAccent: #f1117e;
     --graphicRating: #ffa800;
     --graphicTertiary: rgba(0, 26, 52, 0.4);
+    --graphicTertiaryDark: rgba(0, 26, 51, 0.6);
     --graphicNeutral: rgba(204, 214, 228, 0.6);
     --graphicNeutralLight: rgba(55, 175, 255, 0.1);
 

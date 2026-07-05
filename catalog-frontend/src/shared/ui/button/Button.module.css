@@ -39,6 +39,24 @@
     color: var(--graphicPrimary);
 }
 
+.neutral {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 50px;
+
+    background: var(--bgOverlap);
+    color: var(--graphicTertiary);
+
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.neutral:hover {
+    background: var(--graphicNeutral);
+}
+
 .fullWidth {
     display: flex;
     width: 100%;
@@ -48,6 +66,7 @@
     --button-padding: 6px 10px;
     font-size: 14px;
     font-weight: 500;
+
 }
 
 .medium {
