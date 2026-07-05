@@ -1,9 +1,10 @@
-import {Routes} from 'react-router-dom';
+import {Route, Routes} from 'react-router-dom';
+import {HomePage} from "@/pages/home";
 
 export const AppRoutes = () => {
     return (
         <Routes>
-            {/*<Route path="/" element={<HomePage/>}/>*/}
+            <Route path="/" element={<HomePage/>}/>
             {/*<Route path="/catalog" element={<CatalogPage/>}/>*/}
             {/*<Route path="/cart" element={<CartPage/>}/>*/}
         </Routes>
