@@ -6,9 +6,8 @@
     border: none;
     background: none;
 
-    font-family: var(--fontMain), sans-serif;
     font-size: 14px;
-    font-weight: 00;
+    font-weight: 400;
 
     cursor: pointer;
 
@@ -20,8 +19,8 @@
 }
 
 .label {
-    color: rgba(0, 26, 52, 0.4);
-    font-weight: 500;
+    color: var(--textTertiary);
+    font-weight: 600;
 }
 
 .destination {

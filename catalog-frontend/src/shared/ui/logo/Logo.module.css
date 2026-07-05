@@ -5,7 +5,7 @@
     background: none;
     height: 44px;
     gap: 5px;
-    color: var(--colorPrimary);
+    color: var(--graphicPrimary);
     transition: color 0.15s ease-in;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .enabled:hover {
-    color: #0050E0;
+    color: var(--graphicPrimaryDark);
 }
 
 .icon {

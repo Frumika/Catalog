@@ -2,21 +2,21 @@
     display: flex;
     align-items: center;
     border-radius: 12px;
-    background: var(--colorPrimary);
+    background: var(--graphicPrimary);
 
     height: 44px;
     min-width: 350px;
 }
 
 .wrapper {
-    border: 2px solid var(--colorPrimary);
+    border: 2px solid var(--graphicPrimary);
 
     display: flex;
     align-items: center;
 
     height: 100%;
     width: 100%;
-    background: var(--backgroundMain);
+    background: var(--bgMain);
 
     border-radius: inherit;
 }
@@ -37,7 +37,7 @@
 }
 
 .deleteButton:hover {
-    color: #667685;
+    color: var(--textTertiary);
 }
 
 .searchButton {

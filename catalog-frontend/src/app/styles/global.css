@@ -8,5 +8,5 @@
 
 body{
     font-family: var(--fontMain), sans-serif;
-    background-color: var(--backgroundPage);
+    background-color: var(--bgPrimary);
 }

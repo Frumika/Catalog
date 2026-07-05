@@ -8,8 +8,8 @@
     min-width: 32px;
     border-radius: 50px;
 
-    background: #f5f7fa;
-    color: rgba(0, 26, 52, 0.4);
+    background: var(--bgPrimary);
+    color: var(--graphicTertiary);
 
     transition: all 0.2s ease;
 
@@ -17,5 +17,5 @@
 }
 
 .closeButton:hover {
-    background: #ebeef2;
+    background: var(--bgPrimaryDark);
 }

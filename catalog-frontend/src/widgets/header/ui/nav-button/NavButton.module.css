@@ -6,7 +6,7 @@
     align-items: center;
 
     background: transparent;
-    color: var(--textSecondary);
+    color: var(--graphicTertiary);
     border: none;
 
     width: 76px;
@@ -15,39 +15,38 @@
     cursor: pointer;
 }
 
-.hideText{
+.hideText {
     width: 44px;
 }
 
 .navButton:hover {
-    color: var(--colorPrimary);
+    color: var(--graphicPrimary);
     transition: color 0.15s ease-in;
 }
 
-.content{
+.content {
     display: flex;
     flex-direction: column;
 
     align-items: center;
 
-    font-family: var(--fontMain), sans-serif;
     font-size: 12px;
     font-weight: 600;
 
     text-align: center;
 }
 
-.badgeValue{
+.badgeValue {
     top: 0;
     left: calc(50% + 2px);
 }
 
-.badgeDot{
+.badgeDot {
     top: 4px;
     left: calc(50% + 8px);
 }
 
-.hideText .badgeValue{
+.hideText .badgeValue {
     left: auto;
     right: 0;
 }

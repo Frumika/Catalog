@@ -1,5 +1,5 @@
 .main {
     display: flex;
     margin-top: 20px;
-    background: var(--backgroundPage);
+    background: var(--bgPrimary);
 }

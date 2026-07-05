@@ -13,17 +13,17 @@
 }
 
 .primary {
-    background-color: var(--colorPrimary);
+    background-color: var(--graphicPrimary);
     color: #ffffff;
 }
 
 .primary:hover {
-    background-color: #0050E0;
+    background-color: var(--graphicPrimaryDark);
 }
 
 .secondary {
-    background-color: var(--colorSecondary);
-    color: var(--colorPrimary);
+    background-color: var(--graphicSecondary);
+    color: var(--graphicPrimary);
 }
 
 .secondary:hover {
@@ -32,11 +32,11 @@
 
 .ghost {
     background-color: transparent;
-    color: var(--colorGhost);
+    color: var(--textSecondary);
 }
 
 .ghost:hover {
-    color: var(--colorPrimary);
+    color: var(--graphicPrimary);
 }
 
 .fullWidth {
@@ -47,6 +47,7 @@
 .small {
     --button-padding: 6px 10px;
     font-size: 14px;
+    font-weight: 500;
 }
 
 .medium {

@@ -1,18 +1,28 @@
 :root {
-    --backgroundMain: #ffffff;
-    --backgroundPage: #f5f7fa;
+
+
+    --bgMain: #ffffff;
+    --bgPrimary: #f5f7fa;
+    --bgPrimaryDark: #ebeef2;
+    --bgModalOverlay: rgba(3, 8, 13, 0.24);
 
     --colorMain: #ffffff;
 
-    --colorPrimary: #005bff;
-    --colorSecondary: #ebf7ff;
-    --colorGhost: #99a3ae;
+    --graphicPrimary: #005bff;
+    --graphicPrimaryDark: #0050E0;
+    --graphicSecondary: #ebf7ff;
+    --graphicGhost: #99a3ae;
+    --graphicAccent: #f1117e;
+    --graphicRating: #ffa800;
+    --graphicTertiary: rgba(0, 26, 52, 0.4);
+    --graphicNeutral: rgba(204, 214, 228, 0.6);
+    --graphicNeutralLight: rgba(55, 175, 255, 0.1);
 
     --textPrimary: #070707;
+    --textLightKey: #ffffff;
     --textSecondary: rgba(0, 26, 51, 0.6);
     --textTertiary: rgba(0, 26, 52, 0.4);
     --textAction: #005bff;
-    --textAccent: #f1117e;
     --textPositive: #00c451;
     --textWarning: #ffa800;
     --textNegative: #f53c14;
@@ -20,8 +30,6 @@
     --textOriginalpriceAvailable: #99a3ae;
 
     --layerBackground: #ffffff;
-
-    --graphicRating: #ffa800;
 
 
     --fontMain: 'Onest', 'Roboto', 'SF Pro Display', 'Helvetica Neue', Arial;

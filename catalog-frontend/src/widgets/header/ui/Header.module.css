@@ -1,6 +1,6 @@
 .header {
     display: flex;
-    background: var(--backgroundPage);
+    background: var(--bgPrimary);
 }
 
 .content {
@@ -8,7 +8,7 @@
     flex-direction: column;
     align-items: center;
 
-    background-color: var(--backgroundMain);
+    background-color: var(--bgMain);
 
     gap: 5px;
 
