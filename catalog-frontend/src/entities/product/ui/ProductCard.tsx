@@ -104,7 +104,10 @@ export const ProductCard = (
                     onClick={(event) => {
                         event.stopPropagation();
                     }}>
-                <Icon><WishIcon/></Icon>
+
+                <Icon className={styles.wishlistIcon}>
+                    <WishIcon/>
+                </Icon>
             </button>
         </div>
     );

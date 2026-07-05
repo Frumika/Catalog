@@ -151,3 +151,8 @@
 
     color: var(--layerBackground)
 }
+
+.wishlistIcon {
+    stroke: var(--graphicTertiary);
+    stroke-width: 2px;
+}
