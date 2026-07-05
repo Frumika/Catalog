@@ -1,11 +1,5 @@
-.main{
-    display: flex;
-    background: var(--backgroundPage);
-}
-
-.grid {
+.productList {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
-    margin: 20px 0;
 }
