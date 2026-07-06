@@ -1,7 +1,7 @@
 import type {LogoProps} from "@/shared/ui/logo/Logo.types.ts";
-import styles from "./Logo.module.css";
 import LogoPic from "@/shared/assets/icons/logo-pic.svg?react";
 import LogoText from "@/shared/assets/icons/logo-text.svg?react";
+import styles from "./Logo.module.css";
 
 
 export const Logo = (
@@ -9,10 +9,12 @@ export const Logo = (
         disabled = false,
         className,
         onClick,
-        hideText = false,
+        displayMode = "full",
         ...props
     }: LogoProps
 ) => {
+
+    const isCompact = displayMode === "compact";
 
     const logoClasses = [
         styles.logo,
@@ -29,7 +31,7 @@ export const Logo = (
             onClick={onClick}
         >
             <LogoPic className={styles.icon}/>
-            {!hideText && <LogoText className={styles.text} />}
+            {!isCompact && <LogoText className={styles.text}/>}
         </button>
     );
 }

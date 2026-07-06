@@ -11,15 +11,16 @@ export const NavButton = (
         badgeVisible = true,
         children,
         className,
-        hideText = false,
+        displayMode = "full",
         ...props
     }: NavButtonProps) => {
 
+    const isCompact = displayMode === "compact";
     const badgeVariant = badgeValue !== undefined ? "value" : "dot";
 
     const navButtonStyles = [
         styles.navButton,
-        hideText ? styles.hideText : null,
+        isCompact ? styles.hideText : null,
         className,
     ].filter(Boolean).join(' ');
 
@@ -31,7 +32,7 @@ export const NavButton = (
         <button {...props} className={navButtonStyles}>
             <span className={styles.content}>
                 {icon && <Icon size="medium">{icon}</Icon>}
-                {!hideText && <span>{children}</span>}
+                {!isCompact && <span>{children}</span>}
             </span>
 
             <Badge

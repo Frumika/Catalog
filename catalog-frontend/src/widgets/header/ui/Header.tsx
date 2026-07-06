@@ -1,17 +1,12 @@
 import {useState} from "react";
 import {Logo} from "@/shared/ui/logo";
-import {CatalogButton} from "@/widgets/header/ui/catalog-button";
+import {CatalogButton} from "./catalog-button/CatalogButton.tsx";
 import {SearchBar} from "@/features/search-bar";
-import {NavButton} from "@/widgets/header/ui/nav-button";
-import {CategoryButton} from "@/widgets/header/ui/category-button";
+import {CategoryButton} from "./category-button/CategoryButton.tsx";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {SelectPickupPoint} from "@/features/select-pickup-point/ui/SelectPickupPoint.tsx";
-
-import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
-import OrderIcon from "@/shared/assets/icons/order.svg?react";
-import WishIcon from "@/shared/assets/icons/wish.svg?react";
-import CartIcon from "@/shared/assets/icons/cart.svg?react";
-
+import {NavGroup} from "./nav-group/NavGroup.tsx";
+import {type ComponentDisplayMode, useMediaQuery} from "@/shared/lib";
 import styles from "./Header.module.css"
 
 
@@ -20,14 +15,22 @@ export const Header = (
 ) => {
     const [query, setQuery] = useState('');
 
+    const isLaptop = useMediaQuery('(max-width: 1200px)');
+    const isTablet = useMediaQuery('(max-width: 1024px)');
+    const isMobile = useMediaQuery('(max-width: 950px)');
+
+    const logoDisplayMode: ComponentDisplayMode = isTablet ? 'compact' : 'full';
+    const catalogDisplayMode: ComponentDisplayMode = isLaptop ? 'compact' : 'full';
+    const navDisplayMode: ComponentDisplayMode = isMobile ? 'compact' : 'full';
+
     return (
         <header className={styles.header}>
             <ContentContainer>
                 <div className={styles.content}>
                     <div className={styles.upper}>
-                        <Logo hideText={false}/>
+                        <Logo displayMode={logoDisplayMode}/>
 
-                        <CatalogButton hideText={false}/>
+                        <CatalogButton displayMode={catalogDisplayMode}/>
 
                         <SearchBar
                             className={styles.searchBar}
@@ -38,34 +41,7 @@ export const Header = (
                             onClear={() => setQuery("")}
                         />
 
-                        <div className={styles.navItemContainer}>
-                            <NavButton
-                                icon={<ProfileIcon/>}
-                                hideText={false}>
-                                Войти
-                            </NavButton>
-
-                            <NavButton
-                                icon={<OrderIcon/>}
-                                badgeValue={150}
-                                hideText={false}>
-                                Заказы
-                            </NavButton>
-
-                            <NavButton
-                                icon={<WishIcon/>}
-                                badgeValue={5}
-                                hideText={false}>
-                                Избранное
-                            </NavButton>
-
-                            <NavButton
-                                icon={<CartIcon/>}
-                                badgeValue={10}
-                                hideText={false}>
-                                Корзина
-                            </NavButton>
-                        </div>
+                        <NavGroup displayMode={navDisplayMode}/>
                     </div>
 
                     <div className={styles.bottom}>

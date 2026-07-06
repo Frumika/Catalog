@@ -36,16 +36,10 @@
     padding: 8px 0 4px 0;
 }
 
-.navItemContainer {
-    display: flex;
-    align-items: center;
-    height: 44px;
-}
-
 .categoryItemContainer {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    gap: 4px;
 }
 
 .searchBar {
