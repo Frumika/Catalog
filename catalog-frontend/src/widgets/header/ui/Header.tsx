@@ -16,7 +16,7 @@ export const Header = (
     const [query, setQuery] = useState('');
 
     const isLaptop = useMediaQuery('(max-width: 1200px)');
-    const isTablet = useMediaQuery('(max-width: 1024px)');
+    const isTablet = useMediaQuery('(max-width: 1100px)');
     const isMobile = useMediaQuery('(max-width: 950px)');
 
     const logoDisplayMode: ComponentDisplayMode = isTablet ? 'compact' : 'full';
