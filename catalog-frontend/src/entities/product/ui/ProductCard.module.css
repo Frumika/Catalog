@@ -128,7 +128,7 @@
     color: var(--textTertiary);
 }
 
-.cartButton {
+.cartButtonWrapper {
     margin-top: auto;
     padding-top: 12px;
     width: 100%;

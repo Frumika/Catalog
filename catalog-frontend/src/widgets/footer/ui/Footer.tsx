@@ -23,58 +23,32 @@ export const Footer = () => {
                             </span>
                         </div>
 
-                        <div className={styles.linkButtonWrapper}>
-                            <LinkButton onClick={() => {
-                            }}>
-                                Об Wildboars / About Wildboars
-                            </LinkButton>
+                        <div className={styles.linkGroups}>
+                            <div className={styles.linkButtonWrapper}>
+                                <LinkButton>Об Wildboars / About Wildboars</LinkButton>
 
-                            <LinkButton onClick={() => {
-                            }}>
-                                Контакты
-                            </LinkButton>
+                                <LinkButton>Контакты</LinkButton>
 
-                            <LinkButton onClick={() => {
-                            }}>
-                                Политика обработки данных
-                            </LinkButton>
-                        </div>
+                                <LinkButton>Политика обработки данных</LinkButton>
+                            </div>
 
-                        <div className={styles.linkButtonWrapper}>
-                            <LinkButton onClick={() => {
-                            }}>
-                                Оплата
-                            </LinkButton>
+                            <div className={styles.linkButtonWrapper}>
+                                <LinkButton>Оплата</LinkButton>
 
-                            <LinkButton onClick={() => {
-                            }}>
-                                Доставка
-                            </LinkButton>
+                                <LinkButton>Доставка</LinkButton>
 
-                            <LinkButton onClick={() => {
-                            }}>
-                                Возврат товаров
-                            </LinkButton>
-                        </div>
+                                <LinkButton>Возврат товаров</LinkButton>
+                            </div>
 
-                        <div className={styles.linkButtonWrapper}>
-                            <LinkButton onClick={() => {
-                            }}>
-                                Wildboars Беларусь
-                            </LinkButton>
+                            <div className={styles.linkButtonWrapper}>
+                                <LinkButton>Wildboars Беларусь</LinkButton>
 
-                            <LinkButton onClick={() => {
-                            }}>
-                                Wildboars Казахстан
-                            </LinkButton>
+                                <LinkButton>Wildboars Казахстан</LinkButton>
 
-                            <LinkButton onClick={() => {
-                            }}>
-                                Wildboars Узбекистан
-                            </LinkButton>
+                                <LinkButton>Wildboars Узбекистан</LinkButton>
+                            </div>
                         </div>
                     </div>
-
 
                     <div className={styles.bottomContent}>
                         <div className={styles.textWrapper}>
@@ -97,33 +71,19 @@ export const Footer = () => {
 
                         <div className={styles.mediaWrapper}>
                             <div className={styles.socialMedia}>
-                                <Button
-                                    className={styles.socialMediaButton}
-                                    variant={"neutral"}
-                                    icon={<VkIcon/>}
-                                />
+                                <Button variant={"neutral"} icon={<VkIcon/>}/>
 
-                                <Button
-                                    className={styles.socialMediaButton}
-                                    variant={"neutral"}
-                                    icon={<OkIcon/>}
-                                />
+                                <Button variant={"neutral"} icon={<OkIcon/>}/>
 
-                                <Button
-                                    className={styles.socialMediaButton}
-                                    variant={"neutral"}
-                                    icon={<TgIcon/>}
-                                />
+                                <Button variant={"neutral"} icon={<TgIcon/>}/>
                             </div>
 
-                            <Button variant={"primary"}
-                                    icon={<GlassesIcon/>}>
+                            <Button variant={"primary"} icon={<GlassesIcon/>}>
                                 Для слабовидящих
                             </Button>
                         </div>
                     </div>
                 </div>
-
             </ContentContainer>
         </footer>
     );

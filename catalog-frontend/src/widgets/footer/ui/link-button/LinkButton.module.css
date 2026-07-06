@@ -1,3 +1,7 @@
 .linkButton {
     justify-content: start;
+    font-weight: 500;
+    text-align: start;
+    /*padding: 0;*/
+    border-radius: 0;
 }

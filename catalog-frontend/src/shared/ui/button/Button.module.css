@@ -8,8 +8,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     gap: 8px;
-
     padding: var(--button-padding);
+    font-weight: var(--button-font-weight);
 }
 
 .primary {
@@ -41,7 +41,6 @@
 
 .neutral {
     border-radius: 12px;
-
     background: var(--bgOverlap);
     color: var(--graphicTertiary);
 }
@@ -56,22 +55,21 @@
 }
 
 .small {
-    --button-padding: 6px 10px;
+    --button-padding: 8px 12px;
     font-size: 14px;
-    font-weight: 500;
-
+    --button-font-weight: 600;
 }
 
 .medium {
     --button-padding: 10px 16px;
     font-size: 16px;
-    font-weight: 600;
+    --button-font-weight: 600;
 }
 
 .large {
     --button-padding: 12px 20px;
     font-size: 16px;
-    font-weight: 600;
+    --button-font-weight: 600;
 }
 
 .iconOnly.small {

@@ -90,7 +90,7 @@ export const ProductCard = (
                 }
 
                 {hasButton &&
-                    <div className={styles.cartButton}>
+                    <div className={styles.cartButtonWrapper}>
                         <Button
                             fullWidth={true}
                             size={"small"}
