@@ -12,7 +12,7 @@ public class MainDbContext : DbContext
     public DbSet<ProductImage> ProductImages => Set<ProductImage>();
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<Category> Categories => Set<Category>();
-    public DbSet<Maker> Makers => Set<Maker>();
+    public DbSet<Seller> Sellers => Set<Seller>();
     public DbSet<Order> Orders => Set<Order>();
     public DbSet<OrderedProduct> OrderedProducts => Set<OrderedProduct>();
     public DbSet<Cart> Carts => Set<Cart>();

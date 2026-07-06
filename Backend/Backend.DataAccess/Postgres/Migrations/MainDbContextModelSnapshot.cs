@@ -93,33 +93,6 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.ToTable("categories", (string)null);
                 });
 
-            modelBuilder.Entity("Backend.Domain.Models.Maker", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text")
-                        .HasColumnName("description");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
-
-                    b.ToTable("makers", (string)null);
-                });
-
             modelBuilder.Entity("Backend.Domain.Models.Order", b =>
                 {
                     b.Property<int>("Id")
@@ -371,6 +344,33 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.ToTable("reviews", (string)null);
                 });
 
+            modelBuilder.Entity("Backend.Domain.Models.Seller", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text")
+                        .HasColumnName("description");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("name");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("sellers", (string)null);
+                });
+
             modelBuilder.Entity("Backend.Domain.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -572,7 +572,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Domain.Models.Maker", "Maker")
+                    b.HasOne("Backend.Domain.Models.Seller", "Seller")
                         .WithMany("Products")
                         .HasForeignKey("MakerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -580,7 +580,7 @@ namespace Backend.DataAccess.Postgres.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Maker");
+                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("Backend.Domain.Models.ProductImage", b =>
@@ -690,11 +690,6 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("Backend.Domain.Models.Maker", b =>
-                {
-                    b.Navigation("Products");
-                });
-
             modelBuilder.Entity("Backend.Domain.Models.Order", b =>
                 {
                     b.Navigation("OrderedProducts");
@@ -718,6 +713,11 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.Navigation("Reviews");
 
                     b.Navigation("WishlistItems");
+                });
+
+            modelBuilder.Entity("Backend.Domain.Models.Seller", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("Backend.Domain.Models.User", b =>

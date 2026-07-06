@@ -12,7 +12,7 @@ public class Product
     public int MakerId { get; set; }
     public int CategoryId { get; set; }
 
-    public Maker Maker { get; set; } = null!;
+    public Seller Seller { get; set; } = null!;
     public Category Category { get; set; } = null!;
 
     public ICollection<ProductImage> ProductImages { get; set; } = null!;

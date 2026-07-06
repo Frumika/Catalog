@@ -48,7 +48,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .HasDefaultValue(0)
             .IsRequired();
 
-        entity.HasOne(p => p.Maker)
+        entity.HasOne(p => p.Seller)
             .WithMany(m => m.Products)
             .HasForeignKey(p => p.MakerId)
             .OnDelete(DeleteBehavior.Cascade);

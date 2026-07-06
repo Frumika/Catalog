@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Backend.DataAccess.Postgres.Contexts.Configurations;
 
-public class MakerConfiguration : IEntityTypeConfiguration<Maker>
+public class SellerConfiguration : IEntityTypeConfiguration<Seller>
 {
-    public void Configure(EntityTypeBuilder<Maker> entity)
+    public void Configure(EntityTypeBuilder<Seller> entity)
     {
-        entity.ToTable("makers");
+        entity.ToTable("sellers");
 
         entity.HasKey(m => m.Id);
         entity.Property(m => m.Id)

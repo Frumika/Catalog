@@ -40,8 +40,8 @@ public class CatalogService
                     ReviewCount = p.Reviews.Count,
                     AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
                     ProductDescription = p.Description,
-                    MakerName = p.Maker.Name,
-                    MakerDescription = p.Maker.Description,
+                    MakerName = p.Seller.Name,
+                    MakerDescription = p.Seller.Description,
                     ImageUrls = p.ProductImages
                         .OrderBy(pi => pi.Position)
                         .Select(pi => pi.Path)
