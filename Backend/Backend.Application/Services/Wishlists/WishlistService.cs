@@ -1,21 +1,22 @@
 ﻿using Backend.Application.Common;
 using Backend.Application.Common.Base;
 using Backend.Application.Common.Statuses;
+using Backend.Application.DataAccess.Contexts;
 using Backend.Application.Services.Wishlists.Dtos;
 using Backend.Application.Services.Wishlists.Requests;
 using Backend.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Backend.Application.Services.Wishlists;
 
 public class WishlistService
 {
-    private readonly IBaseRepository _baseRepository;
-    private readonly IWishlistRepository _wishlistRepository;
+    private readonly MainDbContext _dbContext;
 
-    public WishlistService(IBaseRepository baseRepository, IWishlistRepository dbContext)
+    public WishlistService(MainDbContext dbContext)
     {
-        _baseRepository = baseRepository;
-        _wishlistRepository = dbContext;
+        _dbContext = dbContext;
     }
 
     public async Task<Response> GetWishlistAsync(GetWishlistRequest request)
@@ -26,13 +27,33 @@ public class WishlistService
 
         try
         {
-            int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return Response.Fail(new UserNotFound(), "The user wasn't found");
 
-            WishlistDto wishlist = await _wishlistRepository.GetWishlistAsync(userId.Value);
+            int wishlistId = await _dbContext.Wishlists
+                .AsNoTracking()
+                .Where(wi => wi.UserId == userId)
+                .Select(wi => wi.Id)
+                .FirstAsync();
 
-            return Response.Success(wishlist);
+            List<WishlistItemDto> wishlistItems = await _dbContext.WishlistItems
+                .AsNoTracking()
+                .Where(wi => wi.WishlistId == wishlistId)
+                .OrderBy(wi => wi.AddedAt)
+                .Select(wi => new WishlistItemDto
+                {
+                    ProductId = wi.ProductId,
+                    ProductName = wi.Product.Name,
+                    ProductPrice = wi.Product.Price
+                })
+                .ToListAsync();
+
+            return Response.Success(new WishlistDto { WishlistItems = wishlistItems });
         }
         catch (Exception)
         {
@@ -48,31 +69,41 @@ public class WishlistService
 
         try
         {
-            int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return Response.Fail(new UserNotFound(), "The user session wasn't found");
 
-            int wishlistId =
-                await _wishlistRepository.GetWishlistIdAsync(userId.Value);
+            int wishlistId = await _dbContext.Wishlists
+                .AsNoTracking()
+                .Where(w => w.UserId == userId)
+                .Select(w => w.Id)
+                .FirstAsync();
 
-            bool exists =
-                await _wishlistRepository.IsProductExistsAsync(request.ProductId);
-
-            if (!exists)
+            int? productId = await _dbContext.Products
+                .AsNoTracking()
+                .Where(p => p.Id == request.ProductId)
+                .Select(p => (int?)p.Id)
+                .FirstOrDefaultAsync();
+            if (productId is null)
                 return Response.Fail(new ProductNotFound(), "The product wasn't found");
 
-            bool inWishlist =
-                await _wishlistRepository.IsProductInWishlistAsync(
-                    wishlistId,
-                    request.ProductId);
-
-            if (!inWishlist)
+            bool isCartItemExists = await _dbContext.WishlistItems
+                .AnyAsync(wi => wi.WishlistId == wishlistId && wi.ProductId == request.ProductId);
+            if (!isCartItemExists)
             {
-                await _wishlistRepository.AddProductAsync(
-                    wishlistId,
-                    request.ProductId);
-
-                await _baseRepository.CommitAsync();
+                _dbContext.WishlistItems.Add(
+                    new WishlistItem
+                    {
+                        WishlistId = wishlistId,
+                        ProductId = request.ProductId,
+                        AddedAt = DateTime.UtcNow
+                    }
+                );
+                await _dbContext.SaveChangesAsync();
             }
 
             return Response.Success("The product was added");
@@ -91,16 +122,26 @@ public class WishlistService
 
         try
         {
-            int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return Response.Fail(new UserNotFound(), "The user wasn't found");
 
-            int wishlistId = await _wishlistRepository.GetWishlistIdAsync(userId.Value);
-            WishlistItem? wishlistItem = await _wishlistRepository.GetWishlistItemAsync(wishlistId, request.ProductId);
-            if (wishlistItem != null)
+            int wishlistId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .FirstAsync();
+
+            WishlistItem? cartItem = await _dbContext.WishlistItems
+                .FirstOrDefaultAsync(wi => wi.WishlistId == wishlistId && wi.ProductId == request.ProductId);
+            if (cartItem != null)
             {
-                _baseRepository.Remove(wishlistItem);
-                await _baseRepository.CommitAsync();
+                _dbContext.WishlistItems.Remove(cartItem);
+                await _dbContext.SaveChangesAsync();
             }
 
             return Response.Success("The product was deleted");
