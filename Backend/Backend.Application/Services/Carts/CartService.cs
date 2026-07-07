@@ -1,21 +1,22 @@
 ﻿using Backend.Application.Common;
 using Backend.Application.Common.Base;
 using Backend.Application.Common.Statuses;
+using Backend.Application.DataAccess.Contexts;
 using Backend.Application.Services.Carts.Dtos;
 using Backend.Application.Services.Carts.Requests;
 using Backend.Domain.Models;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace Backend.Application.Services.Carts;
 
 public class CartService
 {
-    private readonly IBaseRepository _baseRepository;
-    private readonly ICartRepository _cartRepository;
+    private readonly MainDbContext _dbContext;
 
-    public CartService(IBaseRepository baseRepository, ICartRepository cartRepository)
+    public CartService(MainDbContext dbContext)
     {
-        _baseRepository = baseRepository;
-        _cartRepository = cartRepository;
+        _dbContext = dbContext;
     }
 
     public async Task<Response> GetCartAsync(GetCartRequest request)
@@ -26,13 +27,33 @@ public class CartService
 
         try
         {
-            int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return Response.Fail(new UserNotFound(), "The user wasn't found");
 
-            int cartId = await _cartRepository.GetCartIdAsync((int)userId);
+            int cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .FirstAsync();
 
-            List<CartItemDto> cartItems = await _cartRepository.GetCartItemsAsync(cartId);
+            List<CartItemDto> cartItems = await _dbContext.CartItems
+                .AsNoTracking()
+                .Where(ci => ci.CartId == cartId)
+                .OrderBy(ci => ci.AddedAt)
+                .Select(ci => new CartItemDto
+                {
+                    ProductId = ci.ProductId,
+                    ProductName = ci.Product.Name,
+                    Quantity = ci.Quantity,
+                    ProductPrice = ci.Product.Price
+                })
+                .ToListAsync();
+
             decimal totalPrice = cartItems.Sum(c => c.TotalPrice);
 
             return Response.Success(new CartDto { CartItems = cartItems, TotalPrice = totalPrice });
@@ -51,20 +72,33 @@ public class CartService
 
         try
         {
-            int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return Response.Fail(new UserNotFound(), "The user wasn't found");
 
-            int cartId = await _cartRepository.GetCartIdAsync((int)userId);
+            int cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .FirstAsync();
 
-            bool isProductExist = await _cartRepository.IsProductExistAsync(request.ProductId);
-            if (!isProductExist)
+            int? productId = await _dbContext.Products
+                .AsNoTracking()
+                .Where(p => p.Id == request.ProductId)
+                .Select(p => (int?)p.Id)
+                .FirstOrDefaultAsync();
+            if (productId is null)
                 return Response.Fail(new ProductNotFound(), "The product wasn't found");
 
-            bool isCartItemExists = await _cartRepository.IsCartItemExistAsync(cartId, request.ProductId);
+            bool isCartItemExists = await _dbContext.CartItems
+                .AnyAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
             if (!isCartItemExists)
             {
-                _baseRepository.Add(
+                _dbContext.CartItems.Add(
                     new CartItem
                     {
                         CartId = cartId,
@@ -73,7 +107,7 @@ public class CartService
                         AddedAt = DateTime.UtcNow
                     }
                 );
-                await _baseRepository.CommitAsync();
+                await _dbContext.SaveChangesAsync();
             }
 
             return Response.Success("The product was added");
@@ -92,20 +126,29 @@ public class CartService
 
         if (request.Quantity == 0) return await RemoveProductAsync(new RemoveProductRequest(request));
 
-        int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+        int? userId = await _dbContext.UserSessions
+            .AsNoTracking()
+            .Where(ui => ui.UId == request.UserSessionId)
+            .Select(ui => (int?)ui.UserId)
+            .FirstOrDefaultAsync();
         if (userId is null)
             return Response.Fail(new UserNotFound(), "The user wasn't found");
 
-        int cartId = await _cartRepository.GetCartIdAsync((int)userId);
+        int cartId = await _dbContext.Carts
+            .AsNoTracking()
+            .Where(c => c.UserId == userId)
+            .Select(c => c.Id)
+            .FirstAsync();
 
-        CartItem? cartItem = await _cartRepository.GetCartItemAsync(cartId, request.ProductId);
+        CartItem? cartItem = await _dbContext.CartItems
+            .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
         if (cartItem is null)
             return Response.Fail(new ProductNotFound(), "The product in the cart wasn't found");
 
         if (cartItem.Quantity != request.Quantity)
         {
             cartItem.Quantity = request.Quantity;
-            await _baseRepository.CommitAsync();
+            await _dbContext.SaveChangesAsync();
         }
 
         return Response.Success("Product quantity was updated");
@@ -119,17 +162,26 @@ public class CartService
 
         try
         {
-            int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return Response.Fail(new UserNotFound(), "User wasn't found");
 
-            int cartId = await _cartRepository.GetCartIdAsync((int)userId);
+            int cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .FirstAsync();
 
-            CartItem? cartItem = await _cartRepository.GetCartItemAsync(cartId, request.ProductId);
+            CartItem? cartItem = await _dbContext.CartItems
+                .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
             if (cartItem is not null)
             {
-                _baseRepository.Remove(cartItem);
-                await _baseRepository.CommitAsync();
+                _dbContext.CartItems.Remove(cartItem);
+                await _dbContext.SaveChangesAsync();
             }
 
             return Response.Success("The product was deleted");
@@ -148,12 +200,23 @@ public class CartService
 
         try
         {
-            int? userId = await _baseRepository.GetUserIdAsync(request.UserSessionId);
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
             if (userId is null)
                 return Response.Fail(new UserNotFound(), "User session wasn't found");
 
-            int cartId = await _cartRepository.GetCartIdAsync((int)userId);
-            await _cartRepository.ClearCartAsync(cartId);
+            int cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync();
+
+            await _dbContext.CartItems
+                .Where(ci => ci.CartId == cartId)
+                .ExecuteDeleteAsync();
 
             return Response.Success("The cart was deleted");
         }
