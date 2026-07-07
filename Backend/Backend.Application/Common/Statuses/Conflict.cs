@@ -16,3 +16,8 @@ public record InvalidOrderStatus : Conflict
 {
     public override string Code => "invalid_order_status";
 }
+
+public record InvalidVerifyCode : Conflict
+{
+    public override string Code => "invalid_verify_code";
+}

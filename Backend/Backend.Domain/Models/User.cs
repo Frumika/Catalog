@@ -3,8 +3,11 @@
 public class User
 {
     public int Id { get; set; }
-    public string Login { get; set; } = string.Empty;
-    public string HashPassword { get; set; } = string.Empty;
+    public string Email { get; set; } = string.Empty; 
+    public string Login { get; set; } = string.Empty; 
+    public DateTime CreatedAt { get; set; } 
+    public DateTime? LastLoginAt { get; set; }
+    
 
     public Cart Cart { get; set; } = null!;
     public Wishlist Wishlist { get; set; } = null!;

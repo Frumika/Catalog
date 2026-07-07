@@ -15,16 +15,23 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("id")
             .ValueGeneratedOnAdd();
 
+        entity.Property(user => user.Email)
+            .HasColumnName("email")
+            .HasMaxLength(256)
+            .IsRequired();
+
         entity.Property(user => user.Login)
             .HasColumnName("login")
             .HasMaxLength(100)
             .IsRequired();
 
-        entity.Property(user => user.HashPassword)
-            .HasColumnName("hash_password")
-            .HasMaxLength(256)
+        entity.Property(user => user.CreatedAt)
+            .HasColumnName("created_at")
             .IsRequired();
 
-        entity.HasIndex(user => user.Login).IsUnique();
+        entity.Property(user => user.LastLoginAt)
+            .HasColumnName("last_login_at");
+
+        entity.HasIndex(user => user.Email).IsUnique();
     }
 }

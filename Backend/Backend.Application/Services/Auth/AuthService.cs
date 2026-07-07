@@ -33,15 +33,17 @@ public class AuthService
 
         try
         {
+            string emailLower = request.Email.ToLowerInvariant();
+
             string code = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
             string hashedCode = Argon2Hasher.HashString(code);
 
-            await _codeStorage.SaveCodeAsync(request.Email, hashedCode);
+            await _codeStorage.SaveCodeAsync(emailLower, hashedCode);
 
-            var isSuccess = await _verificationSender.SendAsync(request.Email, code);
+            var isSuccess = await _verificationSender.SendAsync(emailLower, code);
             return isSuccess
                 ? Response.Success("Code was sent successfully")
-                : Response.Fail(new UnknownError(), "Internal server error");
+                : Response.Fail(new UnknownError(), "Failed to send email");
         }
         catch (Exception)
         {
@@ -56,83 +58,44 @@ public class AuthService
 
         try
         {
-            return Response.Success("Placeholder");
-        }
-        catch (Exception)
-        {
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
-    }
+            string emailLower = request.Email.ToLowerInvariant();
 
-    public async Task<Response> RegisterAsync(RegisterRequest request)
-    {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
 
-        await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
-        try
-        {
-            bool isUserExist = await _dbContext.Users
-                .AsNoTracking()
-                .AnyAsync(user => user.Login == request.Login);
+            string? hashedCode = await _codeStorage.GetCodeAsync(emailLower);
+            if (hashedCode == null)
+                return Response.Fail(new InvalidVerifyCode(), "Code expired or not found");
 
-            if (isUserExist)
-                throw new ServiceException(new UserAlreadyExists(), "User already exists");
+            bool isCodeValid = Argon2Hasher.VerifyString(request.Code, hashedCode);
+            if (!isCodeValid)
+                return Response.Fail(new InvalidVerifyCode(), "Incorrect verification code");
 
-            User user = new()
-            {
-                Login = request.Login,
-                HashPassword = Argon2Hasher.HashString(request.Password)
-            };
+            await _codeStorage.RemoveCodeAsync(emailLower);
 
-            Cart cart = new() { User = user };
-            Wishlist wishlist = new() { User = user };
 
-            _dbContext.Add(user);
-            _dbContext.Add(cart);
-            _dbContext.Add(wishlist);
-
-            await transaction.CommitAsync();
-            await _dbContext.SaveChangesAsync();
-
-            return Response.Success("User registered");
-        }
-        catch (ServiceException e)
-        {
-            await transaction.RollbackAsync();
-            return Response.Fail(e.Error, e.Message);
-        }
-        catch (Exception)
-        {
-            await transaction.RollbackAsync();
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
-    }
-
-    public async Task<Response> LoginAsync(LoginRequest request)
-    {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
-        try
-        {
             User? user = await _dbContext.Users
-                .AsNoTracking()
-                .FirstOrDefaultAsync(u => u.Login == request.Login);
+                .FirstOrDefaultAsync(u => u.Email == emailLower);
+            DateTime currentTime = DateTime.UtcNow;
+            if (user == null)
+            {
+                user = new User
+                {
+                    Email = emailLower,
+                    Login = $"User_{Guid.NewGuid():N}".Substring(0, 8), // Чуть более лаконичный Guid
+                    CreatedAt = currentTime,
+                    Cart = new Cart(),
+                    Wishlist = new Wishlist()
+                };
+                _dbContext.Users.Add(user);
+            }
 
-            if (user is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
+            user.LastLoginAt = currentTime;
 
-            if (!Argon2Hasher.VerifyString(request.Password, user.HashPassword))
-                return Response.Fail(new InvalidPassword(), "Password is incorrect");
 
             string sessionUId = Guid.NewGuid().ToString();
-
             UserSession userSession = new()
             {
                 UId = sessionUId,
-                UserId = user.Id
+                User = user
             };
 
             _dbContext.UserSessions.Add(userSession);
@@ -142,7 +105,7 @@ public class AuthService
             {
                 SessionId = sessionUId,
                 Login = user.Login
-            }, "User has beel logged in");
+            }, "User has been logged in");
         }
         catch (Exception)
         {
