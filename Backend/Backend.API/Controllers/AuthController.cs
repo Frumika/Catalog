@@ -18,6 +18,13 @@ public class AuthController : ControllerBase
     }
 
 
+    [HttpPost("send-code")]
+    public async Task<IActionResult> SendCode([FromBody] SendCodeRequest request)
+    {
+        var response = await _authService.SendCodeAsync(request);
+        return response.ToHttpResponse();
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {

@@ -93,7 +93,7 @@ public static class ServiceCollectionExtensions
 
     private static IServiceCollection UseResend(this IServiceCollection services, IConfiguration config)
     {
-        var apiToken = config["Resend:ApiToken"];
+        var apiToken = config["Resend:ApiKey"];
         if (string.IsNullOrWhiteSpace(apiToken))
         {
             throw new InvalidOperationException("Resend API token is missing in configuration.");

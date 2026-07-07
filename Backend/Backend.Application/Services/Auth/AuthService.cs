@@ -4,6 +4,7 @@ using Backend.Application.Common.Statuses;
 using Backend.Application.DataAccess.Contexts;
 using Backend.Application.Services.Auth.Dtos;
 using Backend.Application.Services.Auth.Requests;
+using Backend.Domain.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -14,16 +15,39 @@ namespace Backend.Application.Services.Auth;
 public class AuthService
 {
     private readonly MainDbContext _dbContext;
+    private readonly IVerificationSender _verificationSender;
 
-    public AuthService(MainDbContext dbContext)
+    public AuthService(MainDbContext dbContext, IVerificationSender verificationSender)
     {
         _dbContext = dbContext;
+        _verificationSender = verificationSender;
+    }
+
+    public async Task<Response> SendCodeAsync(SendCodeRequest request)
+    {
+        ValidationResult result = request.Validate();
+        if (!result.IsValid)
+            return Response.Fail(new BadRequest(), result.Message);
+
+        try
+        {
+            string myEmail = "artrad32@gmail.com";
+
+            var isSuccess = await _verificationSender.SendAsync(request.Email, "6-5-4-3-2-1");
+            return isSuccess ? 
+                Response.Success("!!!Wooow OoO!!!") :
+                Response.Fail(new UnknownError(), "Not working");
+        }
+        catch (Exception)
+        {
+            return Response.Fail(new UnknownError(), "Internal server error");
+        }
     }
 
     public async Task<Response> RegisterAsync(RegisterRequest request)
     {
         ValidationResult result = request.Validate();
-        if (!result.IsValid) 
+        if (!result.IsValid)
             return Response.Fail(new BadRequest(), result.Message);
 
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
