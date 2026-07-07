@@ -12,9 +12,11 @@ using Backend.Domain.Interfaces;
 using Backend.Domain.Settings;
 using Backend.Infrastructure.Services.Background;
 using Backend.Infrastructure.Services.Notifications;
+using Backend.Infrastructure.Services.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
 using Resend;
+using StackExchange.Redis;
 
 
 namespace Backend.API.Extensions;
@@ -25,6 +27,7 @@ public static class ServiceCollectionExtensions
     {
         services
             .ConnectPostgres(config)
+            .ConnectRedis(config)
             .AddSettings(config)
             .UseResend(config)
             .AddApplicationServices()
@@ -42,6 +45,21 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    private static IServiceCollection ConnectRedis(this IServiceCollection services, IConfiguration config)
+    {
+        string? connectionString = config["Databases:Redis:Main"];
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+            throw new InvalidOperationException("Redis connection string is missing in configuration.");
+
+        IConnectionMultiplexer connection = ConnectionMultiplexer.Connect(connectionString);
+
+        services.AddSingleton(connection);
+        services.AddScoped<ICodeStorage, RedisCodeStorage>();
+
+        return services;
+    }
+
     private static IServiceCollection AddSettings(this IServiceCollection services, IConfiguration config)
     {
         AppConfiguration appConfiguration = new(config);
@@ -49,6 +67,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<OrderSettings>(_ => appConfiguration.OrderSettings);
         services.AddSingleton<OrderCleanupSettings>(_ => appConfiguration.OrderCleanupSettings);
         services.AddSingleton<UserSettings>(_ => appConfiguration.UserSettings);
+        services.AddSingleton<CodeStorageSettings>(_ => appConfiguration.CodeStorageSettings);
 
         return services;
     }

@@ -1,21 +1,41 @@
 ﻿using Backend.Domain.Interfaces;
+using Backend.Domain.Settings;
+using StackExchange.Redis;
+
 
 namespace Backend.Infrastructure.Services.Storage;
 
 public class RedisCodeStorage : ICodeStorage
 {
-    public Task SaveCodeAsync(string email, string code, TimeSpan expiration)
+    private const string KeyPrefix = "verify:code";
+
+    private readonly IDatabase _database;
+    private readonly TimeSpan _expiryTime;
+
+    public RedisCodeStorage(IConnectionMultiplexer connection, CodeStorageSettings settings)
     {
-        throw new NotImplementedException();
+        _database = connection.GetDatabase(0);
+        _expiryTime = settings.ExpirationTime;
     }
 
-    public Task<string?> GetCodeAsync(string email)
+    public async Task SaveCodeAsync(string email, string code)
     {
-        throw new NotImplementedException();
+        string key = BuildKey(email);
+        await _database.StringSetAsync(key, code, _expiryTime);
     }
 
-    public Task RemoveCodeAsync(string email)
+    public async Task<string?> GetCodeAsync(string email)
     {
-        throw new NotImplementedException();
+        string key = BuildKey(email);
+        string? hashCode = await _database.StringGetAsync(key);
+        return hashCode;
     }
+
+    public async Task RemoveCodeAsync(string email)
+    {
+        string key = BuildKey(email);
+        await _database.KeyDeleteAsync(key);
+    }
+
+    private static string BuildKey(string email) => $"{KeyPrefix}:{email}";
 }

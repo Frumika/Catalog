@@ -25,6 +25,13 @@ public class AuthController : ControllerBase
         return response.ToHttpResponse();
     }
 
+    [HttpPost("verify")]
+    public async Task<IActionResult> VerifyCode([FromBody] VerifyCodeRequest request)
+    {
+        var response = await _authService.VerifyCodeAsync(request);
+        return response.ToHttpResponse();
+    }
+
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] RegisterRequest request)
     {

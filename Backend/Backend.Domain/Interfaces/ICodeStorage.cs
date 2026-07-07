@@ -2,7 +2,7 @@
 
 public interface ICodeStorage
 {
-    Task SaveCodeAsync(string email, string code, TimeSpan expiration);
+    Task SaveCodeAsync(string email, string code);
     Task<string?> GetCodeAsync(string email);
     Task RemoveCodeAsync(string email);
 }

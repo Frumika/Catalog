@@ -6,7 +6,7 @@ namespace Backend.Application.Common;
 
 public static class Argon2Hasher
 {
-    public static string HashPassword(string @string)
+    public static string HashString(string @string)
     {
         byte[] salt = new byte[16];
         using var rng = RandomNumberGenerator.Create();
@@ -27,7 +27,7 @@ public static class Argon2Hasher
         return result;
     }
 
-    public static bool VerifyPassword(string password, string storedHash)
+    public static bool VerifyString(string password, string storedHash)
     {
         var parts = storedHash.Split(':');
         if (parts.Length != 2) return false;

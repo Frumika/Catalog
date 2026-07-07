@@ -1,4 +1,5 @@
-﻿using Backend.Application.Common;
+﻿using System.Security.Cryptography;
+using Backend.Application.Common;
 using Backend.Application.Common.Base;
 using Backend.Application.Common.Statuses;
 using Backend.Application.DataAccess.Contexts;
@@ -16,27 +17,46 @@ public class AuthService
 {
     private readonly MainDbContext _dbContext;
     private readonly IVerificationSender _verificationSender;
+    private readonly ICodeStorage _codeStorage;
 
-    public AuthService(MainDbContext dbContext, IVerificationSender verificationSender)
+    public AuthService(MainDbContext dbContext, IVerificationSender verificationSender, ICodeStorage codeStorage)
     {
         _dbContext = dbContext;
         _verificationSender = verificationSender;
+        _codeStorage = codeStorage;
     }
 
     public async Task<Response> SendCodeAsync(SendCodeRequest request)
     {
         ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
+        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
-            string myEmail = "artrad32@gmail.com";
+            string code = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
+            string hashedCode = Argon2Hasher.HashString(code);
 
-            var isSuccess = await _verificationSender.SendAsync(request.Email, "6-5-4-3-2-1");
-            return isSuccess ? 
-                Response.Success("!!!Wooow OoO!!!") :
-                Response.Fail(new UnknownError(), "Not working");
+            await _codeStorage.SaveCodeAsync(request.Email, hashedCode);
+
+            var isSuccess = await _verificationSender.SendAsync(request.Email, code);
+            return isSuccess
+                ? Response.Success("Code was sent successfully")
+                : Response.Fail(new UnknownError(), "Internal server error");
+        }
+        catch (Exception)
+        {
+            return Response.Fail(new UnknownError(), "Internal server error");
+        }
+    }
+
+    public async Task<Response> VerifyCodeAsync(VerifyCodeRequest request)
+    {
+        ValidationResult result = request.Validate();
+        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
+
+        try
+        {
+            return Response.Success("Placeholder");
         }
         catch (Exception)
         {
@@ -47,8 +67,7 @@ public class AuthService
     public async Task<Response> RegisterAsync(RegisterRequest request)
     {
         ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
+        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
 
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
@@ -63,7 +82,7 @@ public class AuthService
             User user = new()
             {
                 Login = request.Login,
-                HashPassword = Argon2Hasher.HashPassword(request.Password)
+                HashPassword = Argon2Hasher.HashString(request.Password)
             };
 
             Cart cart = new() { User = user };
@@ -105,7 +124,7 @@ public class AuthService
             if (user is null)
                 return Response.Fail(new UserNotFound(), "The user wasn't found");
 
-            if (!Argon2Hasher.VerifyPassword(request.Password, user.HashPassword))
+            if (!Argon2Hasher.VerifyString(request.Password, user.HashPassword))
                 return Response.Fail(new InvalidPassword(), "Password is incorrect");
 
             string sessionUId = Guid.NewGuid().ToString();

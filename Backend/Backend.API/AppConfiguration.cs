@@ -1,5 +1,6 @@
 ﻿using Backend.Domain.Settings;
 
+
 namespace Backend.API;
 
 public class AppConfiguration
@@ -7,6 +8,7 @@ public class AppConfiguration
     public OrderSettings OrderSettings { get; }
     public OrderCleanupSettings OrderCleanupSettings { get; }
     public UserSettings UserSettings { get; }
+    public CodeStorageSettings CodeStorageSettings { get; }
 
     public AppConfiguration(IConfiguration configuration)
     {
@@ -28,6 +30,12 @@ public class AppConfiguration
         UserSettings = new()
         {
             SessionLifetime = TimeSpan.FromMinutes(userSessionLifetime)
+        };
+
+        int codeExpirationTime = configuration.GetValue<int>("Configuration:CodeStorageSettings:CodeExpirationTimeFromMinutes");
+        CodeStorageSettings = new()
+        {
+            ExpirationTime = TimeSpan.FromMinutes(codeExpirationTime),
         };
     }
 }
