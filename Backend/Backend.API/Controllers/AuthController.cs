@@ -1,6 +1,6 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.Requests.Auth;
-using Backend.Application.Services;
+using Backend.Application.Services.Auth;
+using Backend.Application.Services.Auth.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 

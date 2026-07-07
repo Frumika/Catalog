@@ -1,6 +1,6 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.Requests.Wishlist;
-using Backend.Application.Services;
+using Backend.Application.Services.Wishlists;
+using Backend.Application.Services.Wishlists.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 

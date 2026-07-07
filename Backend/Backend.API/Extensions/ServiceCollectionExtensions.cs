@@ -1,7 +1,15 @@
 ﻿using System.Text.Json.Serialization;
 using Backend.API.Background;
-using Backend.Application.Services;
-using Backend.DataAccess.Postgres.Contexts;
+using Backend.Application.Common;
+using Backend.Application.DataAccess.Contexts;
+using Backend.Application.Services.Auth;
+using Backend.Application.Services.Carts;
+using Backend.Application.Services.Catalog;
+using Backend.Application.Services.Orders;
+using Backend.Application.Services.PickupPoints;
+using Backend.Application.Services.Reviews;
+using Backend.Application.Services.Wishlists;
+using Backend.Infrastructure;
 using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;

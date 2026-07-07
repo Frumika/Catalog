@@ -1,6 +1,6 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.Requests.PickupPoint;
-using Backend.Application.Services;
+using Backend.Application.Services.PickupPoints;
+using Backend.Application.Services.PickupPoints.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 

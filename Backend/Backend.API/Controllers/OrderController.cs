@@ -1,6 +1,6 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.Requests.Order;
-using Backend.Application.Services;
+using Backend.Application.Services.Orders;
+using Backend.Application.Services.Orders.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 

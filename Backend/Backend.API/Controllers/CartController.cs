@@ -1,6 +1,6 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.Requests.Cart;
-using Backend.Application.Services;
+using Backend.Application.Services.Carts;
+using Backend.Application.Services.Carts.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 

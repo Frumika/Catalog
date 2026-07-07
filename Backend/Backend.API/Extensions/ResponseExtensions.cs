@@ -1,5 +1,5 @@
-﻿using Backend.Application.Responses;
-using Backend.Application.Statuses;
+﻿using Backend.Application.Common;
+using Backend.Application.Common.Statuses;
 using Microsoft.AspNetCore.Mvc;
 
 

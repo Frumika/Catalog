@@ -1,6 +1,6 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.Requests.Catalog;
-using Backend.Application.Services;
+using Backend.Application.Services.Catalog;
+using Backend.Application.Services.Catalog.Requests;
 using Microsoft.AspNetCore.Mvc;
 
 
