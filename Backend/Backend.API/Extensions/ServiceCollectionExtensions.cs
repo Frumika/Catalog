@@ -1,6 +1,5 @@
 ﻿using System.Text.Json.Serialization;
 using Backend.API.Background;
-using Backend.Application.Common;
 using Backend.Application.DataAccess.Contexts;
 using Backend.Application.Services.Auth;
 using Backend.Application.Services.Carts;
@@ -9,10 +8,13 @@ using Backend.Application.Services.Orders;
 using Backend.Application.Services.PickupPoints;
 using Backend.Application.Services.Reviews;
 using Backend.Application.Services.Wishlists;
-using Backend.Infrastructure;
+using Backend.Domain.Interfaces;
 using Backend.Domain.Settings;
+using Backend.Infrastructure.Services.Background;
+using Backend.Infrastructure.Services.Notifications;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi;
+using Resend;
 
 
 namespace Backend.API.Extensions;
@@ -24,6 +26,7 @@ public static class ServiceCollectionExtensions
         services
             .ConnectPostgres(config)
             .AddSettings(config)
+            .UseResend(config)
             .AddApplicationServices()
             .AddApplicationControllers()
             .AddCorsPolicy()
@@ -84,6 +87,20 @@ public static class ServiceCollectionExtensions
         {
             options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
+
+        return services;
+    }
+
+    private static IServiceCollection UseResend(this IServiceCollection services, IConfiguration config)
+    {
+        var apiToken = config["Resend:ApiToken"];
+        if (string.IsNullOrWhiteSpace(apiToken))
+        {
+            throw new InvalidOperationException("Resend API token is missing in configuration.");
+        }
+
+        services.AddResend(options => options.ApiToken = apiToken);
+        services.AddScoped<IVerificationSender, ResendEmailSender>();
 
         return services;
     }

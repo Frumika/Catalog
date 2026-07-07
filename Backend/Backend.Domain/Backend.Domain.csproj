@@ -6,9 +6,5 @@
         <Nullable>enable</Nullable>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
-
-    <ItemGroup>
-      <Folder Include="Interfaces\" />
-    </ItemGroup>
     
 </Project>

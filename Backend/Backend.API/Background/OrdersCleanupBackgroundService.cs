@@ -1,6 +1,7 @@
 ﻿using Backend.Application.Common;
 using Backend.Infrastructure;
 using Backend.Domain.Settings;
+using Backend.Infrastructure.Services.Background;
 
 
 namespace Backend.API.Background;

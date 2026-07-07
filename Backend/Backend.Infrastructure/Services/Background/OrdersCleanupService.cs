@@ -3,7 +3,7 @@ using Backend.Domain.Models;
 using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Infrastructure;
+namespace Backend.Infrastructure.Services.Background;
 
 public class OrdersCleanupService
 {
