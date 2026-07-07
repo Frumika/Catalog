@@ -1,19 +1,22 @@
 ﻿using Backend.Application.Common;
 using Backend.Application.Common.Base;
 using Backend.Application.Common.Statuses;
+using Backend.Application.DataAccess.Contexts;
 using Backend.Application.Services.Catalog.Dtos;
 using Backend.Application.Services.Catalog.Requests;
+using Backend.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 
 namespace Backend.Application.Services.Catalog;
 
 public class CatalogService
 {
-    private readonly ICatalogRepository _catalogRepository;
+    private readonly MainDbContext _dbContext;
 
-    public CatalogService(ICatalogRepository catalogRepository)
+    public CatalogService(MainDbContext dbContext)
     {
-        _catalogRepository = catalogRepository;
+        _dbContext = dbContext;
     }
 
 
@@ -23,7 +26,27 @@ public class CatalogService
 
         try
         {
-            ProductExtendedDto? product = await _catalogRepository.GetProductById(id);
+            ProductExtendedDto? product = await _dbContext.Products
+                .AsNoTracking()
+                .Where(p => p.Id == id)
+                .Select(p => new ProductExtendedDto
+                {
+                    ProductId = p.Id,
+                    ProductName = p.Name,
+                    Price = p.Price,
+                    DiscountPrice = Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 2),
+                    DiscountPercent = p.DiscountPercent,
+                    ReviewCount = p.Reviews.Count,
+                    AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
+                    ProductDescription = p.Description,
+                    MakerName = p.Seller.Name,
+                    MakerDescription = p.Seller.Description,
+                    ImageUrls = p.ProductImages
+                        .OrderBy(pi => pi.Position)
+                        .Select(pi => pi.Path)
+                        .ToList()
+                })
+                .FirstOrDefaultAsync();
 
             return product is not null
                 ? Response.Success(product)
@@ -43,10 +66,41 @@ public class CatalogService
 
         try
         {
-            int totalCount = await _catalogRepository.GetProductCount(request.CategoryId);
+            IQueryable<Product> query = _dbContext.Products.AsNoTracking();
 
-            List<ProductDto> products = await _catalogRepository
-                .GetProducts(request.PageNumber, request.PageSize, request.CategoryId);
+            if (request.CategoryId is not null)
+            {
+                bool isCategoryExist = await _dbContext.Categories
+                    .AnyAsync(category => category.Id == request.CategoryId);
+
+                if (!isCategoryExist)
+                    return Response.Fail(new IncorrectCategory(), "Category not found");
+
+                query = query.Where(product => product.CategoryId == request.CategoryId);
+            }
+
+            int totalCount = await query.CountAsync();
+
+            List<ProductDto> products = await query
+                .AsNoTracking()
+                .OrderBy(p => p.Id)
+                .Skip((request.PageNumber - 1) * request.PageSize)
+                .Take(request.PageSize)
+                .Select(p => new ProductDto
+                {
+                    ProductId = p.Id,
+                    ProductName = p.Name,
+                    Price = p.Price,
+                    DiscountPrice = Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 2),
+                    DiscountPercent = p.DiscountPercent,
+                    ReviewCount = p.Reviews.Count,
+                    AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
+                    ImageUrl = p.ProductImages
+                        .OrderBy(pi => pi.Position)
+                        .Select(pi => pi.Path)
+                        .FirstOrDefault()
+                })
+                .ToListAsync();
 
             return Response.Success(
                 new PagedResultDto<ProductDto>
@@ -68,7 +122,12 @@ public class CatalogService
     {
         try
         {
-            List<CategoryDto> categories = await _catalogRepository.GetCategories();
+            var categories = await _dbContext.Categories
+                .AsNoTracking()
+                .OrderBy(category => category.Id)
+                .Select(category => new CategoryDto(category))
+                .ToListAsync();
+
             return Response.Success(new CategoryListDto(categories));
         }
         catch (Exception)
