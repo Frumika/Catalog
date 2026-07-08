@@ -104,7 +104,8 @@ public class AuthService
             return Response.Success(new UserSessionDto
             {
                 SessionId = sessionUId,
-                Login = user.Login
+                Login = user.Login,
+                Email = user.Email,
             }, "User has been logged in");
         }
         catch (Exception)
