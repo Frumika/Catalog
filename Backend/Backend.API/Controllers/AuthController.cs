@@ -17,6 +17,12 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
+    [HttpGet("{sessionId}")]
+    public async Task<IActionResult> GetUserSession([FromRoute] string sessionId)
+    {
+        var response = await _authService.GetUserSession(sessionId);
+        return response.ToHttpResponse();
+    }
 
     [HttpPost("send_code")]
     public async Task<IActionResult> SendCode([FromBody] SendCodeRequest request)

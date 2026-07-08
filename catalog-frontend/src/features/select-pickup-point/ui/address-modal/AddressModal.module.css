@@ -2,13 +2,10 @@
     max-width: 450px;
     min-width: 330px;
     height: min(80vh, 700px);
-    border-radius: 32px;
 }
 
 .header {
     flex-shrink: 0;
-
-    position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
