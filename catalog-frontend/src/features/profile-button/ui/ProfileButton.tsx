@@ -36,7 +36,7 @@ export const ProfileButton = (
             </NavButton>
 
 
-            <AuthModal isOpen={true}/>
+            <AuthModal isOpen={false}/>
         </>
 
     );
