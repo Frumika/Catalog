@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {useSession} from "@/entities/session";
+import {useUserSession} from "@/entities/user-session";
 
 export const useAuthModal = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +11,7 @@ export const useAuthModal = () => {
         verify,
         logout,
         logoutAll
-    } = useSession()
+    } = useUserSession()
 
     const open = () => {
         if (!isVerify) {

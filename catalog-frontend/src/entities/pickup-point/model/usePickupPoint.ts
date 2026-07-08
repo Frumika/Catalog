@@ -1,21 +1,31 @@
 import {useEffect, useState} from "react";
-import type {PickupPoint} from "@/entities/pickup-point/model/PickupPoint.types.ts";
-import {pickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
+import type {PickupPoint} from "./PickupPoint.types.ts";
+import {pickupPointApi} from "../api/pickupPointApi.ts";
 import {ApiError, toApiError} from "@/shared/api";
+import {useIsAuthenticated} from "@/entities/user-session";
+
 
 export const usePickupPoint = () => {
     const [addresses, setAddresses] = useState<PickupPoint[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<ApiError | null>(null);
 
+    const isAuthenticated = useIsAuthenticated();
+
     useEffect(() => {
+        if (!isAuthenticated) {
+            setAddresses([]);
+            return;
+        }
+
         setIsLoading(true);
         pickupPointApi
             .getAll()
             .then(address => setAddresses(address))
-            .catch(error => setError(error))
+            .catch(error => setError(toApiError(error)))
             .finally(() => setIsLoading(false));
-    }, []);
+
+    }, [isAuthenticated]);
 
     const selectAddress = async (id: string) => {
         const sort = (arr: PickupPoint[]) =>

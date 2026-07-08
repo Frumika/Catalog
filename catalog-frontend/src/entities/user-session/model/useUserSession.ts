@@ -1,39 +1,51 @@
-import {useEffect, useState} from "react";
-import type {Session} from "./types.ts";
-import {sessionApi} from "../api/sessionApi.ts";
+import {useEffect, useMemo, useState} from "react";
+import {userSessionApi} from "../api/userSessionApi.ts";
 import {ApiError, localSessionStorage, toApiError} from "@/shared/api";
+import {
+    useClearSession, useIsAuthenticated, useSessionEmail, useSessionId, useSessionLogin, useSetSession,
+} from "@/entities/user-session/model/sessionStore.ts";
 
 
-export const useSession = () => {
-    const [session, setSession] = useState<Session | null>(null);
+export const useUserSession = () => {
+    const isAuthenticated = useIsAuthenticated();
+    const sessionId = useSessionId();
+    const email = useSessionEmail();
+    const login = useSessionLogin();
+
+    const setSession = useSetSession();
+    const clearSession = useClearSession();
+
     const [isCodeSend, setCodeSend] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState<ApiError | null>(null);
 
-    const isVerify = session !== null;
+    const session = useMemo(() => {
+        if (!isAuthenticated || !sessionId || !email || !login) return null;
+        return {sessionId, email, login};
+    }, [isAuthenticated, sessionId, email, login]);
 
     useEffect(() => {
-        const sessionId: string | null = localSessionStorage.get();
-        if (!sessionId) {
+        const currentSessionId = localSessionStorage.get();
+        if (!currentSessionId) {
             setLoading(false);
             return;
         }
 
-        sessionApi.getSession(sessionId)
+        userSessionApi.getSession(currentSessionId)
             .then(user => setSession(user))
             .catch(error => {
                 const apiError = toApiError(error);
                 if (apiError.code === "user_session_not_found") {
-                    localSessionStorage.clear();
+                    clearSession();
                 }
                 setError(apiError);
             })
             .finally(() => setLoading(false));
-    }, []);
+    }, [setSession, clearSession]);
 
     const sendCode = async (email: string): Promise<void> => {
         try {
-            await sessionApi.sendCode(email);
+            await userSessionApi.sendCode(email);
             setError(null);
             setCodeSend(true);
         } catch (error) {
@@ -44,51 +56,46 @@ export const useSession = () => {
 
     const verify = async (email: string, code: string): Promise<void> => {
         try {
-            const user = await sessionApi.verify(email, code);
-            localSessionStorage.set(user.sessionId);
+            const newSession = await userSessionApi.verify(email, code);
+            setSession(newSession);
             setError(null);
             setCodeSend(false);
-            setSession(user);
         } catch (error) {
             setError(toApiError(error));
         }
     };
 
     const logout = async (): Promise<void> => {
-        const sessionId = localSessionStorage.get();
-        if (!sessionId) {
-            return;
-        }
+        const currentSessionId = localSessionStorage.get();
+        if (!currentSessionId) return;
+
         try {
-            await sessionApi.logout(sessionId);
+            await userSessionApi.logout(currentSessionId);
         } catch (error) {
             setError(toApiError(error));
         } finally {
-            localSessionStorage.clear();
-            setSession(null);
+            clearSession(); // Делаем очистку независимо от ответа сервера
             setCodeSend(false);
         }
     };
 
     const logoutAll = async (): Promise<void> => {
-        const sessionId = localSessionStorage.get();
-        if (!sessionId) {
-            return;
-        }
+        const currentSessionId = localSessionStorage.get();
+        if (!currentSessionId) return;
+
         try {
-            await sessionApi.logoutAll(sessionId);
+            await userSessionApi.logoutAll(currentSessionId);
         } catch (error) {
             setError(toApiError(error));
         } finally {
-            localSessionStorage.clear();
-            setSession(null);
+            clearSession();
             setCodeSend(false);
         }
     };
 
     return {
         session,
-        isVerify,
+        isVerify: isAuthenticated,
         isCodeSend,
         isLoading,
         error,
