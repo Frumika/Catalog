@@ -1,6 +1,5 @@
 import type {AddressModalProps} from "./AddressModal.types.ts";
 import {Modal} from "@/shared/ui/modal";
-import {CloseButton} from "../close-button/CloseButton.tsx";
 import {AddressCard} from "@/features/select-pickup-point/ui/address-card/AddressCard.tsx";
 import {Button} from "@/shared/ui/button";
 import styles from "./AddressModal.module.css";
@@ -21,7 +20,6 @@ export const AddressModal = (
         <Modal isOpen={isOpen} onClose={onClose} className={styles.addressModal}>
             <div className={styles.header}>
                 <h2 className={styles.title}>Выберите адрес доставки</h2>
-                <CloseButton className={styles.closeButton} onClick={onClose}/>
             </div>
 
             <div className={styles.main}>

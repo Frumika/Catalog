@@ -2,8 +2,7 @@ const SESSION_KEY = "user_session_id";
 
 export const session = {
     get(): string | null {
-        // return localStorage.getItem(SESSION_KEY);
-        return "49b361fc-64fb-42d2-8f5f-489915312482";
+        return localStorage.getItem(SESSION_KEY);
     },
 
     set(id: string): void {

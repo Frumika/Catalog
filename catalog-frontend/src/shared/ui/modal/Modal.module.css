@@ -10,8 +10,16 @@
 }
 
 .modal {
+    position: relative;
     display: flex;
     flex-direction: column;
     background: var(--bgMain);
     border-radius: 32px;
+}
+
+.closeButton{
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 5;
 }

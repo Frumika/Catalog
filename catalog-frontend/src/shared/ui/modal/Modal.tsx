@@ -2,6 +2,7 @@ import {useEffect} from 'react';
 import {createPortal} from 'react-dom';
 import type {ModalProps} from './Modal.types';
 import styles from './Modal.module.css';
+import {CloseButton} from "@/shared/ui/close-button";
 
 
 export const Modal = (
@@ -38,6 +39,7 @@ export const Modal = (
                 className={modalStyles}
                 onClick={event => event.stopPropagation()}
             >
+                {<CloseButton className={styles.closeButton} onClick={onClose}/>}
                 {children}
             </div>
         </div>,

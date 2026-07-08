@@ -3,6 +3,7 @@ import type {ButtonHTMLAttributes} from "react";
 import type {ComponentDisplayMode} from "@/shared/lib";
 import {AuthModal} from "@/features/profile-button/ui/auth-modal/AuthModal.tsx";
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
+import {useAuthModal} from "@/features/profile-button/model/useAuthModal.ts";
 
 
 export interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -13,16 +14,27 @@ export interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonEleme
 
 export const ProfileButton = (
     {
-
-        children,
         displayMode = "full",
         className,
         ...props
     }: ProfileButtonProps
 ) => {
 
-    const hasChildren = !!children;
-    const displayContent = hasChildren ? children : "Войти";
+    const {
+        isOpen,
+        user,
+        isVerify,
+        isCodeSend,
+        sendCode,
+        verify,
+        logout,
+        logoutAll,
+        open,
+        close,
+    } = useAuthModal();
+
+    const hasChildren = !!user;
+    const displayContent = hasChildren ? user.login : "Войти";
 
     return (
         <>
@@ -31,12 +43,18 @@ export const ProfileButton = (
                 badgeVisible={!hasChildren}
                 displayMode={displayMode}
                 icon={<ProfileIcon/>}
+                onClick={open}
             >
                 {displayContent}
             </NavButton>
 
 
-            <AuthModal isOpen={false}/>
+            <AuthModal
+                isOpen={isOpen}
+                onClose={close}
+                isCodeSend={isCodeSend}
+                sendCode={sendCode}
+                verify={verify}/>
         </>
 
     );

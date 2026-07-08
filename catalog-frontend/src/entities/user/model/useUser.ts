@@ -21,7 +21,13 @@ export const useUser = () => {
 
         userApi.getUser(sessionId)
             .then(user => setUser(user))
-            .catch(error => setError(toApiError(error)))
+            .catch(error => {
+                const apiError = toApiError(error);
+                if (apiError.code === "user_session_not_found") {
+                    session.clear();
+                }
+                setError(apiError);
+            })
             .finally(() => setLoading(false));
     }, []);
 
