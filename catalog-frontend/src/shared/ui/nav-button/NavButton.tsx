@@ -1,4 +1,4 @@
-import type {NavButtonProps} from "@/widgets/header/ui/nav-button/NavButton.types.ts";
+import type {NavButtonProps} from "@/shared/ui/nav-button/NavButton.types.ts";
 import styles from "./NavButton.module.css";
 import {Badge} from "@/shared/ui/badge";
 import {Icon} from "@/shared/ui/icon";

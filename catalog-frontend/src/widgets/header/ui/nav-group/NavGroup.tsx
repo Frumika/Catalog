@@ -1,4 +1,4 @@
-import {NavButton} from "../nav-button/NavButton.tsx";
+import {NavButton} from "@/shared/ui/nav-button";
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
 import OrderIcon from "@/shared/assets/icons/order.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
