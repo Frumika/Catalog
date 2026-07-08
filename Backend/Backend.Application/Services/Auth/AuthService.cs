@@ -26,6 +26,33 @@ public class AuthService
         _codeStorage = codeStorage;
     }
 
+    public async Task<Response> GetUserSession(string sessionId)
+    {
+        if (string.IsNullOrEmpty(sessionId))
+            return Response.Fail(new BadRequest(), "Session id is empty");
+
+        try
+        {
+            UserSessionDto? userSession = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(us => us.UId == sessionId)
+                .Select(us => new UserSessionDto
+                {
+                    SessionId = sessionId,
+                    Login = us.User.Login,
+                    Email = us.User.Email,
+                }).FirstOrDefaultAsync();
+
+            return userSession is not null
+                ? Response.Success(userSession)
+                : Response.Fail(new UserSessionNotFound(), "User session not found");
+        }
+        catch (Exception)
+        {
+            return Response.Fail(new UnknownError(), "Internal server error");
+        }
+    }
+
     public async Task<Response> SendCodeAsync(SendCodeRequest request)
     {
         ValidationResult result = request.Validate();
