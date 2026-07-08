@@ -2,6 +2,10 @@
 
 public class CartDto
 {
-    public List<CartItemDto> CartItems { get; set; } = new();
-    public decimal TotalPrice { get; set; }
+    public List<CartPositionDto> Items { get; set; } = new();
+
+    public int TotalQuantity { get; set; }
+    public int TotalBasePrice { get; set; }
+    public int TotalDiscountAmount { get; set; }
+    public int FinalPrice => TotalBasePrice - TotalDiscountAmount;
 }

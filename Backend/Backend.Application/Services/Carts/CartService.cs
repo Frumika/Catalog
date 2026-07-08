@@ -41,22 +41,37 @@ public class CartService
                 .Select(c => c.Id)
                 .FirstAsync();
 
-            List<CartItemDto> cartItems = await _dbContext.CartItems
+            List<CartPositionDto> cartItems = await _dbContext.CartItems
                 .AsNoTracking()
                 .Where(ci => ci.CartId == cartId)
                 .OrderBy(ci => ci.AddedAt)
-                .Select(ci => new CartItemDto
+                .Select(ci => new CartPositionDto
                 {
                     ProductId = ci.ProductId,
                     ProductName = ci.Product.Name,
                     Quantity = ci.Quantity,
-                    ProductPrice = ci.Product.Price
+
+                    BasePrice = (int)Math.Round(ci.Product.Price, 0),
+                    DiscountPercent = ci.Product.DiscountPercent,
+                    PriceWithDiscount =
+                        (int)Math.Round(ci.Product.Price * (100 - ci.Product.DiscountPercent) / 100m, 0),
+
+                    ProductImage = ci.Product.ProductImages
+                        .OrderBy(pi => pi.Position)
+                        .Select(pi => pi.Path)
+                        .FirstOrDefault()
                 })
                 .ToListAsync();
 
-            decimal totalPrice = cartItems.Sum(c => c.TotalPrice);
-
-            return Response.Success(new CartDto { CartItems = cartItems, TotalPrice = totalPrice });
+            return Response.Success(
+                new CartDto
+                {
+                    Items = cartItems,
+                    TotalQuantity = cartItems.Sum(c => c.Quantity),
+                    TotalBasePrice = cartItems.Sum(c => c.PositionBaseTotal),
+                    TotalDiscountAmount = cartItems.Sum(c => c.PositionDiscountAmount)
+                }
+            );
         }
         catch (Exception)
         {
