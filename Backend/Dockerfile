@@ -7,7 +7,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Backend.API/Backend.API.csproj", "Backend.API/"]
 COPY ["Backend.Application/Backend.Application.csproj", "Backend.Application/"]
-COPY ["Backend.DataAccess/Backend.DataAccess.csproj", "Backend.DataAccess/"]
+COPY ["Backend.Infrastructure/Backend.Infrastructure.csproj", "Backend.Infrastructure/"]
 COPY ["Backend.Domain/Backend.Domain.csproj", "Backend.Domain/"]
 RUN dotnet restore "Backend.API/Backend.API.csproj"
 COPY . .

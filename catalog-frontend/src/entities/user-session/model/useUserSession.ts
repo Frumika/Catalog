@@ -4,6 +4,7 @@ import {ApiError, localSessionStorage, toApiError} from "@/shared/api";
 import {
     useClearSession, useIsAuthenticated, useSessionEmail, useSessionId, useSessionLogin, useSetSession,
 } from "@/entities/user-session/model/sessionStore.ts";
+import type {UserSession} from "@/entities/user-session";
 
 
 export const useUserSession = () => {
@@ -19,7 +20,7 @@ export const useUserSession = () => {
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState<ApiError | null>(null);
 
-    const session = useMemo(() => {
+    const session = useMemo<UserSession | null>(() => {
         if (!isAuthenticated || !sessionId || !email || !login) return null;
         return {sessionId, email, login};
     }, [isAuthenticated, sessionId, email, login]);
@@ -74,7 +75,7 @@ export const useUserSession = () => {
         } catch (error) {
             setError(toApiError(error));
         } finally {
-            clearSession(); // Делаем очистку независимо от ответа сервера
+            clearSession();
             setCodeSend(false);
         }
     };
