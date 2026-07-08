@@ -1,17 +1,17 @@
 import {useState} from "react";
-import {useUser} from "@/entities/user";
+import {useSession} from "@/entities/session";
 
 export const useAuthModal = () => {
     const [isOpen, setIsOpen] = useState(false);
     const {
-        user,
+        session,
         isVerify,
         isCodeSend,
         sendCode,
         verify,
         logout,
         logoutAll
-    } = useUser()
+    } = useSession()
 
     const open = () => {
         if (!isVerify) {
@@ -21,7 +21,7 @@ export const useAuthModal = () => {
 
     return {
         isOpen,
-        user,
+        session,
         isVerify,
         isCodeSend,
         sendCode,

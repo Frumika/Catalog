@@ -22,7 +22,7 @@ export const ProfileButton = (
 
     const {
         isOpen,
-        user,
+        session,
         isVerify,
         isCodeSend,
         sendCode,
@@ -33,8 +33,8 @@ export const ProfileButton = (
         close,
     } = useAuthModal();
 
-    const hasChildren = !!user;
-    const displayContent = hasChildren ? user.login : "Войти";
+    const hasChildren = !!session;
+    const displayContent = hasChildren ? session.login : "Войти";
 
     return (
         <>

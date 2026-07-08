@@ -1,30 +1,30 @@
 import {useEffect, useState} from "react";
-import type {User} from "./types.ts";
-import {userApi} from "../api/userApi.ts";
-import {ApiError, session, toApiError} from "@/shared/api";
+import type {Session} from "./types.ts";
+import {sessionApi} from "../api/sessionApi.ts";
+import {ApiError, localSessionStorage, toApiError} from "@/shared/api";
 
 
-export const useUser = () => {
-    const [user, setUser] = useState<User | null>(null);
+export const useSession = () => {
+    const [session, setSession] = useState<Session | null>(null);
     const [isCodeSend, setCodeSend] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [error, setError] = useState<ApiError | null>(null);
 
-    const isVerify = user !== null;
+    const isVerify = session !== null;
 
     useEffect(() => {
-        const sessionId: string | null = session.get();
+        const sessionId: string | null = localSessionStorage.get();
         if (!sessionId) {
             setLoading(false);
             return;
         }
 
-        userApi.getUser(sessionId)
-            .then(user => setUser(user))
+        sessionApi.getSession(sessionId)
+            .then(user => setSession(user))
             .catch(error => {
                 const apiError = toApiError(error);
                 if (apiError.code === "user_session_not_found") {
-                    session.clear();
+                    localSessionStorage.clear();
                 }
                 setError(apiError);
             })
@@ -33,7 +33,7 @@ export const useUser = () => {
 
     const sendCode = async (email: string): Promise<void> => {
         try {
-            await userApi.sendCode(email);
+            await sessionApi.sendCode(email);
             setError(null);
             setCodeSend(true);
         } catch (error) {
@@ -44,50 +44,50 @@ export const useUser = () => {
 
     const verify = async (email: string, code: string): Promise<void> => {
         try {
-            const user = await userApi.verify(email, code);
-            session.set(user.sessionId);
+            const user = await sessionApi.verify(email, code);
+            localSessionStorage.set(user.sessionId);
             setError(null);
             setCodeSend(false);
-            setUser(user);
+            setSession(user);
         } catch (error) {
             setError(toApiError(error));
         }
     };
 
     const logout = async (): Promise<void> => {
-        const sessionId = session.get();
+        const sessionId = localSessionStorage.get();
         if (!sessionId) {
             return;
         }
         try {
-            await userApi.logout(sessionId);
+            await sessionApi.logout(sessionId);
         } catch (error) {
             setError(toApiError(error));
         } finally {
-            session.clear();
-            setUser(null);
+            localSessionStorage.clear();
+            setSession(null);
             setCodeSend(false);
         }
     };
 
     const logoutAll = async (): Promise<void> => {
-        const sessionId = session.get();
+        const sessionId = localSessionStorage.get();
         if (!sessionId) {
             return;
         }
         try {
-            await userApi.logoutAll(sessionId);
+            await sessionApi.logoutAll(sessionId);
         } catch (error) {
             setError(toApiError(error));
         } finally {
-            session.clear();
-            setUser(null);
+            localSessionStorage.clear();
+            setSession(null);
             setCodeSend(false);
         }
     };
 
     return {
-        user,
+        session,
         isVerify,
         isCodeSend,
         isLoading,

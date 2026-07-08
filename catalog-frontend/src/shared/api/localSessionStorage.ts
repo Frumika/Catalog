@@ -1,6 +1,6 @@
 const SESSION_KEY = "user_session_id";
 
-export const session = {
+export const localSessionStorage = {
     get(): string | null {
         return localStorage.getItem(SESSION_KEY);
     },

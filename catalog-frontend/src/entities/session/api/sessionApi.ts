@@ -1,12 +1,12 @@
 import {apiClient, ApiError} from "@/shared/api";
-import type {User} from "../model/types.ts";
+import type {Session} from "../model/types.ts";
 
 
 const ENDPOINT = "api/auth";
 
-export const userApi = {
-    getUser: async (sessionId: string): Promise<User> => {
-        const response = await apiClient.get<User>(
+export const sessionApi = {
+    getSession: async (sessionId: string): Promise<Session> => {
+        const response = await apiClient.get<Session>(
             `${ENDPOINT}/${sessionId}`,
         );
 
@@ -28,8 +28,8 @@ export const userApi = {
         }
     },
 
-    verify: async (email: string, code: string): Promise<User> => {
-        const response = await apiClient.post<User>(
+    verify: async (email: string, code: string): Promise<Session> => {
+        const response = await apiClient.post<Session>(
             `${ENDPOINT}/verify`,
             {email, code},
         );

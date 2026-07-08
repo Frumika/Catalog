@@ -1,4 +1,4 @@
-import {session} from "./session.ts";
+import {localSessionStorage} from "./localSessionStorage.ts";
 import type {ApiResponse, RequestBody} from "./types.ts";
 
 
@@ -16,7 +16,7 @@ async function request<TData>(
     const resultBody: RequestBody = {...body};
 
     if (authorization) {
-        const sessionId = session.get();
+        const sessionId = localSessionStorage.get();
         if (sessionId) {
             if (method === 'GET') {
                 fullUrl += `/${sessionId}`;
