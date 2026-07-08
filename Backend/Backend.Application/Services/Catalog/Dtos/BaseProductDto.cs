@@ -4,8 +4,8 @@ public class BaseProductDto
 {
     public int ProductId { get; set; }
     public string ProductName { get; set; } = string.Empty;
-    public decimal Price { get; set; }
-    public decimal DiscountPrice { get; set; }
+    public int Price { get; set; }
+    public int DiscountPrice { get; set; }
     public byte DiscountPercent { get; set; }
     public int ReviewCount { get; set; }
     public double AverageScore { get; set; }

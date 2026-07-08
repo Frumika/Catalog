@@ -8,6 +8,7 @@ import StarIcon from "@/shared/assets/icons/star.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
+import {formatPrice} from "@/shared/lib";
 
 
 interface ProductCardProps {
@@ -49,11 +50,11 @@ export const ProductCard = (
                 <div className={styles.priceContainer}>
                     {hasDiscount &&
                         <span className={styles.discountPrice}>
-                            {`${product.discountPrice}₽`}
+                            {`${formatPrice(product.discountPrice)}₽`}
                         </span>}
 
                     <span className={hasDiscount ? styles.oldPrice : styles.price}>
-                        {`${product.price}₽`}
+                        {`${formatPrice(product.price)}₽`}
                     </span>
 
                     {hasDiscount &&

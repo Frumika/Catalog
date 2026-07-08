@@ -33,8 +33,8 @@ public class CatalogService
                 {
                     ProductId = p.Id,
                     ProductName = p.Name,
-                    Price = p.Price,
-                    DiscountPrice = Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 2),
+                    Price = (int)Math.Round(p.Price, 0),
+                    DiscountPrice = (int)Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 0),
                     DiscountPercent = p.DiscountPercent,
                     ReviewCount = p.Reviews.Count,
                     AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
@@ -90,8 +90,8 @@ public class CatalogService
                 {
                     ProductId = p.Id,
                     ProductName = p.Name,
-                    Price = p.Price,
-                    DiscountPrice = Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 2),
+                    Price = (int)Math.Round(p.Price, 0),
+                    DiscountPrice = (int)Math.Round(p.Price * (100 - p.DiscountPercent) / 100m, 0),
                     DiscountPercent = p.DiscountPercent,
                     ReviewCount = p.Reviews.Count,
                     AverageScore = p.Reviews.Any() ? Math.Round(p.Reviews.Average(r => r.Score), 1) : 0,
