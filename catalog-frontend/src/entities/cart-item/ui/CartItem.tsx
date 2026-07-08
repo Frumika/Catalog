@@ -1,11 +1,11 @@
-import type { ProductPreview } from "../model/Product.types.ts";
+import type {CartPosition} from "../model/types.ts";
 import styles from "./CartItem.module.css";
 
 interface CartItemProps {
-    product: ProductPreview;
+    cartPosition: CartPosition;
 }
 
-export const CartItem = ({ product }: CartItemProps) => {
+export const CartItem = ({ cartPosition }: CartItemProps) => {
     return (
         <div className={styles.item}>
             {/* Левая часть: Чекбокс и Изображение */}
@@ -17,8 +17,8 @@ export const CartItem = ({ product }: CartItemProps) => {
 
                 <div className={styles.imageWrapper}>
                     <img
-                        src={product.imageUrl}
-                        alt={product.productName}
+                        src={cartPosition.imageUrl}
+                        alt={cartPosition.productName}
                         className={styles.image}
                     />
                 </div>
@@ -27,7 +27,7 @@ export const CartItem = ({ product }: CartItemProps) => {
             {/* Правая часть: Информация, счетчик и цены */}
             <div className={styles.content}>
                 <div className={styles.info}>
-                    <h3 className={styles.title}>{product.productName}</h3>
+                    <h3 className={styles.title}>{cartPosition.productName}</h3>
 
                     {/* Нижняя панель действий (Удалить / В избранное) */}
                     <div className={styles.metaActions}>
@@ -39,8 +39,8 @@ export const CartItem = ({ product }: CartItemProps) => {
                 {/* Блок управления количеством (Счетчик) */}
                 <div className={styles.quantityControls}>
                     <div className={styles.counter}>
-                        <button className={styles.counterBtn} disabled={product.reviewCount <= 1}>–</button>
-                        <span className={styles.quantityNum}>{product.reviewCount}</span>
+                        <button className={styles.counterBtn} disabled={cartPosition.reviewCount <= 1}>–</button>
+                        <span className={styles.quantityNum}>{cartPosition.reviewCount}</span>
                         <button className={styles.counterBtn}>+</button>
                     </div>
                 </div>
@@ -48,7 +48,7 @@ export const CartItem = ({ product }: CartItemProps) => {
                 {/* Блок стоимости */}
                 <div className={styles.priceBlock}>
                     <span className={styles.currentPrice}>
-                        {product.price.toLocaleString()} ₽
+                        {cartPosition.price.toLocaleString()} ₽
                     </span>
                 </div>
             </div>

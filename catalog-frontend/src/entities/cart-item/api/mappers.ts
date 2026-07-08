@@ -1,17 +1,10 @@
 import {getFullUrl} from "@/shared/api";
-import type {ProductDetails, ProductPreview} from "../model/Product.types.ts";
-import type {ProductDetailsDto, ProductPreviewDto} from "./Product.dto.ts";
+import type {CartPosition} from "../model/types.ts";
+import type {CartPositionDto} from "./Cart.dto.ts";
 import PlaceholderImage from "@/shared/assets/images/placeholder.png";
 
 
-export const mapProductPreview = (dto: ProductPreviewDto): ProductPreview => ({
+export const mapCartPosition = (dto: CartPositionDto): CartPosition => ({
     ...dto,
     imageUrl: dto.imageUrl ? getFullUrl(dto.imageUrl) : PlaceholderImage,
-});
-
-export const mapProductDetails = (dto: ProductDetailsDto): ProductDetails => ({
-    ...dto,
-    imageUrls: dto.imageUrls.length > 0
-        ? dto.imageUrls.map(getFullUrl)
-        : [PlaceholderImage],
 });

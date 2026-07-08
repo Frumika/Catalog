@@ -56,7 +56,7 @@ public class CartService
                     PriceWithDiscount =
                         (int)Math.Round(ci.Product.Price * (100 - ci.Product.DiscountPercent) / 100m, 0),
 
-                    ProductImage = ci.Product.ProductImages
+                    ImageUrl = ci.Product.ProductImages
                         .OrderBy(pi => pi.Position)
                         .Select(pi => pi.Path)
                         .FirstOrDefault()

@@ -25,7 +25,7 @@ export const CartList = ({ products }: CartProps) => {
                         {products.map((product) => (
                             <CartItem
                                 key={product.productId}
-                                product={product}
+                                cartPosition={product}
                             />
                         ))}
                     </div>
