@@ -32,7 +32,7 @@ export const NavButton = (
         <button {...props} className={navButtonStyles}>
             <span className={styles.content}>
                 {icon && <Icon size="medium">{icon}</Icon>}
-                {!isCompact && <span>{children}</span>}
+                {!isCompact && <span className={styles.text}>{children}</span>}
             </span>
 
             <Badge

@@ -27,13 +27,24 @@
 .content {
     display: flex;
     flex-direction: column;
-
     align-items: center;
+
+    width: 100%;
+    padding: 0 2px;
+    box-sizing: border-box;
 
     font-size: 12px;
     font-weight: 600;
-
     text-align: center;
+
+    overflow: hidden;
+}
+
+.text {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .badgeValue {

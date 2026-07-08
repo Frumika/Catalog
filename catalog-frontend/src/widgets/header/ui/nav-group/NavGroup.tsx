@@ -1,10 +1,10 @@
 import {NavButton} from "@/shared/ui/nav-button";
-import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
 import OrderIcon from "@/shared/assets/icons/order.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
 import styles from "./NavGroup.module.css";
 import type {ComponentDisplayMode} from "@/shared/lib";
+import {ProfileButton} from "@/features/profile-button";
 
 
 interface NavGroupProps {
@@ -18,12 +18,9 @@ export const NavGroup = (
 
     return (
         <div className={styles.navGroup}>
-            <NavButton
-                displayMode={displayMode}
-                icon={<ProfileIcon/>}
-            >
-                Войти
-            </NavButton>
+            <ProfileButton>
+                {"User_sk19dsdfsfsd"}
+            </ProfileButton>
 
             <NavButton
                 displayMode={displayMode}
