@@ -45,10 +45,11 @@ export const useUserSession = () => {
     }, [setSession, clearSession]);
 
     const sendCode = async (email: string): Promise<void> => {
+        setError(null);
+        setCodeSend(true);
+
         try {
             await userSessionApi.sendCode(email);
-            setError(null);
-            setCodeSend(true);
         } catch (error) {
             setError(toApiError(error));
             setCodeSend(false);
