@@ -24,13 +24,13 @@ export const ProfileButton = (
 
     const isAuthenticated = useIsAuthenticated();
 
-    const {isCodeSend, sendCode, verify} = useSession()
+    const {isCodeSend, sendCode, verify} = useSession();
     const {isOpen, open, close,} = useAuthModal(isAuthenticated);
     const {user, isLoading: isUserLoading} = useUser(isAuthenticated);
 
     const displayContent = (() => {
         if (!isAuthenticated) return "Войти";
-        if (isUserLoading || !user) return "";
+        if (isUserLoading || !user) return "Войти";
         return user.login;
     })();
 

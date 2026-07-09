@@ -46,7 +46,6 @@ public class AuthController : ControllerBase
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshRequest request)
     {
-        Console.WriteLine($"Запрос на обновление: {DateTime.Now}");
         var response = await _authService.RefreshAccessTokenAsync(request);
         return response.ToHttpResponse();
     }

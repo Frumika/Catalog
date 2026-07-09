@@ -27,10 +27,10 @@ export const CartItem = ({
     return (
         <div className={styles.item}>
             <div className={styles.leftContainer}>
-                <label className={styles.checkboxWrapper}>
-                    <input type="checkbox" checked={isChecked} onChange={onToggleCheck} className={styles.checkbox} />
-                    <span className={styles.customCheckbox}></span>
-                </label>
+                {/*<label className={styles.checkboxWrapper}>*/}
+                {/*    <input type="checkbox" checked={isChecked} onChange={onToggleCheck} className={styles.checkbox} />*/}
+                {/*    <span className={styles.customCheckbox}></span>*/}
+                {/*</label>*/}
 
                 <div className={styles.imageWrapper}>
                     <img src={cartPosition.imageUrl} alt="" className={styles.image} />

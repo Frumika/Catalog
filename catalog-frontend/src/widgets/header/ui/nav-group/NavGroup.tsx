@@ -44,7 +44,7 @@ export const NavGroup = (
             <NavButton
                 displayMode={displayMode}
                 icon={<CartIcon/>}
-                badgeValue={totalCartQuantity > 0 ? totalCartQuantity : undefined}
+                badgeValue={totalCartQuantity}
                 onClick={() => navigate("/cart")}
 
             >
