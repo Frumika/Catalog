@@ -10,6 +10,7 @@ public class AppConfiguration
     public UserSettings UserSettings { get; }
     public CodeStorageSettings CodeStorageSettings { get; }
     public TokenGeneratorSettings TokenGeneratorSettings { get; }
+    public TokenCleanupSettings TokenCleanupSettings { get; }
 
     public AppConfiguration(IConfiguration configuration)
     {
@@ -18,6 +19,21 @@ public class AppConfiguration
         UserSettings = ConfigureUser(configuration);
         CodeStorageSettings = ConfigureCodeStorage(configuration);
         TokenGeneratorSettings = ConfigureTokenGenerator(configuration);
+        TokenCleanupSettings = ConfigureTokenCleanup(configuration);
+    }
+
+    private static TokenCleanupSettings ConfigureTokenCleanup(IConfiguration configuration)
+    {
+        int intervalFromMinutes = configuration.GetValue<int>("Configuration:TokenCleanupSettings:IntervalFromMinutes");
+        int batchSize = configuration.GetValue<int>("Configuration:TokenCleanupSettings:BatchSize");
+
+        TokenCleanupSettings settings = new()
+        {
+            Interval = TimeSpan.FromMinutes(intervalFromMinutes),
+            BatchSize = batchSize
+        };
+
+        return settings;
     }
 
     private static OrderSettings ConfigureOrder(IConfiguration configuration)

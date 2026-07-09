@@ -74,6 +74,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<UserSettings>(_ => appConfiguration.UserSettings);
         services.AddSingleton<CodeStorageSettings>(_ => appConfiguration.CodeStorageSettings);
         services.AddSingleton<TokenGeneratorSettings>(_ => appConfiguration.TokenGeneratorSettings);
+        services.AddSingleton<TokenCleanupSettings>(_ => appConfiguration.TokenCleanupSettings);
 
         return services;
     }
@@ -98,10 +99,12 @@ public static class ServiceCollectionExtensions
         services.AddScoped<WishlistService>();
         services.AddScoped<OrderService>();
         services.AddScoped<OrdersCleanupService>();
+        services.AddScoped<TokenCleanupService>();
         services.AddScoped<ReviewService>();
         services.AddScoped<PickupPointService>();
 
         services.AddHostedService<OrdersCleanupBackgroundService>();
+        services.AddHostedService<TokenCleanupBackgroundService>();
 
         return services;
     }
@@ -152,7 +155,7 @@ public static class ServiceCollectionExtensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
                     };
             });
-        
+
         services.AddScoped<ITokenGenerator, TokenGenerator>();
 
         return services;
@@ -182,7 +185,7 @@ public static class ServiceCollectionExtensions
                     }
                 }
             );
-            
+
             options.CustomSchemaIds(type => type.FullName);
             options.AddServer(
                 new OpenApiServer
