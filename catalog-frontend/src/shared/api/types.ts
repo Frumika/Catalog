@@ -13,3 +13,8 @@ export interface PagedResult<T> {
     pageNumber: number;
     pageSize: number;
 }
+
+export interface RefreshResponse {
+    accessToken: string;
+    refreshToken: string;
+}

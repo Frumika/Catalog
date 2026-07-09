@@ -1,39 +1,88 @@
-import {localSessionStorage} from "./localSessionStorage.ts";
-import type {ApiResponse, RequestBody} from "./types.ts";
+import {tokenLocalStorage} from "./tokenLocalStorage.ts";
+import type {ApiResponse, RefreshResponse, RequestBody} from "./types.ts";
 
 
 const BASE_URL = "http://localhost:8000/";
+
+let refreshPromise: Promise<ApiResponse<RefreshResponse> | null> | null = null;
 
 async function request<TData>(
     url: string,
     method: string,
     body: RequestBody = {},
-    authorization = false,
+    authorization = true,
     headers?: HeadersInit
 ): Promise<ApiResponse<TData>> {
 
     let fullUrl = getFullUrl(url);
     const resultBody: RequestBody = {...body};
 
+    let fetchHeaders: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...(headers as Record<string, string>),
+    };
+
     if (authorization) {
-        const sessionId = localSessionStorage.get();
-        if (sessionId) {
-            if (method === 'GET') {
-                fullUrl += `/${sessionId}`;
-            } else {
-                resultBody.UserSessionId = sessionId;
-            }
+        const accessToken = tokenLocalStorage.getAccessToken();
+        if (accessToken) {
+            fetchHeaders['Authorization'] = `Bearer ${accessToken}`;
         }
     }
 
-    const response = await fetch(fullUrl, {
+    let response = await fetch(fullUrl, {
         method,
-        headers: {
-            'Content-Type': 'application/json',
-            ...headers,
-        },
+        headers: fetchHeaders,
         ...(method !== 'GET' && {body: JSON.stringify(resultBody)}),
     });
+
+    if (response.status === 401 && authorization) {
+        const refreshToken = tokenLocalStorage.getRefreshToken();
+        if (refreshToken) {
+
+            if (!refreshPromise) {
+                refreshPromise = fetch(getFullUrl('api/auth/refresh'), {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({refreshToken}),
+                })
+                    .then(async (res) => {
+                        if (res.ok) {
+                            const response = await res.json() as ApiResponse<RefreshResponse>;
+                            console.log()
+
+                            tokenLocalStorage.setAccessToken(response.data.accessToken);
+                            if (response.data.refreshToken) {
+                                tokenLocalStorage.setRefreshToken(response.data.refreshToken);
+                            }
+                            return response;
+                        }
+                        tokenLocalStorage.clearStorage();
+                        return null;
+                    })
+                    .catch(() => {
+                        tokenLocalStorage.clearStorage();
+                        return null;
+                    })
+                    .finally(() => {
+                        refreshPromise = null;
+                    });
+            }
+
+            const refreshResult = await refreshPromise;
+
+            if (refreshResult) {
+                fetchHeaders['Authorization'] = `Bearer ${refreshResult.data.accessToken}`;
+
+                response = await fetch(fullUrl, {
+                    method,
+                    headers: fetchHeaders,
+                    ...(method !== 'GET' && {body: JSON.stringify(resultBody)}),
+                });
+            }
+        } else {
+            tokenLocalStorage.clearStorage();
+        }
+    }
 
     const result = await response.json() as Omit<ApiResponse<TData>, 'ok'>;
 

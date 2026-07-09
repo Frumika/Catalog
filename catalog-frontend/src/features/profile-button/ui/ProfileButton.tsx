@@ -4,6 +4,8 @@ import type {ComponentDisplayMode} from "@/shared/lib";
 import {AuthModal} from "@/features/profile-button/ui/auth-modal/AuthModal.tsx";
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
 import {useAuthModal} from "@/features/profile-button/model/useAuthModal.ts";
+import {useUser} from "@/entities/user/model/useUser.ts";
+import {useIsAuthenticated, useSession} from "@/entities/session";
 
 
 export interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -20,27 +22,25 @@ export const ProfileButton = (
     }: ProfileButtonProps
 ) => {
 
-    const {
-        isOpen,
-        session,
-        isVerify,
-        isCodeSend,
-        sendCode,
-        verify,
-        logout,
-        logoutAll,
-        open,
-        close,
-    } = useAuthModal();
+    const isAuthenticated = useIsAuthenticated();
 
-    const hasChildren = !!session;
-    const displayContent = hasChildren ? session.login : "Войти";
+    const {isCodeSend, sendCode, verify} = useSession()
+    const {isOpen, open, close,} = useAuthModal(isAuthenticated);
+    const {user, isLoading: isUserLoading} = useUser(isAuthenticated);
+
+    const displayContent = (() => {
+        if (!isAuthenticated) return "Войти";
+        if (isUserLoading || !user) return "";
+        return user.login;
+    })();
+
+    const badgeVisible = !isAuthenticated;
 
     return (
         <>
             <NavButton
                 {...props}
-                badgeVisible={!hasChildren}
+                badgeVisible={badgeVisible}
                 displayMode={displayMode}
                 icon={<ProfileIcon/>}
                 onClick={open}

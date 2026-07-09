@@ -23,9 +23,7 @@ export const NavGroup = (
 
     return (
         <div className={styles.navGroup}>
-            <ProfileButton>
-                {"User_sk19dsdfsfsd"}
-            </ProfileButton>
+            <ProfileButton/>
 
             <NavButton
                 displayMode={displayMode}

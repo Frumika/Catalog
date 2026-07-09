@@ -18,10 +18,14 @@ public class AuthController : ControllerBase
         _authService = authService;
     }
 
-    [HttpGet("{sessionId}")]
-    public async Task<IActionResult> GetUserSession([FromRoute] string sessionId)
+    [Authorize]
+    [HttpPost("user")]
+    public async Task<IActionResult> GetUser()
     {
-        var response = await _authService.GetUserSession(sessionId);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _authService.GetUserAsync((int)userId);
         return response.ToHttpResponse();
     }
 
@@ -39,6 +43,15 @@ public class AuthController : ControllerBase
         return response.ToHttpResponse();
     }
 
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshRequest request)
+    {
+        Console.WriteLine($"Запрос на обновление: {DateTime.Now}");
+        var response = await _authService.RefreshAccessTokenAsync(request);
+        return response.ToHttpResponse();
+    }
+
+    [Authorize]
     [HttpDelete("logout")]
     public async Task<IActionResult> LogoutSession([FromBody] LogoutRequest request)
     {
@@ -48,7 +61,7 @@ public class AuthController : ControllerBase
 
     [Authorize]
     [HttpDelete("logout_all")]
-    public async Task<IActionResult> LogoutAllSessions([FromBody] LogoutRequest request)
+    public async Task<IActionResult> LogoutAllSessions()
     {
         int? userId = User.GetUserId();
         if (userId is null) return Unauthorized();

@@ -1,26 +1,15 @@
 import {apiClient, ApiError} from "@/shared/api";
-import type {UserSession} from "../model/types.ts";
+import type {Session} from "../model/types.ts";
 
 
 const ENDPOINT = "api/auth";
 
-export const userSessionApi = {
-    getSession: async (sessionId: string): Promise<UserSession> => {
-        const response = await apiClient.get<UserSession>(
-            `${ENDPOINT}/${sessionId}`,
-        );
-
-        if (!response.ok) {
-            throw new ApiError(response.code, response.message);
-        }
-
-        return response.data;
-    },
-
+export const sessionApi = {
     sendCode: async (email: string): Promise<void> => {
         const response = await apiClient.post<void>(
             `${ENDPOINT}/send_code`,
             {email},
+            false,
         );
 
         if (!response.ok) {
@@ -28,10 +17,11 @@ export const userSessionApi = {
         }
     },
 
-    verify: async (email: string, code: string): Promise<UserSession> => {
-        const response = await apiClient.post<UserSession>(
+    verify: async (email: string, code: string): Promise<Session> => {
+        const response = await apiClient.post<Session>(
             `${ENDPOINT}/verify`,
             {email, code},
+            false,
         );
 
         if (!response.ok) {
@@ -41,10 +31,10 @@ export const userSessionApi = {
         return response.data;
     },
 
-    logout: async (sessionId: string): Promise<void> => {
+    logout: async (refreshToken: string): Promise<void> => {
         const response = await apiClient.delete<void>(
             `${ENDPOINT}/logout`,
-            {sessionId},
+            {refreshToken},
         );
 
         if (!response.ok) {
@@ -52,10 +42,9 @@ export const userSessionApi = {
         }
     },
 
-    logoutAll: async (sessionId: string): Promise<void> => {
+    logoutAll: async (): Promise<void> => {
         const response = await apiClient.delete<void>(
             `${ENDPOINT}/logout_all`,
-            {sessionId},
         );
 
         if (!response.ok) {

@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import type {PickupPoint} from "./PickupPoint.types.ts";
 import {pickupPointApi} from "../api/pickupPointApi.ts";
 import {ApiError, toApiError} from "@/shared/api";
-import {useIsAuthenticated} from "@/entities/user-session";
+import {useIsAuthenticated} from "@/entities/session";
 
 
 export const usePickupPoint = () => {

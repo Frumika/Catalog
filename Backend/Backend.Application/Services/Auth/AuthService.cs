@@ -8,7 +8,6 @@ using Backend.Application.Services.Auth.Requests;
 using Backend.Domain.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 
 namespace Backend.Application.Services.Auth;
@@ -29,21 +28,17 @@ public class AuthService
         _codeStorage = codeStorage;
     }
 
-    public async Task<Response> GetUserSession(string sessionId)
+    public async Task<Response> GetUserAsync(int userId)
     {
-        if (string.IsNullOrEmpty(sessionId))
-            return Response.Fail(new BadRequest(), "Session id is empty");
-
         try
         {
-            UserSessionDto? userSession = await _dbContext.RefreshTokens
+            UserDto? userSession = await _dbContext.Users
                 .AsNoTracking()
-                .Where(us => us.Token == sessionId)
-                .Select(us => new UserSessionDto
+                .Where(u => u.Id == userId)
+                .Select(u => new UserDto
                 {
-                    SessionId = sessionId,
-                    Login = us.User.Login,
-                    Email = us.User.Email,
+                    Login = u.Login,
+                    Email = u.Email,
                 }).FirstOrDefaultAsync();
 
             return userSession is not null
@@ -128,12 +123,10 @@ public class AuthService
             await _dbContext.SaveChangesAsync();
 
             return Response.Success(
-                new UserSessionDto
+                new SessionDto()
                 {
-                    SessionId = accessToken,
+                    AccessToken = accessToken,
                     RefreshToken = refreshToken.Token,
-                    Login = user.Login,
-                    Email = user.Email,
                 }, "User has been logged in");
         }
         catch (Exception)
@@ -170,13 +163,11 @@ public class AuthService
             string accessToken = _tokenGenerator.GenerateAccessToken(refreshToken.User);
 
             return Response.Success(
-                new UserSessionDto
+                new SessionDto
                 {
-                    SessionId = accessToken,
+                    AccessToken = accessToken,
                     RefreshToken = refreshToken.Token,
-                    Login = refreshToken.User.Login,
-                    Email = refreshToken.User.Email,
-                }, "User has been logged in"
+                }, "Access token has been refreshed"
             );
         }
         catch (Exception)
