@@ -1,16 +1,17 @@
-// entities/product/ui/ProductCard.tsx
-import type { ProductPreview } from "../model/Product.types.ts";
+import type {ProductPreview} from "../model/Product.types.ts";
 import styles from "./ProductCard.module.css";
 
-import { Button } from "@/shared/ui/button";
-import { Icon } from "@/shared/ui/icon";
+import {formatPrice} from "@/shared/lib";
+import {Button} from "@/shared/ui/button";
+import {Icon} from "@/shared/ui/icon";
+import {QuantityButton} from "./quantity-button/QuantityButton.tsx";
 
 import StarIcon from "@/shared/assets/icons/star.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
-import { formatPrice } from "@/shared/lib";
-import { useCartStore } from "@/entities/cart-item"; // <-- Подключаем наш стор корзины
+import {useCartStore} from "@/entities/cart-item";
+
 
 interface ProductCardProps {
     product: ProductPreview;
@@ -19,7 +20,7 @@ interface ProductCardProps {
     className?: string;
 }
 
-export const ProductCard = ({ product, hasButton = true, onClick, className }: ProductCardProps) => {
+export const ProductCard = ({product, hasButton = true, onClick, className}: ProductCardProps) => {
     // Получаем состояние и экшены из общего стора корзины
     const cartItems = useCartStore(state => state.items);
     const addToCart = useCartStore(state => state.addToCart);
@@ -48,7 +49,7 @@ export const ProductCard = ({ product, hasButton = true, onClick, className }: P
     return (
         <div className={productCardStyles}>
             <a className={styles.imageWrapper}>
-                <img className={styles.image} onClick={onClick} src={product.imageUrl} alt="" />
+                <img className={styles.image} onClick={onClick} src={product.imageUrl} alt=""/>
             </a>
 
             <div className={styles.contentWrapper}>
@@ -83,27 +84,14 @@ export const ProductCard = ({ product, hasButton = true, onClick, className }: P
 
                 {hasButton && (
                     <div className={styles.cartButtonWrapper}>
-                        {quantityInCart > 0 ? (
-                            /* Счетчик в стиле Ozon */
-                            <div className={styles.ozonCounter}>
-                                <button
-                                    className={styles.counterBtn}
-                                    onClick={(e) => handleQuantityChange(e, 'decrement')}
-                                >
-                                    –
-                                </button>
-                                <span className={styles.counterValue}>
-                                    {quantityInCart} <span className={styles.pcs}>шт</span>
-                                </span>
-                                <button
-                                    className={styles.counterBtn}
-                                    onClick={(e) => handleQuantityChange(e, 'increment')}
-                                >
-                                    +
-                                </button>
-                            </div>
-                        ) : (
-                            /* Обычная кнопка добавления */
+                        {quantityInCart > 0 ?
+                            <QuantityButton
+                                size="small"
+                                quantity={quantityInCart}
+                                incQuantity={handleQuantityChange}
+                                decQuantity={handleQuantityChange}
+                            />
+                            :
                             <Button
                                 fullWidth={true}
                                 size="small"
@@ -112,7 +100,7 @@ export const ProductCard = ({ product, hasButton = true, onClick, className }: P
                             >
                                 В корзину
                             </Button>
-                        )}
+                        }
                     </div>
                 )}
             </div>

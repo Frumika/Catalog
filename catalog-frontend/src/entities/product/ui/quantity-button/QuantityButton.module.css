@@ -1,0 +1,19 @@
+.quantityButton {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.quantity {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    text-align: center;
+}
+
+.icon{
+    stroke: currentColor;
+    stroke-width: 2px;
+}
