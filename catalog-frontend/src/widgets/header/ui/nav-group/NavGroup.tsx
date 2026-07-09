@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import {NavButton} from "@/shared/ui/nav-button";
 import OrderIcon from "@/shared/assets/icons/order.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
@@ -15,6 +16,7 @@ export const NavGroup = (
     {
         displayMode = "full"
     }: NavGroupProps) => {
+    const navigate = useNavigate();
 
     return (
         <div className={styles.navGroup}>
@@ -42,6 +44,7 @@ export const NavGroup = (
                 displayMode={displayMode}
                 icon={<CartIcon/>}
                 badgeValue={10}
+                onClick={() => navigate("/cart")}
             >
                 Корзина
             </NavButton>
