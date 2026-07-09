@@ -1,5 +1,121 @@
-.productList {
+/* features/cart-list/ui/CartList.module.css */
+.cartContainer {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 20px;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    align-items: start;
+    font-family: 'Onest', sans-serif;
+}
+
+.mainContent {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+}
+
+.listHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e2e7ec;
+}
+
+.title {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0;
+    color: #070707;
+}
+
+.count {
+    color: rgba(0, 26, 51, 0.4);
+    font-weight: 400;
+    font-size: 18px;
+    margin-left: 8px;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Сайдбар */
+.sidebar {
+    position: sticky;
+    top: 24px; /* Чтобы прилипал при скролле под хедером */
+}
+
+.summaryCard {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 24px rgba(0, 26, 51, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.mainCheckoutBtn {
+    width: 100%;
+    background-color: #005bff;
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.mainCheckoutBtn:hover {
+    background-color: #004bde;
+}
+
+.summaryDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.summaryTitle {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 4px 0;
+}
+
+.summaryRow {
+    display: flex;
+    justify-content: space-between;
+    color: #070707;
+    font-size: 14px;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #e2e7ec;
+    margin: 4px 0;
+}
+
+.totalRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.totalPrice {
+    font-size: 24px;
+    color: #070707;
+}
+
+@media (max-width: 992px) {
+    .cartContainer {
+        grid-template-columns: 1fr;
+    }
+    .sidebar {
+        position: static;
+    }
 }

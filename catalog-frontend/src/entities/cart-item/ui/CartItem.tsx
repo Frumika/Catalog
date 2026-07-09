@@ -1,17 +1,34 @@
-import type {CartPosition} from "../model/types.ts";
+// entities/cart-item/ui/CartItem.tsx
+import type { CartPosition } from "../model/types";
 import styles from "./CartItem.module.css";
 
 interface CartItemProps {
     cartPosition: CartPosition;
+    isChecked: boolean;
+    onToggleCheck: () => void;
+    onIncrement: () => void;
+    onDecrement: () => void;
+    onRemove: () => void;
 }
 
-export const CartItem = ({ cartPosition }: CartItemProps) => {
+export const CartItem = ({
+                             cartPosition,
+                             isChecked,
+                             onToggleCheck,
+                             onIncrement,
+                             onDecrement,
+                             onRemove
+                         }: CartItemProps) => {
     return (
         <div className={styles.item}>
-            {/* Левая часть: Чекбокс и Изображение */}
             <div className={styles.leftContainer}>
                 <label className={styles.checkboxWrapper}>
-                    <input type="checkbox" defaultChecked className={styles.checkbox} />
+                    <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={onToggleCheck}
+                        className={styles.checkbox}
+                    />
                     <span className={styles.customCheckbox}></span>
                 </label>
 
@@ -24,31 +41,32 @@ export const CartItem = ({ cartPosition }: CartItemProps) => {
                 </div>
             </div>
 
-            {/* Правая часть: Информация, счетчик и цены */}
             <div className={styles.content}>
                 <div className={styles.info}>
                     <h3 className={styles.title}>{cartPosition.productName}</h3>
-
-                    {/* Нижняя панель действий (Удалить / В избранное) */}
                     <div className={styles.metaActions}>
                         <button className={styles.metaButton}>В избранное</button>
-                        <button className={styles.metaButton}>Удалить</button>
+                        <button className={styles.metaButton} onClick={onRemove}>Удалить</button>
                     </div>
                 </div>
 
-                {/* Блок управления количеством (Счетчик) */}
                 <div className={styles.quantityControls}>
                     <div className={styles.counter}>
-                        <button className={styles.counterBtn} disabled={cartPosition.reviewCount <= 1}>–</button>
-                        <span className={styles.quantityNum}>{cartPosition.reviewCount}</span>
-                        <button className={styles.counterBtn}>+</button>
+                        <button
+                            className={styles.counterBtn}
+                            disabled={cartPosition.quantity <= 1}
+                            onClick={onDecrement}
+                        >
+                            –
+                        </button>
+                        <span className={styles.quantityNum}>{cartPosition.quantity}</span>
+                        <button className={styles.counterBtn} onClick={onIncrement}>+</button>
                     </div>
                 </div>
 
-                {/* Блок стоимости */}
                 <div className={styles.priceBlock}>
                     <span className={styles.currentPrice}>
-                        {cartPosition.price.toLocaleString()} ₽
+                        {(cartPosition.priceWithDiscount * cartPosition.quantity).toLocaleString()} ₽
                     </span>
                 </div>
             </div>

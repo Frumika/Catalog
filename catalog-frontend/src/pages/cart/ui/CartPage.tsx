@@ -1,36 +1,40 @@
-import {useProductList} from "@/entities/product/model/useProductList.ts";
-import {Header} from "@/widgets/header";
-import {ContentContainer} from "@/shared/ui/content-container";
-import {ProductList} from "@/features/product-list";
-import styles from "./CartPage.module.css"
-import {Footer} from "@/widgets/footer";
-
+// pages/cart/ui/CartPage.tsx
+import { useProductList } from "@/entities/product/model/useProductList.ts";
+import { Header } from "@/widgets/header";
+import { Footer } from "@/widgets/footer";
+import { ContentContainer } from "@/shared/ui/content-container";
+import { CartList } from "@/features/cart-list";
+import { ProductList } from "@/features/product-list";
+import styles from "./CartPage.module.css";
 
 export const CartPage = () => {
-    const {items, hasMore, loadMore} = useProductList();
+    // Используем рекомендации (items) из entities/product
+    const { items, hasMore, loadMore } = useProductList();
 
     return (
-        <>
-            <Header/>
+        <div className={styles.pageWrapper}>
+            <Header />
 
             <main className={styles.main}>
                 <ContentContainer>
-                    <h1>Корзина</h1>
-                    <ProductList
-                        hasMore={hasMore}
-                        products={items}
-                        onLoadMore={loadMore}
-                    />
-                    <h1>Рекомендуем</h1>
-                    <ProductList
-                        hasMore={hasMore}
-                        products={items}
-                        onLoadMore={loadMore}
-                    />
+                    {/* Виджет Корзины Ozon (Список товаров + Сайдбар оплаты) */}
+                    <div className={styles.sectionSpacer}>
+                        <CartList />
+                    </div>
+
+                    {/* Блок Рекомендаций Ozon */}
+                    <div className={styles.recommendationsSection}>
+                        <h2 className={styles.recommendationsTitle}>Рекомендуем вам</h2>
+                        <ProductList
+                            hasMore={hasMore}
+                            products={items}
+                            onLoadMore={loadMore}
+                        />
+                    </div>
                 </ContentContainer>
             </main>
 
-            <Footer/>
-        </>
+            <Footer />
+        </div>
     );
 };

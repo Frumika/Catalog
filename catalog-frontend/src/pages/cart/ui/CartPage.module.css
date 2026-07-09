@@ -1,5 +1,29 @@
-.main {
+/* pages/cart/ui/CartPage.css */
+.pageWrapper {
     display: flex;
-    margin-top: 20px;
-    background: var(--bgPrimary);
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f2f5f8; /* Фирменный светло-серый фон Ozon под карточки */
+}
+
+.main {
+    flex-grow: 1;
+    padding-top: 24px;
+    padding-bottom: 48px;
+}
+
+.sectionSpacer {
+    margin-bottom: 40px;
+}
+
+.recommendationsSection {
+    margin-top: 24px;
+}
+
+.recommendationsTitle {
+    font-family: 'Onest', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #070707;
+    margin-bottom: 16px;
 }
