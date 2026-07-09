@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { cartApi } from '../api/cartApi.ts';
-import type { CartPosition } from '../model/types.ts';
+import type { CartPosition } from './types.ts';
 
 // Расширяем тип CartPosition локально для стора, чтобы добавить свойство checked
 export interface ExtendedCartPosition extends CartPosition {
