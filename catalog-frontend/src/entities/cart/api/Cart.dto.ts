@@ -1,3 +1,8 @@
+export interface CartPositionPreviewDto {
+    productId: number;
+    quantity: number;
+}
+
 export interface CartPositionDto {
     productId: number;
     productName: string;

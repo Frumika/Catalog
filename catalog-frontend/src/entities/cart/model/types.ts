@@ -1,4 +1,8 @@
-import type {CartPositionDto} from "../api/Cart.dto.ts";
+import type {CartPositionDto, CartPositionPreviewDto} from "../api/Cart.dto.ts";
+
+export interface CartPositionPreview extends CartPositionPreviewDto {
+
+}
 
 export interface CartPosition extends Omit<CartPositionDto, 'imageUrl'> {
     imageUrl: string;
