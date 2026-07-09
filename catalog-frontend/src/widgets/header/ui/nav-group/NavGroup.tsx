@@ -6,6 +6,7 @@ import CartIcon from "@/shared/assets/icons/cart.svg?react";
 import styles from "./NavGroup.module.css";
 import type {ComponentDisplayMode} from "@/shared/lib";
 import {ProfileButton} from "@/features/profile-button";
+import { useCartStore } from "@/entities/cart-item";
 
 
 interface NavGroupProps {
@@ -17,6 +18,8 @@ export const NavGroup = (
         displayMode = "full"
     }: NavGroupProps) => {
     const navigate = useNavigate();
+    const cartItems = useCartStore(state => state.items);
+    const totalCartQuantity = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
     return (
         <div className={styles.navGroup}>
@@ -43,7 +46,7 @@ export const NavGroup = (
             <NavButton
                 displayMode={displayMode}
                 icon={<CartIcon/>}
-                badgeValue={10}
+                badgeValue={totalCartQuantity > 0 ? totalCartQuantity : undefined}
                 onClick={() => navigate("/cart")}
 
             >
