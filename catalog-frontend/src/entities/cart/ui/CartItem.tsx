@@ -1,5 +1,5 @@
 // entities/cart-item/ui/CartItem.tsx
-import type { CartPosition } from "../model/types";
+import type { CartPosition } from "../model/types.ts";
 import styles from "./CartItem.module.css";
 
 interface CartItemProps {

@@ -10,7 +10,7 @@ import StarIcon from "@/shared/assets/icons/star.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
-import {useCartStore} from "@/entities/cart-item";
+import {useCartStore} from "@/entities/cart";
 
 
 interface ProductCardProps {

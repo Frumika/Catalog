@@ -1,7 +1,7 @@
-// entities/cart-item/api/cartApi.ts
 import { apiClient, ApiError } from "@/shared/api";
 import type { CartPosition } from "../model/types.ts";
 import { mapCartPosition } from "./mappers.ts";
+
 
 const ENDPOINT = "api/cart";
 
@@ -34,8 +34,6 @@ export const cartApi = {
 
     // 2. PATCH-запрос на обновление количества
     updateQuantity: async (productId: number, quantity: number): Promise<void> => {
-        // Если твой apiClient не поддерживает метод patch напрямую, убедись, что внутри него 
-        // обернут стандартный fetch с методом 'PATCH' или Axios.patch
         let response = await apiClient.patch(
             `${ENDPOINT}/product/quantity/update`,
             { productId, quantity },
@@ -51,7 +49,7 @@ export const cartApi = {
     removeItem: async (productId: number): Promise<void> => {
         let response = await apiClient.delete(
             `${ENDPOINT}/product/remove`,
-            { productId }, // передаем в body, либо если бэкенд ждет в URL, перепиши на `${ENDPOINT}/product/remove?productId=${productId}`
+            { productId },
             true
         );
 

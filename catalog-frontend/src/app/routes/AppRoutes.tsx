@@ -1,7 +1,7 @@
 import {Route, Routes} from 'react-router-dom';
 import {HomePage} from "@/pages/home";
 import {CartPage} from "@/pages/cart";
-import { useCartStore } from '@/entities/cart-item';
+import { useCartStore } from '@/entities/cart';
 import { useEffect } from 'react';
 
 export const AppRoutes = () => {

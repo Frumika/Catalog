@@ -6,7 +6,7 @@ import CartIcon from "@/shared/assets/icons/cart.svg?react";
 import styles from "./NavGroup.module.css";
 import type {ComponentDisplayMode} from "@/shared/lib";
 import {ProfileButton} from "@/features/profile-button";
-import { useCartStore } from "@/entities/cart-item";
+import { useCartStore } from "@/entities/cart";
 
 
 interface NavGroupProps {
