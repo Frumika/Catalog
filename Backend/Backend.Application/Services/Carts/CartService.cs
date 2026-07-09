@@ -19,11 +19,10 @@ public class CartService
         _dbContext = dbContext;
     }
 
-    public async Task<Response> GetCartAsync(GetCartRequest request)
+    public async Task<Response> GetCartPreviewAsync(GetCartPreviewRequest request)
     {
         ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
+        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
 
         try
         {
@@ -41,11 +40,57 @@ public class CartService
                 .Select(c => c.Id)
                 .FirstAsync();
 
-            List<CartPositionDto> cartItems = await _dbContext.CartItems
+            List<CartPositionDto> cartPositions = await _dbContext.CartItems
                 .AsNoTracking()
                 .Where(ci => ci.CartId == cartId)
                 .OrderBy(ci => ci.AddedAt)
                 .Select(ci => new CartPositionDto
+                    {
+                        ProductId = ci.ProductId,
+                        Quantity = ci.Quantity,
+                    }
+                ).ToListAsync();
+
+            return Response.Success(
+                new CartDto<CartPositionDto>
+                {
+                    Items = cartPositions,
+                    TotalQuantity = cartPositions.Sum(c => c.Quantity),
+                }
+            );
+        }
+        catch (Exception)
+        {
+            return Response.Fail(new UnknownError(), "Internal server error");
+        }
+    }
+
+    public async Task<Response> GetCartAsync(GetCartRequest request)
+    {
+        ValidationResult result = request.Validate();
+        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
+
+        try
+        {
+            int? userId = await _dbContext.UserSessions
+                .AsNoTracking()
+                .Where(ui => ui.UId == request.UserSessionId)
+                .Select(ui => (int?)ui.UserId)
+                .FirstOrDefaultAsync();
+            if (userId is null)
+                return Response.Fail(new UserNotFound(), "The user wasn't found");
+
+            int cartId = await _dbContext.Carts
+                .AsNoTracking()
+                .Where(c => c.UserId == userId)
+                .Select(c => c.Id)
+                .FirstAsync();
+
+            List<CartPositionExtendedDto> cartItems = await _dbContext.CartItems
+                .AsNoTracking()
+                .Where(ci => ci.CartId == cartId)
+                .OrderBy(ci => ci.AddedAt)
+                .Select(ci => new CartPositionExtendedDto
                 {
                     ProductId = ci.ProductId,
                     ProductName = ci.Product.Name,
@@ -64,7 +109,7 @@ public class CartService
                 .ToListAsync();
 
             return Response.Success(
-                new CartDto
+                new CartExtendedDto
                 {
                     Items = cartItems,
                     TotalQuantity = cartItems.Sum(c => c.Quantity),
@@ -109,23 +154,31 @@ public class CartService
             if (productId is null)
                 return Response.Fail(new ProductNotFound(), "The product wasn't found");
 
-            bool isCartItemExists = await _dbContext.CartItems
-                .AnyAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
-            if (!isCartItemExists)
+            CartItem? cartItem = await _dbContext.CartItems
+                .Where(ci => ci.CartId == cartId && ci.ProductId == request.ProductId)
+                .FirstOrDefaultAsync();
+            if (cartItem is null)
             {
-                _dbContext.CartItems.Add(
-                    new CartItem
-                    {
-                        CartId = cartId,
-                        ProductId = request.ProductId,
-                        Quantity = 1,
-                        AddedAt = DateTime.UtcNow
-                    }
-                );
+                cartItem = new CartItem
+                {
+                    CartId = cartId,
+                    ProductId = request.ProductId,
+                    Quantity = 1,
+                    AddedAt = DateTime.UtcNow
+                };
+
+                _dbContext.CartItems.Add(cartItem);
                 await _dbContext.SaveChangesAsync();
             }
 
-            return Response.Success("The product was added");
+
+            CartPositionDto cartPosition = new()
+            {
+                ProductId = cartItem.ProductId,
+                Quantity = cartItem.Quantity
+            };
+
+            return Response.Success(cartPosition, "The product was added");
         }
         catch (Exception)
         {
@@ -166,7 +219,13 @@ public class CartService
             await _dbContext.SaveChangesAsync();
         }
 
-        return Response.Success("Product quantity was updated");
+        CartPositionDto cartPosition = new()
+        {
+            ProductId = cartItem.ProductId,
+            Quantity = cartItem.Quantity
+        };
+
+        return Response.Success(cartPosition, "Product quantity was updated");
     }
 
     public async Task<Response> RemoveProductAsync(RemoveProductRequest request)

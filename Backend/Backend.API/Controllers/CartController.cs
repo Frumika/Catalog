@@ -17,6 +17,12 @@ public class CartController : ControllerBase
         _cartService = cartService;
     }
 
+    [HttpPost("preview")]
+    public async Task<IActionResult> GetCartPreview([FromBody] GetCartPreviewRequest request)
+    {
+        var response = await _cartService.GetCartPreviewAsync(request);
+        return response.ToHttpResponse();
+    }
 
     [HttpPost("get")]
     public async Task<IActionResult> GetCart([FromBody] GetCartRequest request)
@@ -52,5 +58,4 @@ public class CartController : ControllerBase
         var response = await _cartService.RemoveProductAsync(request);
         return response.ToHttpResponse();
     }
-    
 }
