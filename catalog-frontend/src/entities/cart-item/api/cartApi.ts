@@ -58,5 +58,16 @@ export const cartApi = {
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
         }
-    }
+    },
+    addProductToCart: async (productId: number, quantity: number = 1): Promise<void> => {
+        let response = await apiClient.post(
+            `${ENDPOINT}/product/add`,
+            { productId, quantity },
+            true
+        );
+
+        if (!response.ok) {
+            throw new ApiError(response.code, response.message);
+        }
+    },
 };

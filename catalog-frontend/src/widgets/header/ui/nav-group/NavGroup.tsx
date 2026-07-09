@@ -45,6 +45,7 @@ export const NavGroup = (
                 icon={<CartIcon/>}
                 badgeValue={10}
                 onClick={() => navigate("/cart")}
+
             >
                 Корзина
             </NavButton>
