@@ -1,4 +1,5 @@
 import type {LogoProps} from "@/shared/ui/logo/Logo.types.ts";
+import {useNavigate} from "react-router-dom";
 import LogoPic from "@/shared/assets/icons/logo-pic.svg?react";
 import LogoText from "@/shared/assets/icons/logo-text.svg?react";
 import styles from "./Logo.module.css";
@@ -8,12 +9,12 @@ export const Logo = (
     {
         disabled = false,
         className,
-        onClick,
         displayMode = "full",
         ...props
     }: LogoProps
 ) => {
 
+    const navigate = useNavigate();
     const isCompact = displayMode === "compact";
 
     const logoClasses = [
@@ -28,7 +29,7 @@ export const Logo = (
             type="button"
             className={logoClasses}
             disabled={disabled}
-            onClick={onClick}
+            onClick={() => navigate('/')}
         >
             <LogoPic className={styles.icon}/>
             {!isCompact && <LogoText className={styles.text}/>}

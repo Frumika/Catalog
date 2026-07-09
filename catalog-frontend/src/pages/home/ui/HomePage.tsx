@@ -11,7 +11,7 @@ export const HomePage = () => {
 
     return (
         <>
-            <Header/>
+            <Header disabledLogo/>
 
             <main className={styles.main}>
                 <ContentContainer>

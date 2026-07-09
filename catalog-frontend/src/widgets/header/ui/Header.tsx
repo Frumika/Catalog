@@ -10,8 +10,14 @@ import {type ComponentDisplayMode, useMediaQuery} from "@/shared/lib";
 import styles from "./Header.module.css"
 
 
+interface HeaderProps {
+    disabledLogo?: boolean;
+}
+
 export const Header = (
-    {}
+    {
+        disabledLogo = false,
+    }: HeaderProps
 ) => {
     const [query, setQuery] = useState('');
 
@@ -28,7 +34,9 @@ export const Header = (
             <ContentContainer>
                 <div className={styles.content}>
                     <div className={styles.upper}>
-                        <Logo displayMode={logoDisplayMode}/>
+                        <Logo
+                            disabled={disabledLogo}
+                            displayMode={logoDisplayMode}/>
 
                         <CatalogButton displayMode={catalogDisplayMode}/>
 
