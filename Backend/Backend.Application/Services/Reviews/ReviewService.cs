@@ -19,7 +19,7 @@ public class ReviewService
     }
 
 
-    public async Task<Response> LeaveReviewAsync(LeaveRequest request)
+    public async Task<Response> LeaveReviewAsync(int userId, LeaveRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -27,13 +27,6 @@ public class ReviewService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .Where(us => us.Token == request.UserSessionId)
-                .Select(us => (int?)us.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             bool isProductWasOrdered = await _dbContext.OrderedProducts
                 .AnyAsync(op => op.ProductId == request.ProductId && op.Order.UserId == userId);
             if (!isProductWasOrdered)
@@ -73,7 +66,7 @@ public class ReviewService
         }
     }
 
-    public async Task<Response> UpdateReviewAsync(UpdateRequest request)
+    public async Task<Response> UpdateReviewAsync(int userId, UpdateRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -81,13 +74,6 @@ public class ReviewService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .Where(us => us.Token == request.UserSessionId)
-                .Select(us => (int?)us.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             Review? review = await _dbContext.Reviews
                 .FirstOrDefaultAsync(r => r.Id == request.ReviewId && r.UserId == userId);
             if (review is null)
@@ -129,7 +115,7 @@ public class ReviewService
         }
     }
 
-    public async Task<Response> DeleteReviewAsync(DeleteRequest request)
+    public async Task<Response> DeleteReviewAsync(int userId, DeleteRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -137,13 +123,6 @@ public class ReviewService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .Where(us => us.Token == request.UserSessionId)
-                .Select(us => (int?)us.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             await _dbContext.Reviews
                 .Where(r => r.UserId == userId && r.Id == request.ReviewId)
                 .ExecuteDeleteAsync();
@@ -156,7 +135,7 @@ public class ReviewService
         }
     }
 
-    public async Task<Response> GetReviewListAsync(GetListRequest request)
+    public async Task<Response> GetReviewListAsync(int? userId, GetListRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -164,11 +143,6 @@ public class ReviewService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .Where(us => us.Token == request.UserSessionId)
-                .Select(us => (int?)us.UserId)
-                .FirstOrDefaultAsync();
-
             int pageNumber = request.PageNumber - 1;
 
             List<ReviewDto> reviews = await _dbContext.Reviews

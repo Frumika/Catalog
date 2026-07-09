@@ -6,5 +6,7 @@ builder.Services.AddApplicationServices(builder.Configuration);
 var app = builder.Build();
 app.InitializeApplication();
 app.UseApplicationPipeline();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

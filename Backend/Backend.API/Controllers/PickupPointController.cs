@@ -1,6 +1,7 @@
 ﻿using Backend.API.Extensions;
 using Backend.Application.Services.PickupPoints;
 using Backend.Application.Services.PickupPoints.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,24 +18,36 @@ public class PickupPointController : ControllerBase
         _pickupPointService = pickupPointService;
     }
 
-    [HttpGet("all/{sessionId}")]
-    public async Task<IActionResult> GetAll([FromRoute] string sessionId)
+    [Authorize]
+    [HttpGet("all")]
+    public async Task<IActionResult> GetAll()
     {
-        var response = await _pickupPointService.GetPointsAsync(sessionId);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _pickupPointService.GetPointsAsync((int)userId);
         return response.ToHttpResponse();
     }
 
+    [Authorize]
     [HttpPatch("select")]
     public async Task<IActionResult> UpdateSelectedPoint(UpdateSelectedPointRequest request)
     {
-        var response = await _pickupPointService.UpdateSelectedPointAsync(request);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _pickupPointService.UpdateSelectedPointAsync((int)userId, request);
         return response.ToHttpResponse();
     }
 
+    [Authorize]
     [HttpDelete("remove")]
     public async Task<IActionResult> RemovePoint(RemovePointRequest request)
     {
-        var response = await _pickupPointService.RemovePointAsync(request);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+        
+        var response = await _pickupPointService.RemovePointAsync((int)userId, request);
         return response.ToHttpResponse();
     }
 }

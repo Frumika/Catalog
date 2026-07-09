@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text;
+using System.Text.Json.Serialization;
 using Backend.API.Background;
 using Backend.Application.DataAccess.Contexts;
 using Backend.Application.Services.Auth;
@@ -13,7 +14,10 @@ using Backend.Domain.Settings;
 using Backend.Infrastructure.Services.Background;
 using Backend.Infrastructure.Services.Notifications;
 using Backend.Infrastructure.Services.Storage;
+using Backend.Infrastructure.Services.Token;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Resend;
 using StackExchange.Redis;
@@ -33,6 +37,7 @@ public static class ServiceCollectionExtensions
             .AddApplicationServices()
             .AddApplicationControllers()
             .AddCorsPolicy()
+            .AddJwtAuthentication(config)
             .AddSwagger();
 
         return services;
@@ -68,6 +73,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<OrderCleanupSettings>(_ => appConfiguration.OrderCleanupSettings);
         services.AddSingleton<UserSettings>(_ => appConfiguration.UserSettings);
         services.AddSingleton<CodeStorageSettings>(_ => appConfiguration.CodeStorageSettings);
+        services.AddSingleton<TokenGeneratorSettings>(_ => appConfiguration.TokenGeneratorSettings);
 
         return services;
     }
@@ -124,10 +130,59 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
+    private static IServiceCollection AddJwtAuthentication(this IServiceCollection services, IConfiguration config)
+    {
+        string secret = config["Configuration:Jwt:Secret"]!;
+
+        services
+            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters =
+                    new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = config["Configuration:Jwt:Issuer"],
+                        ValidAudience = config["Configuration:Jwt:Audience"],
+
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret))
+                    };
+            });
+        
+        services.AddScoped<ITokenGenerator, TokenGenerator>();
+
+        return services;
+    }
+
     private static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddSwaggerGen(options =>
         {
+            options.AddSecurityDefinition("Bearer",
+                new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.Http,
+                    Scheme = "bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header"
+                });
+
+            options.AddSecurityRequirement(document =>
+                new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecuritySchemeReference("Bearer", document),
+                        new List<string>()
+                    }
+                }
+            );
+            
             options.CustomSchemaIds(type => type.FullName);
             options.AddServer(
                 new OpenApiServer

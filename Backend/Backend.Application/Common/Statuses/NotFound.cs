@@ -7,7 +7,7 @@ public record UserNotFound : NotFound
     public override string Code => "user_not_found";
 }
 
-public record UserSessionNotFound : NotFound
+public record TokenNotFound : NotFound
 {
     public override string Code => "user_session_not_found";
 }

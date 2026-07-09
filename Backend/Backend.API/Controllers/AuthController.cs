@@ -1,6 +1,7 @@
 ﻿using Backend.API.Extensions;
 using Backend.Application.Services.Auth;
 using Backend.Application.Services.Auth.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -45,10 +46,14 @@ public class AuthController : ControllerBase
         return response.ToHttpResponse();
     }
 
+    [Authorize]
     [HttpDelete("logout_all")]
     public async Task<IActionResult> LogoutAllSessions([FromBody] LogoutRequest request)
     {
-        var response = await _authService.LogoutAllSessionsAsync(request);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _authService.LogoutAllSessionsAsync((int)userId);
         return response.ToHttpResponse();
     }
 }

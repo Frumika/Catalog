@@ -19,21 +19,10 @@ public class CartService
         _dbContext = dbContext;
     }
 
-    public async Task<Response> GetCartPreviewAsync(GetCartPreviewRequest request)
+    public async Task<Response> GetCartPreviewAsync(int userId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
-
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)
@@ -65,21 +54,10 @@ public class CartService
         }
     }
 
-    public async Task<Response> GetCartAsync(GetCartRequest request)
+    public async Task<Response> GetCartAsync(int userId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
-
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)
@@ -124,7 +102,7 @@ public class CartService
         }
     }
 
-    public async Task<Response> AddProductAsync(AddProductRequest request)
+    public async Task<Response> AddProductAsync(int userId, AddProductRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -132,14 +110,6 @@ public class CartService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)
@@ -186,21 +156,13 @@ public class CartService
         }
     }
 
-    public async Task<Response> UpdateProductQuantityAsync(UpdateProductQuantityRequest request)
+    public async Task<Response> UpdateProductQuantityAsync(int userId, UpdateProductQuantityRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
             return Response.Fail(new BadRequest(), result.Message);
 
-        if (request.Quantity == 0) return await RemoveProductAsync(new RemoveProductRequest(request));
-
-        int? userId = await _dbContext.UserSessions
-            .AsNoTracking()
-            .Where(ui => ui.Token == request.UserSessionId)
-            .Select(ui => (int?)ui.UserId)
-            .FirstOrDefaultAsync();
-        if (userId is null)
-            return Response.Fail(new UserNotFound(), "The user wasn't found");
+        if (request.Quantity == 0) return await RemoveProductAsync(userId, new RemoveProductRequest(request));
 
         int cartId = await _dbContext.Carts
             .AsNoTracking()
@@ -228,7 +190,7 @@ public class CartService
         return Response.Success(cartPosition, "Product quantity was updated");
     }
 
-    public async Task<Response> RemoveProductAsync(RemoveProductRequest request)
+    public async Task<Response> RemoveProductAsync(int userId, RemoveProductRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -236,14 +198,6 @@ public class CartService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "User wasn't found");
-
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)
@@ -266,22 +220,10 @@ public class CartService
         }
     }
 
-    public async Task<Response> ClearCartAsync(DeleteCartRequest request)
+    public async Task<Response> ClearCartAsync(int userId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "User session wasn't found");
-
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)

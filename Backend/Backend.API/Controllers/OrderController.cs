@@ -1,6 +1,7 @@
 ﻿using Backend.API.Extensions;
 using Backend.Application.Services.Orders;
 using Backend.Application.Services.Orders.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -17,7 +18,7 @@ public class OrderController : ControllerBase
         _orderService = orderService;
     }
 
-
+    [Authorize]
     [HttpPost("make")]
     public async Task<IActionResult> MakeOrder([FromBody] MakeOrderRequest request)
     {
@@ -25,6 +26,7 @@ public class OrderController : ControllerBase
         return response.ToHttpResponse();
     }
 
+    [Authorize]
     [HttpPost("pay")]
     public async Task<IActionResult> PayOrder([FromBody] PayOrderRequest request)
     {
@@ -32,6 +34,7 @@ public class OrderController : ControllerBase
         return response.ToHttpResponse();
     }
 
+    [Authorize]
     [HttpDelete("cancel")]
     public async Task<IActionResult> CancelOrder([FromBody] CancelOrderRequest request)
     {

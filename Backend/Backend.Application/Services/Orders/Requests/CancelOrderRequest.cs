@@ -4,15 +4,15 @@ namespace Backend.Application.Services.Orders.Requests;
 
 public class CancelOrderRequest : IValidatableRequest
 {
-    public string UserSessionId { get; set; } = string.Empty;
+    public string RefreshToken { get; set; } = string.Empty;
 
     public ValidationResult Validate()
     {
-        bool isUserSessionIdValid = !string.IsNullOrWhiteSpace(UserSessionId);
+        bool isUserSessionIdValid = !string.IsNullOrWhiteSpace(RefreshToken);
         if (!isUserSessionIdValid)
         {
             List<string> errors = new();
-            errors.Add("User Session Id mustn't be empty");
+            errors.Add("RefreshToken mustn't be empty");
             return ValidationResult.Fail(string.Join(Environment.NewLine, errors));
         }
 

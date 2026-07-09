@@ -19,18 +19,10 @@ public class PickupPointService
         _dbContext = dbContext;
     }
 
-    public async Task<Response> GetPointsAsync(string sessionId)
+    public async Task<Response> GetPointsAsync(int userId)
     {
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == sessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             var rawPoints = await _dbContext.UserPickupPoints
                 .AsNoTracking()
                 .Where(upp => upp.UserId == userId)
@@ -62,7 +54,7 @@ public class PickupPointService
         }
     }
 
-    public async Task<Response> UpdateSelectedPointAsync(UpdateSelectedPointRequest request)
+    public async Task<Response> UpdateSelectedPointAsync(int userId, UpdateSelectedPointRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -70,14 +62,6 @@ public class PickupPointService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             UserPickupPoint? userPoint = await _dbContext.UserPickupPoints
                 .Where(upp =>
                     upp.UserId == userId &&
@@ -109,7 +93,7 @@ public class PickupPointService
         }
     }
 
-    public async Task<Response> RemovePointAsync(RemovePointRequest request)
+    public async Task<Response> RemovePointAsync(int userId, RemovePointRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -117,14 +101,6 @@ public class PickupPointService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             await _dbContext.UserPickupPoints
                 .Where(upp => upp.UserId == userId && upp.PickupPointId == request.PickupPointId)
                 .ExecuteDeleteAsync();

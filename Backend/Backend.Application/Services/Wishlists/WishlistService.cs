@@ -19,22 +19,10 @@ public class WishlistService
         _dbContext = dbContext;
     }
 
-    public async Task<Response> GetWishlistAsync(GetWishlistRequest request)
+    public async Task<Response> GetWishlistAsync(int userId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             int wishlistId = await _dbContext.Wishlists
                 .AsNoTracking()
                 .Where(wi => wi.UserId == userId)
@@ -61,7 +49,7 @@ public class WishlistService
         }
     }
 
-    public async Task<Response> AddProductAsync(AddProductRequest request)
+    public async Task<Response> AddProductAsync(int userId, AddProductRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -69,14 +57,6 @@ public class WishlistService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user session wasn't found");
-
             int wishlistId = await _dbContext.Wishlists
                 .AsNoTracking()
                 .Where(w => w.UserId == userId)
@@ -114,7 +94,7 @@ public class WishlistService
         }
     }
 
-    public async Task<Response> RemoveProductAsync(RemoveProductRequest request)
+    public async Task<Response> RemoveProductAsync(int userId, RemoveProductRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -122,14 +102,6 @@ public class WishlistService
 
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(ui => ui.Token == request.UserSessionId)
-                .Select(ui => (int?)ui.UserId)
-                .FirstOrDefaultAsync();
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "The user wasn't found");
-
             int wishlistId = await _dbContext.Carts
                 .AsNoTracking()
                 .Where(c => c.UserId == userId)

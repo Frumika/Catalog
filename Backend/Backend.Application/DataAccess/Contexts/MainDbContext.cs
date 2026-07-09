@@ -6,7 +6,7 @@ namespace Backend.Application.DataAccess.Contexts;
 public class MainDbContext : DbContext
 {
     public DbSet<User> Users => Set<User>();
-    public DbSet<RefreshToken> UserSessions => Set<RefreshToken>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
     public DbSet<Product> Products => Set<Product>();
     public DbSet<ProductImage> ProductImages => Set<ProductImage>();
     public DbSet<Review> Reviews => Set<Review>();

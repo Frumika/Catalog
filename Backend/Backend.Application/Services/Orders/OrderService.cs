@@ -28,17 +28,17 @@ public class OrderService
         if (!result.IsValid)
             return Response.Fail(new BadRequest(), result.Message);
 
-        RefreshToken? userSession;
+        RefreshToken? refreshToken;
         try
         {
-            userSession = await _dbContext.UserSessions
-                .Where(us => us.Token == request.UserSessionId)
+            refreshToken = await _dbContext.RefreshTokens
+                .Where(us => us.Token == request.RefreshToken)
                 .FirstOrDefaultAsync();
 
-            if (userSession is null)
+            if (refreshToken is null)
                 return Response.Fail(new UserNotFound(), "The user session wasn't found");
 
-            if (userSession.OrderId is not null) await CancelOrderAsync(userSession.OrderId.Value);
+            if (refreshToken.OrderId is not null) await CancelOrderAsync(refreshToken.OrderId.Value);
         }
         catch (Exception)
         {
@@ -53,7 +53,7 @@ public class OrderService
 
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
-                .Where(c => c.UserId == userSession.UserId)
+                .Where(c => c.UserId == refreshToken.UserId)
                 .Select(c => c.Id)
                 .FirstAsync();
 
@@ -93,11 +93,11 @@ public class OrderService
                 TotalPrice = totalPrice,
                 CreatedAt = createdAt,
                 DeletionTime = createdAt + _settings.Lifetime,
-                UserId = userSession.UserId,
+                UserId = refreshToken.UserId,
                 OrderedProducts = orderedProducts
             };
 
-            userSession.PendingOrder = order;
+            refreshToken.PendingOrder = order;
 
             await _dbContext.Orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
@@ -124,17 +124,17 @@ public class OrderService
         if (!result.IsValid)
             return Response.Fail(new BadRequest(), result.Message);
 
-        RefreshToken? userSession;
+        RefreshToken? refreshToken;
         try
         {
-            userSession = await _dbContext.UserSessions
-                .Where(us => us.Token == request.UserSessionId)
+            refreshToken = await _dbContext.RefreshTokens
+                .Where(us => us.Token == request.RefreshToken)
                 .Include(us => us.PendingOrder)
                 .FirstOrDefaultAsync();
-            if (userSession is null)
-                return Response.Fail(new UserSessionNotFound(), "The user session wasn't found");
+            if (refreshToken is null)
+                return Response.Fail(new TokenNotFound(), "The user session wasn't found");
 
-            if (userSession.PendingOrder is null)
+            if (refreshToken.PendingOrder is null)
                 return Response.Fail(new OrderNotFound(), "Order wasn't found");
         }
         catch (Exception)
@@ -145,19 +145,19 @@ public class OrderService
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            Order pendingOrder = userSession.PendingOrder;
+            Order pendingOrder = refreshToken.PendingOrder;
 
             pendingOrder.Status = OrderStatus.Paid;
             pendingOrder.PaidAt = DateTime.UtcNow;
 
-            userSession.PendingOrder = null;
+            refreshToken.PendingOrder = null;
 
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
             int? cartId = await _dbContext.Carts
                 .AsNoTracking()
-                .Where(c => c.UserId == userSession.UserId)
+                .Where(c => c.UserId == refreshToken.UserId)
                 .Select(c => (int?)c.Id)
                 .FirstOrDefaultAsync();
 
@@ -188,16 +188,16 @@ public class OrderService
 
         try
         {
-            RefreshToken? userSession = await _dbContext.UserSessions
+            RefreshToken? refreshToken = await _dbContext.RefreshTokens
                 .AsNoTracking()
-                .Where(us => us.Token == request.UserSessionId)
+                .Where(us => us.Token == request.RefreshToken)
                 .FirstOrDefaultAsync();
-            if (userSession is null)
-                return Response.Fail(new UserSessionNotFound(), "User session wasn't found");
+            if (refreshToken is null)
+                return Response.Fail(new TokenNotFound(), "User session wasn't found");
 
-            return userSession.OrderId is null
+            return refreshToken.OrderId is null
                 ? Response.Success("The order was canceled")
-                : await CancelOrderAsync(userSession.OrderId.Value);
+                : await CancelOrderAsync(refreshToken.OrderId.Value);
         }
         catch (Exception)
         {
@@ -211,7 +211,7 @@ public class OrderService
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            Domain.Models.Order? order = await _dbContext.Orders
+            Order? order = await _dbContext.Orders
                 .Include(o => o.OrderedProducts)
                 .ThenInclude(op => op.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
@@ -248,12 +248,12 @@ public class OrderService
     }
 
 
-    private async Task<Response> GetPendingOrderAsync(string userSessionId)
+    private async Task<Response> GetPendingOrderAsync(string refreshToken)
     {
         try
         {
-            int? orderId = await _dbContext.UserSessions
-                .Where(us => us.Token == userSessionId)
+            int? orderId = await _dbContext.RefreshTokens
+                .Where(us => us.Token == refreshToken)
                 .Select(us => us.OrderId)
                 .FirstOrDefaultAsync();
             if (orderId is null)

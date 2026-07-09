@@ -17,11 +17,14 @@ public class AuthService
 {
     private readonly MainDbContext _dbContext;
     private readonly IVerificationSender _verificationSender;
+    private readonly ITokenGenerator _tokenGenerator;
     private readonly ICodeStorage _codeStorage;
 
-    public AuthService(MainDbContext dbContext, IVerificationSender verificationSender, ICodeStorage codeStorage)
+    public AuthService(MainDbContext dbContext, ITokenGenerator tokenGenerator,
+        IVerificationSender verificationSender, ICodeStorage codeStorage)
     {
         _dbContext = dbContext;
+        _tokenGenerator = tokenGenerator;
         _verificationSender = verificationSender;
         _codeStorage = codeStorage;
     }
@@ -33,7 +36,7 @@ public class AuthService
 
         try
         {
-            UserSessionDto? userSession = await _dbContext.UserSessions
+            UserSessionDto? userSession = await _dbContext.RefreshTokens
                 .AsNoTracking()
                 .Where(us => us.Token == sessionId)
                 .Select(us => new UserSessionDto
@@ -45,7 +48,7 @@ public class AuthService
 
             return userSession is not null
                 ? Response.Success(userSession)
-                : Response.Fail(new UserSessionNotFound(), "User session not found");
+                : Response.Fail(new TokenNotFound(), "User session not found");
         }
         catch (Exception)
         {
@@ -118,22 +121,63 @@ public class AuthService
             user.LastLoginAt = currentTime;
 
 
-            string sessionUId = Guid.NewGuid().ToString();
-            RefreshToken refreshToken = new()
-            {
-                Token = sessionUId,
-                User = user
-            };
+            string accessToken = _tokenGenerator.GenerateAccessToken(user);
+            RefreshToken refreshToken = _tokenGenerator.GenerateRefreshToken(user);
 
-            _dbContext.UserSessions.Add(refreshToken);
+            _dbContext.RefreshTokens.Add(refreshToken);
             await _dbContext.SaveChangesAsync();
 
-            return Response.Success(new UserSessionDto
+            return Response.Success(
+                new UserSessionDto
+                {
+                    SessionId = accessToken,
+                    RefreshToken = refreshToken.Token,
+                    Login = user.Login,
+                    Email = user.Email,
+                }, "User has been logged in");
+        }
+        catch (Exception)
+        {
+            return Response.Fail(new UnknownError(), "Internal server error");
+        }
+    }
+
+    public async Task<Response> RefreshAccessTokenAsync(RefreshRequest request)
+    {
+        ValidationResult result = request.Validate();
+        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
+
+        try
+        {
+            RefreshToken? refreshToken = await _dbContext.RefreshTokens
+                .Include(rt => rt.User)
+                .FirstOrDefaultAsync(rt => rt.Token == request.RefreshToken);
+
+            if (refreshToken is null)
+                return Response.Fail(new TokenNotFound(), "Invalid refresh token");
+
+            if (refreshToken.IsRevoked)
+                return Response.Fail(new TokenRevoked(), "Refresh token revoked");
+
+            if (refreshToken.ExpiresAt <= DateTime.UtcNow)
             {
-                SessionId = sessionUId,
-                Login = user.Login,
-                Email = user.Email,
-            }, "User has been logged in");
+                refreshToken.IsRevoked = true;
+                await _dbContext.SaveChangesAsync();
+
+                return Response.Fail(new TokenExpired(), "Refresh token expired");
+            }
+
+            string accessToken = _tokenGenerator.GenerateAccessToken(refreshToken.User);
+
+            return Response.Success(
+                new UserSessionDto
+                {
+                    SessionId = accessToken,
+                    RefreshToken = refreshToken.Token,
+                    Login = refreshToken.User.Login,
+                    Email = refreshToken.User.Email,
+                }, "User has been logged in"
+            );
         }
         catch (Exception)
         {
@@ -149,8 +193,8 @@ public class AuthService
 
         try
         {
-            await _dbContext.UserSessions
-                .Where(us => us.Token == request.SessionId)
+            await _dbContext.RefreshTokens
+                .Where(us => us.Token == request.RefreshToken)
                 .ExecuteDeleteAsync();
 
             return Response.Success("The user has been logged out");
@@ -161,24 +205,11 @@ public class AuthService
         }
     }
 
-    public async Task<Response> LogoutAllSessionsAsync(LogoutRequest request)
+    public async Task<Response> LogoutAllSessionsAsync(int userId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
         try
         {
-            int? userId = await _dbContext.UserSessions
-                .AsNoTracking()
-                .Where(us => us.Token == request.SessionId)
-                .Select(us => (int?)us.UserId)
-                .FirstOrDefaultAsync();
-
-            if (userId is null)
-                return Response.Fail(new UserNotFound(), "User not found");
-
-            await _dbContext.UserSessions
+            await _dbContext.RefreshTokens
                 .Where(us => us.UserId == userId)
                 .ExecuteDeleteAsync();
 

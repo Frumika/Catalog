@@ -1,8 +1,9 @@
 ﻿using Backend.Application.Common.Base;
 
+
 namespace Backend.Application.Services.Auth.Requests;
 
-public class LogoutRequest : IValidatableRequest
+public class RefreshRequest : IValidatableRequest
 {
     public string RefreshToken { get; set; } = string.Empty;
 
