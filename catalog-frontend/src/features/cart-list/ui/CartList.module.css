@@ -1,10 +1,12 @@
 /* features/cart-list/ui/CartList.module.css */
 .cartContainer {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 380px; /* Сделали сайдбар чуть шире как на Ozon */
     gap: 24px;
     align-items: start;
     font-family: 'Onest', sans-serif;
+    background-color: #f2f5f8;
+    padding: 20px;
 }
 
 .mainContent {
@@ -14,25 +16,21 @@
 }
 
 .listHeader {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     padding-bottom: 16px;
     border-bottom: 1px solid #e2e7ec;
 }
 
 .title {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: 700;
-    margin: 0;
     color: #070707;
 }
 
 .count {
     color: rgba(0, 26, 51, 0.4);
     font-weight: 400;
-    font-size: 18px;
-    margin-left: 8px;
+    font-size: 20px;
+    margin-left: 6px;
 }
 
 .list {
@@ -43,14 +41,14 @@
 /* Сайдбар */
 .sidebar {
     position: sticky;
-    top: 24px; /* Чтобы прилипал при скролле под хедером */
+    top: 24px;
 }
 
 .summaryCard {
     background: #fff;
-    border-radius: 16px;
+    border-radius: 20px;
     padding: 24px;
-    box-shadow: 0 4px 24px rgba(0, 26, 51, 0.05);
+    box-shadow: 0 4px 32px rgba(0, 26, 51, 0.04);
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -62,60 +60,81 @@
     color: #fff;
     border: none;
     border-radius: 12px;
-    padding: 16px;
+    padding: 14px;
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.15s;
 }
 
-.mainCheckoutBtn:hover {
+.mainCheckoutBtn:hover:not(:disabled) {
     background-color: #004bde;
+}
+
+.mainCheckoutBtn:disabled {
+    background-color: #a5c7ff;
+    cursor: not-allowed;
 }
 
 .summaryDetails {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
+}
+
+.summaryTitleRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
 }
 
 .summaryTitle {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    margin: 0 0 4px 0;
+    margin: 0;
+}
+
+.summaryCountBadge {
+    font-size: 13px;
+    color: rgba(0, 26, 51, 0.4);
 }
 
 .summaryRow {
     display: flex;
     justify-content: space-between;
     color: #070707;
-    font-size: 14px;
+    font-size: 15px;
 }
 
-.divider {
-    border: none;
+.oldPriceSum {
+    font-weight: 500;
+}
+
+.discountRow {
+    color: #f91155; /* Розовый цвет Ozon для скидки */
+    font-weight: 500;
+}
+
+.totalBlock {
     border-top: 1px solid #e2e7ec;
-    margin: 4px 0;
+    padding-top: 16px;
+    margin-top: 4px;
 }
 
 .totalRow {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    font-size: 18px;
+    align-items: baseline;
+}
+
+.totalLabel {
+    font-size: 22px;
     font-weight: 700;
 }
 
 .totalPrice {
-    font-size: 24px;
-    color: #070707;
-}
-
-@media (max-width: 992px) {
-    .cartContainer {
-        grid-template-columns: 1fr;
-    }
-    .sidebar {
-        position: static;
-    }
+    font-size: 26px;
+    font-weight: 800;
+    color: #10c44c; /* Темно-зеленый Ozon для финальной цены */
 }

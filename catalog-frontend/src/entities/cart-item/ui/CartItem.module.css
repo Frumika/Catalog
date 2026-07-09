@@ -1,82 +1,68 @@
+/* entities/cart-item/ui/CartItem.module.css */
 .item {
     display: flex;
-    padding: 16px 0;
-    /* --graphicStrokeSticky */
+    padding: 24px 0;
     border-bottom: 1px solid #e2e7ec;
-    /* --ozBGSecondary */
     background-color: #fff;
-    /* --fontFamiliesBrand */
-    font-family: 'Onest', Arial, Helvetica, sans-serif;
-    gap: 16px;
+    font-family: 'Onest', sans-serif;
+    gap: 20px;
 }
 
 .leftContainer {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 16px;
 }
 
-/* Кастомный чекбокс */
 .checkboxWrapper {
     display: inline-flex;
     align-items: center;
     cursor: pointer;
-    margin-top: 4px;
-    position: relative;
+    margin-top: 10px;
 }
 
 .checkbox {
     position: absolute;
     opacity: 0;
-    width: 0;
-    height: 0;
 }
 
 .customCheckbox {
-    width: 20px;
-    height: 20px;
-    /* --carbon300 */
-    border: 2px solid rgba(153, 163, 174, 1);
-    border-radius: 4px;
-    position: relative;
-    /* --transition */
-    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid #bdc4ca;
+    border-radius: 6px;
+    transition: 0.15s ease;
     background-color: #fff;
 }
 
-/* Эффект наведения на чекбокс */
 .checkboxWrapper:hover .customCheckbox {
-    /* --ozBlue */
     border-color: #005bff;
 }
 
-/* Состояние Checked */
 .checkbox:checked + .customCheckbox {
-    /* --ozBlue */
     background-color: #005bff;
     border-color: #005bff;
 }
 
-/* Галочка внутри чекбокса */
 .checkbox:checked + .customCheckbox::after {
     content: "";
     position: absolute;
-    left: 6px;
-    top: 2px;
+    left: 7px;
+    top: 3px;
     width: 5px;
     height: 10px;
     border: solid #fff;
-    border-width: 0 2px 2px 0;
+    border-width: 0 2.5px 2.5px 0;
     transform: rotate(45deg);
 }
 
-/* Обёртка картинки товара */
 .imageWrapper {
-    width: 80px;
-    height: 100px;
+    width: 120px;
+    height: 120px;
     display: flex;
     align-items: center;
     justify-content: center;
+    border-radius: 8px;
     overflow: hidden;
 }
 
@@ -86,19 +72,13 @@
     object-fit: contain;
 }
 
-/* ==========================================================================
-   ПРАВАЯ ЧАСТЬ: СЕТКА ДЛЯ КОНТЕНТА (НАЗВАНИЕ, СЧЕТЧИК, ЦЕНА)
-   ========================================================================== */
 .content {
     display: grid;
-    /* Резиновая сетка Ozon: Название занимает всё место,
-       под счетчик и цену выделено фиксированное пространство */
-    grid-template-columns: 1fr 140px 140px;
+    grid-template-columns: 1fr 150px 140px;
     gap: 16px;
     flex-grow: 1;
 }
 
-/* Блок названия товара и кнопок удаления */
 .info {
     display: flex;
     flex-direction: column;
@@ -106,135 +86,118 @@
 }
 
 .title {
-    /* --textPrimary */
     color: #070707;
-    /* --fontSizes400 */
-    font-size: 14px;
-    /* --tsBody400SmallHeight */
-    line-height: 20px;
-    /* --fontWeightsRegular */
+    font-size: 15px;
+    line-height: 22px;
     font-weight: 400;
-    margin: 0 0 8px 0;
-
-    /* Эффект трех точек, если название слишком длинное (макс 2 строки) */
+    margin: 0;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    cursor: pointer;
 }
 
-/* Ссылки-кнопки "Удалить" и "В избранное" под названием */
+.title:hover {
+    color: #005bff;
+}
+
 .metaActions {
     display: flex;
-    gap: 16px;
+    gap: 18px;
+    margin-top: 12px;
 }
 
 .metaButton {
     background: none;
     border: none;
     padding: 0;
-    /* --textSecondary */
-    color: rgba(0, 26, 51, 0.6);
-    /* --fontSizes300 */
-    font-size: 12px;
+    color: #001a33a6;
+    font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
-    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .metaButton:hover {
-    /* --ozBlue */
-    color: #005bff;
+    color: #f91155;
 }
 
-/* ==========================================================================
-   БЛОК СЧЕТЧИКА КОЛИЧЕСТВА
-   ========================================================================== */
+/* Счетчик количества */
 .quantityControls {
     display: flex;
-    align-items: flex-start;
     justify-content: center;
+    align-items: flex-start;
+}
+
+.counterWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
 }
 
 .counter {
     display: inline-flex;
     align-items: center;
-    /* --graphicNeutral */
-    border: 1px solid rgba(204, 214, 228, 0.6);
+    border: 1px solid #e2e7ec;
     border-radius: 8px;
-    overflow: hidden;
     background-color: #fff;
 }
 
 .counterBtn {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: none;
     border: none;
-    /* --fontSizes500 */
-    font-size: 16px;
+    font-size: 20px;
     color: #070707;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.counterBtn:hover:not(:disabled) {
-    /* --ozCtrlNeutralPale */
-    background-color: rgba(0, 48, 120, 0.04);
-}
-
-.counterBtn:disabled {
-    /* --graphicDisabled */
-    color: rgba(204, 214, 228, 0.32);
-    cursor: not-allowed;
+.counterBtn:hover {
+    color: #005bff;
 }
 
 .quantityNum {
-    min-width: 32px;
+    min-width: 36px;
     text-align: center;
-    font-size: 14px;
-    /* --fontWeightsMedium */
-    font-weight: 500;
-    color: #070707;
+    font-size: 15px;
+    font-weight: 600;
 }
 
-/* ==========================================================================
-   БЛОК СТОИМОСТИ
-   ========================================================================== */
+.counterWarning {
+    font-size: 11px;
+    color: #f91155; /* Красный цвет предупреждения */
+    text-align: center;
+    max-width: 110px;
+}
+
+/* Стоимость */
 .priceBlock {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    justify-content: flex-start;
 }
 
 .currentPrice {
-    /* --fontSizes700 */
     font-size: 20px;
-    /* --fontWeightsBold */
     font-weight: 700;
     color: #070707;
-    line-height: 20px;
-    white-space: nowrap;
 }
 
-/* ==========================================================================
-   АДАПТИВНОСТЬ ПОД МОБИЛЬНЫЕ УСТРОЙСТВА
-   ========================================================================== */
-@media (max-width: 768px) {
-    .content {
-        /* На мобилках выстраиваем инфо, счетчик и цену друг под другом */
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
+.pinkPrice {
+    color: #f91155; /* Акцентный розовый ценник Ozon */
+}
 
-    .quantityControls {
-        justify-content: flex-start;
-    }
-
-    .priceBlock {
-        align-items: flex-start;
-    }
+.oldPrice {
+    font-size: 14px;
+    color: rgba(0, 26, 51, 0.3);
+    text-decoration: line-through;
+    margin-top: 2px;
 }

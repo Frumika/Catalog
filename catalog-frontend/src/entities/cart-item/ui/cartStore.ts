@@ -2,24 +2,32 @@ import { create } from 'zustand';
 import { cartApi } from '../api/cartApi';
 import type { CartPosition } from '../model/types';
 
+// Расширяем тип CartPosition локально для стора, чтобы добавить свойство checked
+export interface ExtendedCartPosition extends CartPosition {
+    checked: boolean;
+}
+
 interface CartState {
-    items: CartPosition[];
+    items: ExtendedCartPosition[]; // Изменяем тип на расширенный
     loading: boolean;
     fetchCart: () => Promise<void>;
     updateQuantity: (productId: number, currentQuantity: number, action: 'increment' | 'decrement') => Promise<void>;
     addToCart: (productId: number) => Promise<void>;
+    removeItem: (productId: number) => Promise<void>;
+    toggleCheck: (productId: number) => void; // <-- Новый метод для чекбокса
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
     items: [],
     loading: false,
 
-    // Загрузка актуального состояния корзины с бэкенда
     fetchCart: async () => {
         set({ loading: true });
         try {
             const data = await cartApi.getCartPositions();
-            set({ items: data.items });
+            // Каждому пришедшему товару по умолчанию ставим checked: true
+            const extendedItems = data.items.map(item => ({ ...item, checked: true }));
+            set({ items: extendedItems });
         } catch (err) {
             console.error("Ошибка загрузки корзины в стор:", err);
         } finally {
@@ -27,13 +35,12 @@ export const useCartStore = create<CartState>((set, get) => ({
         }
     },
 
-    // Добавление первого товара (количество = 1)
     addToCart: async (productId: number) => {
-        // Оптимистичное обновление: сразу добавляем в локальный массив для мгновенного отклика UI
-        const tempItem: CartPosition = {
+        const tempItem: ExtendedCartPosition = {
             productId,
             quantity: 1,
-            productName: '', // Опциональные поля, бэкенд все равно вернет актуальные при fetchCart
+            checked: true, // По умолчанию выбран
+            productName: '',
             imageUrl: '',
             priceWithDiscount: 0,
             basePrice: 0,
@@ -47,20 +54,17 @@ export const useCartStore = create<CartState>((set, get) => ({
 
         try {
             await cartApi.addProductToCart(productId, 1);
-            await get().fetchCart(); // Синхронизируем точные данные с бэкенда
+            await get().fetchCart();
         } catch (err) {
             console.error(err);
-            // Если сервер ответил ошибкой, откатываем изменения
             await get().fetchCart();
         }
     },
 
-    // Изменение количества или удаление, если дошли до 0
     updateQuantity: async (productId: number, currentQuantity: number, action: 'increment' | 'decrement') => {
         const nextQuantity = action === 'increment' ? currentQuantity + 1 : currentQuantity - 1;
 
         if (nextQuantity <= 0) {
-            // Оптимистичное удаление
             set((state) => ({ items: state.items.filter(i => i.productId !== productId) }));
             try {
                 await cartApi.removeItem(productId);
@@ -71,7 +75,6 @@ export const useCartStore = create<CartState>((set, get) => ({
             return;
         }
 
-        // Оптимистичное изменение количества
         set((state) => ({
             items: state.items.map(i => i.productId === productId ? { ...i, quantity: nextQuantity } : i)
         }));
@@ -82,5 +85,27 @@ export const useCartStore = create<CartState>((set, get) => ({
             console.error(err);
             await get().fetchCart();
         }
+    },
+
+    removeItem: async (productId: number) => {
+        set((state) => ({
+            items: state.items.filter(item => item.productId !== productId)
+        }));
+
+        try {
+            await cartApi.removeItem(productId);
+        } catch (err) {
+            console.error(err);
+            await get().fetchCart();
+        }
+    },
+
+    // Логика переключения чекбокса (работает мгновенно на клиенте)
+    toggleCheck: (productId: number) => {
+        set((state) => ({
+            items: state.items.map(item =>
+                item.productId === productId ? { ...item, checked: !item.checked } : item
+            )
+        }));
     }
 }));
