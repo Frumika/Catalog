@@ -25,7 +25,7 @@ public class PickupPointService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == sessionId)
+                .Where(ui => ui.Token == sessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -72,7 +72,7 @@ public class PickupPointService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.Token == request.UserSessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -119,7 +119,7 @@ public class PickupPointService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.Token == request.UserSessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)

@@ -35,7 +35,7 @@ public class AuthService
         {
             UserSessionDto? userSession = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(us => us.UId == sessionId)
+                .Where(us => us.Token == sessionId)
                 .Select(us => new UserSessionDto
                 {
                     SessionId = sessionId,
@@ -119,13 +119,13 @@ public class AuthService
 
 
             string sessionUId = Guid.NewGuid().ToString();
-            UserSession userSession = new()
+            RefreshToken refreshToken = new()
             {
-                UId = sessionUId,
+                Token = sessionUId,
                 User = user
             };
 
-            _dbContext.UserSessions.Add(userSession);
+            _dbContext.UserSessions.Add(refreshToken);
             await _dbContext.SaveChangesAsync();
 
             return Response.Success(new UserSessionDto
@@ -150,7 +150,7 @@ public class AuthService
         try
         {
             await _dbContext.UserSessions
-                .Where(us => us.UId == request.SessionId)
+                .Where(us => us.Token == request.SessionId)
                 .ExecuteDeleteAsync();
 
             return Response.Success("The user has been logged out");
@@ -171,7 +171,7 @@ public class AuthService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(us => us.UId == request.SessionId)
+                .Where(us => us.Token == request.SessionId)
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
 

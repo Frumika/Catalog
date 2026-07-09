@@ -28,7 +28,7 @@ public class CartService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.Token == request.UserSessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -74,7 +74,7 @@ public class CartService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.Token == request.UserSessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -134,7 +134,7 @@ public class CartService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.Token == request.UserSessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -196,7 +196,7 @@ public class CartService
 
         int? userId = await _dbContext.UserSessions
             .AsNoTracking()
-            .Where(ui => ui.UId == request.UserSessionId)
+            .Where(ui => ui.Token == request.UserSessionId)
             .Select(ui => (int?)ui.UserId)
             .FirstOrDefaultAsync();
         if (userId is null)
@@ -238,7 +238,7 @@ public class CartService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.Token == request.UserSessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -276,7 +276,7 @@ public class CartService
         {
             int? userId = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(ui => ui.UId == request.UserSessionId)
+                .Where(ui => ui.Token == request.UserSessionId)
                 .Select(ui => (int?)ui.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)

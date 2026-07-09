@@ -28,7 +28,7 @@ public class ReviewService
         try
         {
             int? userId = await _dbContext.UserSessions
-                .Where(us => us.UId == request.UserSessionId)
+                .Where(us => us.Token == request.UserSessionId)
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -82,7 +82,7 @@ public class ReviewService
         try
         {
             int? userId = await _dbContext.UserSessions
-                .Where(us => us.UId == request.UserSessionId)
+                .Where(us => us.Token == request.UserSessionId)
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -138,7 +138,7 @@ public class ReviewService
         try
         {
             int? userId = await _dbContext.UserSessions
-                .Where(us => us.UId == request.UserSessionId)
+                .Where(us => us.Token == request.UserSessionId)
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
             if (userId is null)
@@ -165,7 +165,7 @@ public class ReviewService
         try
         {
             int? userId = await _dbContext.UserSessions
-                .Where(us => us.UId == request.UserSessionId)
+                .Where(us => us.Token == request.UserSessionId)
                 .Select(us => (int?)us.UserId)
                 .FirstOrDefaultAsync();
 

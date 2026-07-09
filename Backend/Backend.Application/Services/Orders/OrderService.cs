@@ -28,11 +28,11 @@ public class OrderService
         if (!result.IsValid)
             return Response.Fail(new BadRequest(), result.Message);
 
-        UserSession? userSession;
+        RefreshToken? userSession;
         try
         {
             userSession = await _dbContext.UserSessions
-                .Where(us => us.UId == request.UserSessionId)
+                .Where(us => us.Token == request.UserSessionId)
                 .FirstOrDefaultAsync();
 
             if (userSession is null)
@@ -124,11 +124,11 @@ public class OrderService
         if (!result.IsValid)
             return Response.Fail(new BadRequest(), result.Message);
 
-        UserSession? userSession;
+        RefreshToken? userSession;
         try
         {
             userSession = await _dbContext.UserSessions
-                .Where(us => us.UId == request.UserSessionId)
+                .Where(us => us.Token == request.UserSessionId)
                 .Include(us => us.PendingOrder)
                 .FirstOrDefaultAsync();
             if (userSession is null)
@@ -188,9 +188,9 @@ public class OrderService
 
         try
         {
-            UserSession? userSession = await _dbContext.UserSessions
+            RefreshToken? userSession = await _dbContext.UserSessions
                 .AsNoTracking()
-                .Where(us => us.UId == request.UserSessionId)
+                .Where(us => us.Token == request.UserSessionId)
                 .FirstOrDefaultAsync();
             if (userSession is null)
                 return Response.Fail(new UserSessionNotFound(), "User session wasn't found");
@@ -253,7 +253,7 @@ public class OrderService
         try
         {
             int? orderId = await _dbContext.UserSessions
-                .Where(us => us.UId == userSessionId)
+                .Where(us => us.Token == userSessionId)
                 .Select(us => us.OrderId)
                 .FirstOrDefaultAsync();
             if (orderId is null)

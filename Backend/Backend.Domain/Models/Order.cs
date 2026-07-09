@@ -12,6 +12,6 @@ public class Order
     public int UserId { get; set; }
 
     public User User { get; set; } = null!;
-    public UserSession? UserSession { get; set; }
+    public RefreshToken? RefreshToken { get; set; }
     public ICollection<OrderedProduct> OrderedProducts { get; set; } = null!;
 }
