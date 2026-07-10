@@ -3,23 +3,23 @@ using Backend.Application.Common;
 using Backend.Application.Common.Base;
 using Backend.Application.Common.Statuses;
 using Backend.Application.DataAccess.Contexts;
-using Backend.Application.Services.Auth.Dtos;
-using Backend.Application.Services.Auth.Requests;
+using Backend.Application.Services.Sessions.Dtos;
+using Backend.Application.Services.Sessions.Requests;
 using Backend.Domain.Interfaces;
 using Backend.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Backend.Application.Services.Auth;
+namespace Backend.Application.Services.Sessions;
 
-public class AuthService
+public class SessionService
 {
     private readonly MainDbContext _dbContext;
     private readonly IVerificationSender _verificationSender;
     private readonly ITokenGenerator _tokenGenerator;
     private readonly ICodeStorage _codeStorage;
 
-    public AuthService(MainDbContext dbContext, ITokenGenerator tokenGenerator,
+    public SessionService(MainDbContext dbContext, ITokenGenerator tokenGenerator,
         IVerificationSender verificationSender, ICodeStorage codeStorage)
     {
         _dbContext = dbContext;
@@ -27,29 +27,7 @@ public class AuthService
         _verificationSender = verificationSender;
         _codeStorage = codeStorage;
     }
-
-    public async Task<Response> GetUserAsync(int userId)
-    {
-        try
-        {
-            UserDto? userSession = await _dbContext.Users
-                .AsNoTracking()
-                .Where(u => u.Id == userId)
-                .Select(u => new UserDto
-                {
-                    Login = u.Login,
-                    Email = u.Email,
-                }).FirstOrDefaultAsync();
-
-            return userSession is not null
-                ? Response.Success(userSession)
-                : Response.Fail(new TokenNotFound(), "User session not found");
-        }
-        catch (Exception)
-        {
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
-    }
+    
 
     public async Task<Response> SendCodeAsync(SendCodeRequest request)
     {

@@ -1,6 +1,6 @@
 ﻿using Backend.API.Extensions;
-using Backend.Application.Services.Auth;
-using Backend.Application.Services.Auth.Requests;
+using Backend.Application.Services.Sessions;
+using Backend.Application.Services.Sessions.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,45 +8,35 @@ using Microsoft.AspNetCore.Mvc;
 namespace Backend.API.Controllers;
 
 [ApiController]
-[Route("api/auth")]
-public class AuthController : ControllerBase
+[Route("api/session")]
+public class SessionController : ControllerBase
 {
-    private readonly AuthService _authService;
+    private readonly SessionService _sessionService;
 
-    public AuthController(AuthService authService)
+    public SessionController(SessionService sessionService)
     {
-        _authService = authService;
+        _sessionService = sessionService;
     }
-
-    [Authorize]
-    [HttpPost("user")]
-    public async Task<IActionResult> GetUser()
-    {
-        int? userId = User.GetUserId();
-        if (userId is null) return Unauthorized();
-
-        var response = await _authService.GetUserAsync((int)userId);
-        return response.ToHttpResponse();
-    }
+    
 
     [HttpPost("send_code")]
     public async Task<IActionResult> SendCode([FromBody] SendCodeRequest request)
     {
-        var response = await _authService.SendCodeAsync(request);
+        var response = await _sessionService.SendCodeAsync(request);
         return response.ToHttpResponse();
     }
 
     [HttpPost("verify")]
     public async Task<IActionResult> VerifyCode([FromBody] VerifyCodeRequest request)
     {
-        var response = await _authService.VerifyCodeAsync(request);
+        var response = await _sessionService.VerifyCodeAsync(request);
         return response.ToHttpResponse();
     }
 
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshRequest request)
     {
-        var response = await _authService.RefreshAccessTokenAsync(request);
+        var response = await _sessionService.RefreshAccessTokenAsync(request);
         return response.ToHttpResponse();
     }
 
@@ -54,7 +44,7 @@ public class AuthController : ControllerBase
     [HttpDelete("logout")]
     public async Task<IActionResult> LogoutSession([FromBody] LogoutRequest request)
     {
-        var response = await _authService.LogoutSessionAsync(request);
+        var response = await _sessionService.LogoutSessionAsync(request);
         return response.ToHttpResponse();
     }
 
@@ -65,7 +55,7 @@ public class AuthController : ControllerBase
         int? userId = User.GetUserId();
         if (userId is null) return Unauthorized();
 
-        var response = await _authService.LogoutAllSessionsAsync((int)userId);
+        var response = await _sessionService.LogoutAllSessionsAsync((int)userId);
         return response.ToHttpResponse();
     }
 }

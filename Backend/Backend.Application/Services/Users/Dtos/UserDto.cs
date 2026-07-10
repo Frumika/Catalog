@@ -1,4 +1,4 @@
-﻿namespace Backend.Application.Services.Auth.Dtos;
+﻿namespace Backend.Application.Services.Users.Dtos;
 
 public class UserDto
 {

@@ -2,12 +2,13 @@
 using System.Text.Json.Serialization;
 using Backend.API.Background;
 using Backend.Application.DataAccess.Contexts;
-using Backend.Application.Services.Auth;
 using Backend.Application.Services.Carts;
 using Backend.Application.Services.Catalog;
 using Backend.Application.Services.Orders;
 using Backend.Application.Services.PickupPoints;
 using Backend.Application.Services.Reviews;
+using Backend.Application.Services.Sessions;
+using Backend.Application.Services.Users;
 using Backend.Application.Services.Wishlists;
 using Backend.Domain.Interfaces;
 using Backend.Domain.Settings;
@@ -94,7 +95,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection AddApplicationServices(this IServiceCollection services)
     {
         services.AddScoped<CatalogService>();
-        services.AddScoped<AuthService>();
+        services.AddScoped<SessionService>();
+        services.AddScoped<UserService>();
         services.AddScoped<CartService>();
         services.AddScoped<WishlistService>();
         services.AddScoped<OrderService>();

@@ -1,7 +1,7 @@
 ﻿using Backend.Application.Common;
 using Backend.Application.Common.Base;
 
-namespace Backend.Application.Services.Auth.Requests;
+namespace Backend.Application.Services.Sessions.Requests;
 
 public class SendCodeRequest : IValidatableRequest
 {

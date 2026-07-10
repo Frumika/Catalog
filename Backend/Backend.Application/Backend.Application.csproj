@@ -24,7 +24,7 @@
 
     <ItemGroup>
       <Folder Include="DataAccess\" />
-      <Folder Include="Services\" />
+      <Folder Include="Services\Users\Requests\" />
     </ItemGroup>
 
 </Project>

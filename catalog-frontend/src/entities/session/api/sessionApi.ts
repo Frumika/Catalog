@@ -2,7 +2,7 @@ import {apiClient, ApiError} from "@/shared/api";
 import type {Session} from "../model/types.ts";
 
 
-const ENDPOINT = "api/auth";
+const ENDPOINT = "api/session";
 
 export const sessionApi = {
     sendCode: async (email: string): Promise<void> => {
