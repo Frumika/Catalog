@@ -1,5 +1,4 @@
 import {create} from 'zustand';
-import type {Session} from "./types.ts";
 import {tokenLocalStorage} from "@/shared/api";
 
 
@@ -18,12 +17,14 @@ export const useSessionStore = create<SessionState & SessionActions>((set) => ({
     setTokens: (accessToken: string, refreshToken: string) => {
         tokenLocalStorage.setAccessToken(accessToken);
         tokenLocalStorage.setRefreshToken(refreshToken);
-        set({ isAuthenticated: true });
+        set({isAuthenticated: true});
     },
 
     clearSession: () => {
+        console.log(`Очистка в sessionStore`);
+
         tokenLocalStorage.clearStorage();
-        set({ isAuthenticated: false });
+        set({isAuthenticated: false});
     },
 }));
 

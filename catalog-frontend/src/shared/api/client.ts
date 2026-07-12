@@ -40,7 +40,7 @@ async function request<TData>(
         if (refreshToken) {
 
             if (!refreshPromise) {
-                refreshPromise = fetch(getFullUrl('api/auth/refresh'), {
+                refreshPromise = fetch(getFullUrl('api/session/refresh'), {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({refreshToken}),
@@ -48,7 +48,6 @@ async function request<TData>(
                     .then(async (res) => {
                         if (res.ok) {
                             const response = await res.json() as ApiResponse<RefreshResponse>;
-                            console.log()
 
                             tokenLocalStorage.setAccessToken(response.data.accessToken);
                             if (response.data.refreshToken) {
@@ -56,11 +55,12 @@ async function request<TData>(
                             }
                             return response;
                         }
-                        tokenLocalStorage.clearStorage();
+                        if (res.status === 401 || res.status === 403) {
+                            tokenLocalStorage.clearStorage();
+                        }
                         return null;
                     })
                     .catch(() => {
-                        tokenLocalStorage.clearStorage();
                         return null;
                     })
                     .finally(() => {

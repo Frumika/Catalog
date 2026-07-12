@@ -17,7 +17,7 @@ public class SessionController : ControllerBase
     {
         _sessionService = sessionService;
     }
-    
+
 
     [HttpPost("send_code")]
     public async Task<IActionResult> SendCode([FromBody] SendCodeRequest request)
@@ -36,6 +36,8 @@ public class SessionController : ControllerBase
     [HttpPost("refresh")]
     public async Task<IActionResult> RefreshAccessToken([FromBody] RefreshRequest request)
     {
+        Console.WriteLine($"Запрос на refresh: {DateTime.Now}");
+        
         var response = await _sessionService.RefreshAccessTokenAsync(request);
         return response.ToHttpResponse();
     }
