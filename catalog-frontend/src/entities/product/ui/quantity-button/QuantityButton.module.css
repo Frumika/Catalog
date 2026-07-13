@@ -4,6 +4,8 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    background-color: var(--graphicSecondary);
+    border-radius: 8px;
 }
 
 .quantity {
@@ -13,7 +15,7 @@
     text-align: center;
 }
 
-.icon{
+.icon {
     stroke: currentColor;
     stroke-width: 2px;
 }
