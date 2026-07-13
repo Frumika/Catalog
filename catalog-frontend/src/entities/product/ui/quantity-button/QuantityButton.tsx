@@ -1,6 +1,4 @@
-import type {MouseEvent} from "react";
 import {Button} from "@/shared/ui/button";
-
 import styles from "./QuantityButton.module.css"
 import MinusIcon from "@/shared/assets/icons/minus.svg?react";
 import PlusIcon from "@/shared/assets/icons/plus.svg?react";
@@ -10,8 +8,8 @@ import type {ComponentSize} from "@/shared/lib";
 interface QuantityButtonProps {
     size?: ComponentSize;
     quantity: number;
-    incQuantity: (event: MouseEvent, action: 'increment' | 'decrement') => void;
-    decQuantity: (event: MouseEvent, action: 'increment' | 'decrement') => void;
+    incQuantity: () => void;
+    decQuantity: () => void;
 }
 
 export const QuantityButton = (
@@ -29,7 +27,7 @@ export const QuantityButton = (
                 variant="secondary"
                 size={size}
                 icon={<MinusIcon className={styles.icon}/>}
-                onClick={(event) => incQuantity(event, 'decrement')}
+                onClick={decQuantity}
             />
 
             <span className={styles.quantity}>
@@ -40,7 +38,7 @@ export const QuantityButton = (
                 variant="secondary"
                 size={size}
                 icon={<PlusIcon className={styles.icon}/>}
-                onClick={(event: MouseEvent) => decQuantity(event, 'increment')}
+                onClick={incQuantity}
             />
         </div>
     );

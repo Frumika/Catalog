@@ -1,3 +1,17 @@
+export interface CartPreviewResult<T> {
+    items: T[];
+    totalQuantity: number
+}
+
+export interface CartResult<T> {
+    items: T[];
+    totalQuantity: number;
+    totalBasePrice: number;
+    totalDiscountAmount: number;
+    finalPrice: number;
+}
+
+
 export interface CartPositionPreviewDto {
     productId: number;
     quantity: number;

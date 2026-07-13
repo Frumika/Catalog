@@ -1,4 +1,4 @@
-import type {CartPositionDto, CartPositionPreviewDto} from "../api/Cart.dto.ts";
+import type {CartPositionDto, CartPositionPreviewDto} from "../api/dto.ts";
 
 export interface CartPositionPreview extends CartPositionPreviewDto {
 

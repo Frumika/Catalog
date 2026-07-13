@@ -4,13 +4,13 @@ import styles from "./ProductCard.module.css";
 import {formatPrice} from "@/shared/lib";
 import {Button} from "@/shared/ui/button";
 import {Icon} from "@/shared/ui/icon";
+import {useCartActions, usePositionQuantity} from "@/entities/cart";
 import {QuantityButton} from "./quantity-button/QuantityButton.tsx";
 
 import StarIcon from "@/shared/assets/icons/star.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
-import {useCartStore} from "@/entities/cart";
 
 
 interface ProductCardProps {
@@ -20,31 +20,20 @@ interface ProductCardProps {
     className?: string;
 }
 
-export const ProductCard = ({product, hasButton = true, onClick, className}: ProductCardProps) => {
-    // Получаем состояние и экшены из общего стора корзины
-    const cartItems = useCartStore(state => state.items);
-    const addToCart = useCartStore(state => state.addToCart);
-    const updateQuantity = useCartStore(state => state.updateQuantity);
-
-    // Ищем, добавлен ли этот конкретный товар в корзину
-    const cartInPosition = cartItems.find(item => item.productId === product.productId);
-    const quantityInCart = cartInPosition ? cartInPosition.quantity : 0;
+export const ProductCard = (
+    {
+        product,
+        hasButton = true,
+        onClick,
+        className
+    }: ProductCardProps) => {
+    const {addProduct, updateQuantity} = useCartActions();
+    const positionQuantity = usePositionQuantity(product.productId);
 
     const productCardStyles = [styles.productCard, className].filter(Boolean).join(' ');
     const hasDiscount = product.discountPercent !== 0;
     const hasReview = product.reviewCount > 0;
 
-    // Клик по кнопке "В корзину" (первое добавление)
-    const handleFirstAdd = (event: React.MouseEvent) => {
-        event.stopPropagation();
-        addToCart(product.productId);
-    };
-
-    // Клик по кнопкам контроля количества (+ / -)
-    const handleQuantityChange = (event: React.MouseEvent, action: 'increment' | 'decrement') => {
-        event.stopPropagation();
-        updateQuantity(product.productId, quantityInCart, action);
-    };
 
     return (
         <div className={productCardStyles}>
@@ -84,19 +73,19 @@ export const ProductCard = ({product, hasButton = true, onClick, className}: Pro
 
                 {hasButton && (
                     <div className={styles.cartButtonWrapper}>
-                        {quantityInCart > 0 ?
+                        {positionQuantity > 0 ?
                             <QuantityButton
                                 size="small"
-                                quantity={quantityInCart}
-                                incQuantity={handleQuantityChange}
-                                decQuantity={handleQuantityChange}
+                                quantity={positionQuantity}
+                                incQuantity={() => updateQuantity(product.productId, positionQuantity + 1)}
+                                decQuantity={() => updateQuantity(product.productId, positionQuantity - 1)}
                             />
                             :
                             <Button
                                 fullWidth={true}
                                 size="small"
                                 icon={<CartIcon/>}
-                                onClick={handleFirstAdd}
+                                onClick={() => addProduct(product.productId)}
                             >
                                 В корзину
                             </Button>

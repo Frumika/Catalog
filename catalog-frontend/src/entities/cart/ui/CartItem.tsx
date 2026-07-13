@@ -1,5 +1,5 @@
 // entities/cart-item/ui/CartItem.tsx
-import type { CartPosition } from "../model/types.ts";
+import type {CartPosition} from "../model/types.ts";
 import styles from "./CartItem.module.css";
 
 interface CartItemProps {
@@ -14,14 +14,15 @@ interface CartItemProps {
 // entities/cart-item/ui/CartItem.tsx
 // ... (интерфейсы пропсов остаются прежними)
 
-export const CartItem = ({
-                             cartPosition,
-                             isChecked,
-                             onToggleCheck,
-                             onIncrement,
-                             onDecrement,
-                             onRemove
-                         }: CartItemProps) => {
+export const CartItem = (
+    {
+        cartPosition,
+        isChecked,
+        onToggleCheck,
+        onIncrement,
+        onDecrement,
+        onRemove
+    }: CartItemProps) => {
     const hasDiscount = cartPosition.discountPercent > 0;
 
     return (
@@ -33,7 +34,7 @@ export const CartItem = ({
                 {/*</label>*/}
 
                 <div className={styles.imageWrapper}>
-                    <img src={cartPosition.imageUrl} alt="" className={styles.image} />
+                    <img src={cartPosition.imageUrl} alt="" className={styles.image}/>
                 </div>
             </div>
 
@@ -49,7 +50,6 @@ export const CartItem = ({
                         </button>
                     </div>
                 </div>
-
 
 
                 <div className={styles.priceBlock}>

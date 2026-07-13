@@ -212,7 +212,13 @@ public class CartService
                 await _dbContext.SaveChangesAsync();
             }
 
-            return Response.Success("The product was deleted");
+            CartPositionDto cartPosition = new()
+            {
+                ProductId = request.ProductId,
+                Quantity = 0
+            };
+
+            return Response.Success(cartPosition, "The product was deleted");
         }
         catch (Exception)
         {

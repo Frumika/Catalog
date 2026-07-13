@@ -1,6 +1,6 @@
 import {getFullUrl} from "@/shared/api";
 import type {CartPosition} from "../model/types.ts";
-import type {CartPositionDto} from "./Cart.dto.ts";
+import type {CartPositionDto} from "./dto.ts";
 import PlaceholderImage from "@/shared/assets/images/placeholder.png";
 
 

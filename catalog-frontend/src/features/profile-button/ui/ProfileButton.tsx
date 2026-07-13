@@ -9,8 +9,6 @@ import {useIsAuthenticated, useSession} from "@/entities/session";
 
 
 export interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    badgeValue?: number;
-    badgeVisible?: boolean;
     displayMode?: ComponentDisplayMode;
 }
 

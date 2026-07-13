@@ -1,8 +1,14 @@
-import {AppRoutes} from "@/app/routes/AppRoutes.tsx";
+import {AppRoutes} from "./routes/AppRoutes.tsx";
+import {CartSync} from "./providers/CartSync.tsx";
 
 
 function App() {
-    return <AppRoutes />;
+    return (
+        <>
+            <CartSync/>
+            <AppRoutes/>
+        </>
+    );
 }
 
 export default App

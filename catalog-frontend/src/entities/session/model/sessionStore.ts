@@ -21,8 +21,6 @@ export const useSessionStore = create<SessionState & SessionActions>((set) => ({
     },
 
     clearSession: () => {
-        console.log(`Очистка в sessionStore`);
-
         tokenLocalStorage.clearStorage();
         set({isAuthenticated: false});
     },
