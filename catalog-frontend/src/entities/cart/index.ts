@@ -1,4 +1,4 @@
-export {CartItem} from "./ui/CartItem.tsx";
+export {CartPositionCard} from "./ui/CartPositionCard.tsx";
 export {cartApi} from "./api/cartApi.ts";
 export {useCartActions,} from "./model/useCartActions.ts"
 export {useCartSync} from "./model/useCartSync.ts";

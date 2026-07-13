@@ -1,6 +1,6 @@
 // features/cart-list/ui/CartList.tsx
 import { useEffect } from "react";
-import { CartItem } from "@/entities/cart";
+import { CartPositionCard } from "@/entities/cart";
 import styles from "./CartList.module.css";
 
 export const CartList = () => {

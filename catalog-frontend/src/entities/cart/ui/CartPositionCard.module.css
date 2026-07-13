@@ -1,0 +1,33 @@
+.cartPositionCard {
+    display: flex;
+    flex-direction: row;
+}
+
+.imageWrapper {
+    position: relative;
+    display: flex;
+}
+
+.image{
+
+}
+
+
+.contentWrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.contentButtonWrapper{
+    display: flex;
+}
+
+
+.priceWrapper{
+
+}
+
+
+.quantityWrapper{
+
+}

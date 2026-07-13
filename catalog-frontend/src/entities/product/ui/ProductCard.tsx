@@ -5,7 +5,7 @@ import {formatPrice} from "@/shared/lib";
 import {Button} from "@/shared/ui/button";
 import {Icon} from "@/shared/ui/icon";
 import {useCartActions, usePositionQuantity} from "@/entities/cart";
-import {QuantityButton} from "./quantity-button/QuantityButton.tsx";
+import {QuantityButton} from "@/shared/ui/quantity-button";
 
 import StarIcon from "@/shared/assets/icons/star.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
@@ -76,6 +76,7 @@ export const ProductCard = (
                         {positionQuantity > 0 ?
                             <QuantityButton
                                 size="small"
+                                variant={"secondary"}
                                 quantity={positionQuantity}
                                 incQuantity={() => updateQuantity(product.productId, positionQuantity + 1)}
                                 decQuantity={() => updateQuantity(product.productId, positionQuantity - 1)}

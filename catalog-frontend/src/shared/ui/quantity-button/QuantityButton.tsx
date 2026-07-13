@@ -1,30 +1,42 @@
+import type {ComponentSize} from "@/shared/lib";
 import {Button} from "@/shared/ui/button";
 import styles from "./QuantityButton.module.css"
 import MinusIcon from "@/shared/assets/icons/minus.svg?react";
 import PlusIcon from "@/shared/assets/icons/plus.svg?react";
-import type {ComponentSize} from "@/shared/lib";
 
+
+type QuantityButtonVariant = 'secondary' | 'neutral';
 
 interface QuantityButtonProps {
     size?: ComponentSize;
+    variant?: QuantityButtonVariant;
     quantity: number;
     incQuantity: () => void;
     decQuantity: () => void;
+    className?: string;
 }
 
 export const QuantityButton = (
     {
         size = 'small',
+        variant = 'secondary',
         quantity,
         incQuantity,
         decQuantity,
+        className,
     }: QuantityButtonProps
 ) => {
+    const quantityButtonStyles = [
+        styles.quantityButton,
+        styles[variant],
+        className
+    ].filter(Boolean).join(' ');
 
     return (
-        <div className={styles.quantityButton}>
+        <div className={quantityButtonStyles}>
             <Button
-                variant="secondary"
+                className={styles.button}
+                variant={variant}
                 size={size}
                 icon={<MinusIcon className={styles.icon}/>}
                 onClick={decQuantity}
@@ -35,7 +47,8 @@ export const QuantityButton = (
             </span>
 
             <Button
-                variant="secondary"
+                className={styles.button}
+                variant={variant}
                 size={size}
                 icon={<PlusIcon className={styles.icon}/>}
                 onClick={incQuantity}

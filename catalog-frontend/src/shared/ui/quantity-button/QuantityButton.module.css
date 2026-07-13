@@ -4,12 +4,11 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    background-color: var(--graphicSecondary);
     border-radius: 8px;
 }
 
 .quantity {
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
     line-height: 18px;
     text-align: center;
@@ -18,4 +17,22 @@
 .icon {
     stroke: currentColor;
     stroke-width: 2px;
+}
+
+.secondary {
+    background-color: var(--graphicSecondary);
+    color: var(--graphicPrimary);
+}
+
+.neutral {
+    background-color: var(--bgOverlap);
+}
+
+.button {
+    border-radius: 8px;
+    background-color: transparent;
+}
+
+.neutral .button  {
+    --button-color: var(--textPrimary);
 }

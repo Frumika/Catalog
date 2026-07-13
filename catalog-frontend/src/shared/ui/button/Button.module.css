@@ -10,16 +10,17 @@
     gap: 8px;
     padding: var(--button-padding);
     font-weight: var(--button-font-weight);
+    color: var(--button-color);
 }
 
 .primary {
     background-color: var(--graphicPrimary);
-    color: #ffffff;
+    --button-color: #ffffff;
 }
 
 .secondaryGhost {
     background-color: transparent;
-    color: var(--graphicPrimary);
+    --button-color: var(--graphicPrimary);
 }
 
 .primary:hover {
@@ -28,7 +29,7 @@
 
 .secondary {
     background-color: var(--graphicSecondary);
-    color: var(--graphicPrimary);
+    --button-color: var(--graphicPrimary);
 }
 
 .secondary:hover {
@@ -37,17 +38,17 @@
 
 .ghost {
     background-color: transparent;
-    color: var(--textSecondary);
+    --button-color: var(--textSecondary);
 }
 
 .ghost:hover {
-    color: var(--graphicPrimary);
+    --button-color: var(--graphicPrimary);
 }
 
 .neutral {
     border-radius: 12px;
     background: var(--bgOverlap);
-    color: var(--graphicTertiary);
+    --button-color: var(--graphicTertiary);
 }
 
 .neutral:hover {
