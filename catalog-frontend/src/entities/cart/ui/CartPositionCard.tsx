@@ -1,5 +1,5 @@
 import type {CartPosition} from "../model/types.ts";
-import {useCartActions, useCartPosition, usePositionQuantity} from "@/entities/cart";
+import {useCartActions, usePositionQuantity} from "@/entities/cart";
 import styles from "./CartPositionCard.module.css";
 
 import TrashcanIcon from "@/shared/assets/icons/trashcan.svg?react";
@@ -29,7 +29,7 @@ export const CartPositionCard = (
     const positionQuantity = usePositionQuantity(cartPosition.productId);
     const {removePosition, updateQuantity} = useCartActions();
 
-    const {positionBaseTotal, positionDiscountedTotal, positionDiscountAmount} = useMemo(
+    const {positionBaseTotal, positionDiscountedTotal} = useMemo(
         () => getPositionTotals(cartPosition, positionQuantity),
         [cartPosition, positionQuantity]
     );
@@ -99,6 +99,7 @@ export const CartPositionCard = (
             <div className={styles.quantityWrapper}>
                 <QuantityButton
                     size="small"
+                    variant={"neutral"}
                     quantity={positionQuantity}
                     incQuantity={() => updateQuantity(cartPosition.productId, positionQuantity + 1)}
                     decQuantity={() => updateQuantity(cartPosition.productId, positionQuantity - 1)}

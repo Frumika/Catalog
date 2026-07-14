@@ -1,32 +1,40 @@
 .cartPositionCard {
     display: flex;
     flex-direction: row;
-
     align-items: start;
+    padding: 16px 0;
+    width: 100%;
 }
 
 .imageWrapper {
     position: relative;
     display: flex;
 
-    border-radius: 16px;
+    border-radius: 12px;
     overflow: hidden;
+
     width: 88px;
     height: 120px;
+
+    margin-right: 32px;
+    flex-shrink: 0;
 }
 
 .image {
-    object-fit: cover;
-    height: 100%;
     width: 100%;
-    aspect-ratio: 3/4;
-    cursor: pointer;
+    height: 100%;
+    object-fit: cover;
 }
 
 
 .contentWrapper {
     display: flex;
     flex-direction: column;
+    gap: 8px;
+
+    width: 400px;
+    flex-shrink: 0;
+    margin-right: 32px;
 }
 
 .text {
@@ -36,8 +44,9 @@
     line-height: 20px;
     color: var(--textPrimary);
 
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -49,17 +58,20 @@
 }
 
 .wishButton {
+    color: var(--graphicAccent);
     background-color: var(--bgAccentSecondary);
 }
 
 .wishButton:hover {
-    background-color: var(--graphicPrimary);
+    background-color: var(--bgAccentSecondaryDark);
 }
-
 
 .priceWrapper {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+
+    flex-grow: 1;
 }
 
 .discountPrice {
@@ -86,5 +98,6 @@
 }
 
 .quantityWrapper {
-
+    flex-shrink: 0;
+    min-width: 120px;
 }

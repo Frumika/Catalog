@@ -48,7 +48,7 @@
 .neutral {
     border-radius: 12px;
     background: var(--bgOverlap);
-    --button-color: var(--graphicTertiary);
+    --button-color: var(--textPrimary);
 }
 
 .neutral:hover {
