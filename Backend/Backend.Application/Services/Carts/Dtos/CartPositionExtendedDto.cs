@@ -12,14 +12,5 @@ public class CartPositionExtendedDto : CartPositionDto
     public byte DiscountPercent { get; set; }
 
     // Цена за 1 шт. с учетом скидки
-    public int PriceWithDiscount { get; set; }
-
-    // Итоговая базовая цена позиции (BasePrice * Quantity)
-    public int PositionBaseTotal => BasePrice * Quantity;
-
-    // Итоговая цена позиции со скидкой (PriceWithDiscount * Quantity)
-    public int PositionTotal => PriceWithDiscount * Quantity;
-
-    // Выгода (сколько сэкономил на этой позиции)
-    public int PositionDiscountAmount => PositionBaseTotal - PositionTotal;
+    public int DiscountedPrice { get; set; }
 }

@@ -1,40 +1,33 @@
-// pages/cart/ui/CartPage.tsx
-import { useProductList } from "@/entities/product/model/useProductList.ts";
-import { Header } from "@/widgets/header";
-import { Footer } from "@/widgets/footer";
-import { ContentContainer } from "@/shared/ui/content-container";
-import { CartList } from "@/features/cart-list";
-import { ProductList } from "@/features/product-list";
+import {useProductList} from "@/entities/product/model/useProductList.ts";
+import {Header} from "@/widgets/header";
+import {Footer} from "@/widgets/footer";
+import {ContentContainer} from "@/shared/ui/content-container";
+import {CartList} from "@/features/cart-list";
+import {ProductList} from "@/features/product-list";
 import styles from "./CartPage.module.css";
+import {useCartPage} from "@/entities/cart";
+import {useIsAuthenticated} from "@/entities/session";
+
 
 export const CartPage = () => {
-    // Используем рекомендации (items) из entities/product
-    const { items, hasMore, loadMore } = useProductList();
+
+    const isAuthenticated = useIsAuthenticated();
+    const {cartPositions} = useCartPage(isAuthenticated);
 
     return (
         <div className={styles.pageWrapper}>
-            <Header />
+            <Header/>
 
             <main className={styles.main}>
                 <ContentContainer>
-                    {/* Виджет Корзины Ozon (Список товаров + Сайдбар оплаты) */}
                     <div className={styles.sectionSpacer}>
-                        <CartList />
+                        <CartList cartPositions={cartPositions} />
                     </div>
 
-                    {/* Блок Рекомендаций Ozon */}
-                    <div className={styles.recommendationsSection}>
-                        <h2 className={styles.recommendationsTitle}>Рекомендуем вам</h2>
-                        <ProductList
-                            hasMore={hasMore}
-                            products={items}
-                            onLoadMore={loadMore}
-                        />
-                    </div>
                 </ContentContainer>
             </main>
 
-            <Footer />
+            <Footer/>
         </div>
     );
 };

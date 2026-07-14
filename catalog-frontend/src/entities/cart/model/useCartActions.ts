@@ -50,5 +50,5 @@ export const useCartActions = () => {
         }
     };
 
-    return {addProduct, updateQuantity, removeProduct, clearCart, error};
+    return {addProduct, updateQuantity, removePosition: removeProduct, clearCart, error};
 };

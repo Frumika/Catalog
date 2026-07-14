@@ -1,15 +1,26 @@
 .cartPositionCard {
     display: flex;
     flex-direction: row;
+
+    align-items: start;
 }
 
 .imageWrapper {
     position: relative;
     display: flex;
+
+    border-radius: 16px;
+    overflow: hidden;
+    width: 88px;
+    height: 120px;
 }
 
-.image{
-
+.image {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+    aspect-ratio: 3/4;
+    cursor: pointer;
 }
 
 
@@ -18,16 +29,62 @@
     flex-direction: column;
 }
 
-.contentButtonWrapper{
+.text {
+    font-weight: 400;
+    font-size: 16px;
+    letter-spacing: 0;
+    line-height: 20px;
+    color: var(--textPrimary);
+
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.contentButtonWrapper {
     display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.wishButton {
+    background-color: var(--bgAccentSecondary);
+}
+
+.wishButton:hover {
+    background-color: var(--graphicPrimary);
 }
 
 
-.priceWrapper{
-
+.priceWrapper {
+    display: flex;
+    flex-direction: column;
 }
 
+.discountPrice {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--graphicAccent);
+}
 
-.quantityWrapper{
+.oldPrice {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 20px;
+    color: var(--textOriginalpriceAvailable);
+    text-decoration: line-through;
+}
+
+.freshPrice {
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0;
+    color: var(--textPositive);
+}
+
+.quantityWrapper {
 
 }

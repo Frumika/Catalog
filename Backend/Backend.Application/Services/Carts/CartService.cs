@@ -43,8 +43,7 @@ public class CartService
             return Response.Success(
                 new CartDto<CartPositionDto>
                 {
-                    Items = cartPositions,
-                    TotalQuantity = cartPositions.Sum(c => c.Quantity),
+                    Items = cartPositions
                 }
             );
         }
@@ -76,7 +75,7 @@ public class CartService
 
                     BasePrice = (int)Math.Round(ci.Product.Price, 0),
                     DiscountPercent = ci.Product.DiscountPercent,
-                    PriceWithDiscount =
+                    DiscountedPrice =
                         (int)Math.Round(ci.Product.Price * (100 - ci.Product.DiscountPercent) / 100m, 0),
 
                     ImageUrl = ci.Product.ProductImages
@@ -87,12 +86,9 @@ public class CartService
                 .ToListAsync();
 
             return Response.Success(
-                new CartExtendedDto
+                new CartDto<CartPositionExtendedDto>
                 {
                     Items = cartItems,
-                    TotalQuantity = cartItems.Sum(c => c.Quantity),
-                    TotalBasePrice = cartItems.Sum(c => c.PositionBaseTotal),
-                    TotalDiscountAmount = cartItems.Sum(c => c.PositionDiscountAmount)
                 }
             );
         }

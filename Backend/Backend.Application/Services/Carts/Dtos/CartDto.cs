@@ -3,5 +3,4 @@
 public class CartDto <T>
 {
     public List<T> Items { get; set; } = new();
-    public int TotalQuantity { get; set; }
 }

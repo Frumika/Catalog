@@ -1,13 +1,14 @@
 import type {CartPosition} from "../model/types.ts";
-import {useCartActions, usePositionQuantity} from "@/entities/cart";
+import {useCartActions, useCartPosition, usePositionQuantity} from "@/entities/cart";
 import styles from "./CartPositionCard.module.css";
 
-import MinusIcon from "@/shared/assets/icons/minus.svg?react";
-import PlusIcon from "@/shared/assets/icons/plus.svg?react";
 import TrashcanIcon from "@/shared/assets/icons/trashcan.svg?react";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import {formatPrice} from "@/shared/lib";
 import {QuantityButton} from "@/shared/ui/quantity-button";
+import {Button} from "@/shared/ui/button";
+import {getPositionTotals} from "@/entities/cart/model/pricing.ts";
+import {useMemo} from "react";
 
 
 interface CartPositionCard {
@@ -25,39 +26,72 @@ export const CartPositionCard = (
     }: CartPositionCard) => {
 
     const hasDiscount = cartPosition.discountPercent > 0;
-    const {updateQuantity, removeProduct} = useCartActions();
     const positionQuantity = usePositionQuantity(cartPosition.productId);
+    const {removePosition, updateQuantity} = useCartActions();
+
+    const {positionBaseTotal, positionDiscountedTotal, positionDiscountAmount} = useMemo(
+        () => getPositionTotals(cartPosition, positionQuantity),
+        [cartPosition, positionQuantity]
+    );
+
+    const cartPositionCardStyles =
+        [
+            styles.cartPositionCard,
+            className,
+        ].filter(Boolean).join(' ');
 
     return (
-        <div className={styles.cartPositionCard}>
+        <div className={cartPositionCardStyles}>
             <div className={styles.imageWrapper}>
                 <img
                     className={styles.image}
                     src={cartPosition.imageUrl}
                     alt={""}
+                    onClick={() => onClick?.()}
                 />
-
             </div>
 
 
-            <div className={styles.contentWrapper}>
-                <span>
+            <div className={styles.contentWrapper}
+                 onClick={() => onClick?.()}
+            >
+                <span className={styles.text}>
                     {cartPosition.productName}
                 </span>
 
                 <div className={styles.contentButtonWrapper}>
+                    <Button
+                        className={styles.wishButton}
+                        variant={"neutral"}
+                        icon={<WishIcon/>}
+                        size={"small"}
+                    />
 
+                    <Button
+                        variant={"neutral"}
+                        icon={<TrashcanIcon/>}
+                        onClick={() => removePosition(cartPosition.productId)}
+                        size={"small"}
+                    />
+
+                    <Button
+                        variant={"neutral"}
+                        size={"small"}>
+                        Купить
+                    </Button>
                 </div>
             </div>
 
 
             <div className={styles.priceWrapper}>
-                <span>
-                    {`${formatPrice(cartPosition.positionTotal)}₽`}
-                </span>
+                {hasDiscount && (
+                    <span className={styles.discountPrice}>
+                        {`${formatPrice(positionDiscountedTotal)}₽`}
+                    </span>
+                )}
 
-                <span>
-                    {`${formatPrice(cartPosition.positionBaseTotal)}₽`}
+                <span className={hasDiscount ? styles.oldPrice : styles.freshPrice}>
+                    {`${formatPrice(positionBaseTotal)}₽`}
                 </span>
             </div>
 

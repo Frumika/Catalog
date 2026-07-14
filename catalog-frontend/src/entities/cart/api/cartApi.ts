@@ -1,7 +1,7 @@
 import {apiClient, ApiError} from "@/shared/api";
 import type {CartPosition, CartPositionPreview} from "../model/types.ts";
 import {mapCartPosition} from "./mappers.ts";
-import type {CartPositionDto, CartPositionPreviewDto, CartPreviewResult, CartResult} from "./dto.ts";
+import type {CartPositionDto, CartPositionPreviewDto, CartResponse} from "./dto.ts";
 
 
 const ENDPOINT = "api/cart";
@@ -9,9 +9,9 @@ const ENDPOINT = "api/cart";
 export const cartApi = {
 
     // Получение минимального набора данных о корзине
-    getCartPreview: async (): Promise<CartPreviewResult<CartPositionPreview>> => {
+    getCartPreview: async (): Promise<CartResponse<CartPositionPreview>> => {
         const response = await apiClient
-            .post<CartPreviewResult<CartPositionPreviewDto>>
+            .post<CartResponse<CartPositionPreviewDto>>
             (
                 `${ENDPOINT}/preview`,
                 {},
@@ -92,8 +92,8 @@ export const cartApi = {
     },
 
     // Получение полной информации о корзине и товарах в ней
-    getCartPositions: async (): Promise<CartResult<CartPosition>> => {
-        let response = await apiClient.post<CartResult<CartPositionDto>>(
+    getCartPositions: async (): Promise<CartResponse<CartPosition>> => {
+        let response = await apiClient.post<CartResponse<CartPositionDto>>(
             `${ENDPOINT}/get`,
             {},
             true
