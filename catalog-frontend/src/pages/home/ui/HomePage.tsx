@@ -3,7 +3,7 @@ import {Header} from "@/widgets/header";
 import {Footer} from "@/widgets/footer";
 import {useProductList} from "@/entities/product/model/useProductList.ts";
 import {ContentContainer} from "@/shared/ui/content-container";
-import {ProductGrid} from "@/widgets/product-list";
+import {ProductGrid} from "@/widgets/product-grid";
 import {InfiniteScroll} from "@/shared/ui/infinite-scroll";
 
 
