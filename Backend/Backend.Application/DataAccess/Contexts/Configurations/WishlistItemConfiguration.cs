@@ -30,7 +30,7 @@ public class WishlistItemConfiguration : IEntityTypeConfiguration<WishedProduct>
             .OnDelete(DeleteBehavior.Cascade);
 
         entity.HasOne(wi => wi.Product)
-            .WithMany(p => p.WishlistItems)
+            .WithMany(p => p.WishedProducts)
             .HasForeignKey(wi => wi.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 

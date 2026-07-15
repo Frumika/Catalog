@@ -30,17 +30,6 @@ public class WishlistController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("list")]
-    public async Task<IActionResult> GetWishlist(GetWishlistRequest request)
-    {
-        int? userId = User.GetUserId();
-        if (userId is null) return Unauthorized();
-
-        var response = await _wishlistService.GetWishlistAsync((int)userId, request);
-        return response.ToHttpResponse();
-    }
-
-    [Authorize]
     [HttpPost("product/add")]
     public async Task<IActionResult> AddProduct([FromBody] AddProductRequest request)
     {

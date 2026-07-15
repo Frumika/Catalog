@@ -16,7 +16,7 @@ public class CatalogController : ControllerBase
     {
         _catalogService = catalogService;
     }
-    
+
     [HttpGet("category/list")]
     public async Task<IActionResult> GetCategoryList()
     {
@@ -34,7 +34,10 @@ public class CatalogController : ControllerBase
     [HttpPost("product/list")]
     public async Task<IActionResult> GetProductsList([FromBody] GetProductListRequest request)
     {
-        var response = await _catalogService.GetProductListAsync(request);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _catalogService.GetProductListAsync(userId, request);
         return response.ToHttpResponse();
     }
 }

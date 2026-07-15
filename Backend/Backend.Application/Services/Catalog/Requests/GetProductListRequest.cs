@@ -4,9 +4,10 @@ namespace Backend.Application.Services.Catalog.Requests;
 
 public class GetProductListRequest : IValidatableRequest
 {
-    public int? CategoryId { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
+    public int? CategoryId { get; set; }
+    public bool? IsWishlist { get; set; }
 
     public ValidationResult Validate()
     {

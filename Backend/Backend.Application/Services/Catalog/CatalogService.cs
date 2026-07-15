@@ -58,7 +58,7 @@ public class CatalogService
         }
     }
 
-    public async Task<Response> GetProductListAsync(GetProductListRequest request)
+    public async Task<Response> GetProductListAsync(int? userId, GetProductListRequest request)
     {
         ValidationResult result = request.Validate();
         if (!result.IsValid)
@@ -66,8 +66,6 @@ public class CatalogService
 
         try
         {
-            IQueryable<Product> query = _dbContext.Products.AsNoTracking();
-
             if (request.CategoryId is not null)
             {
                 bool isCategoryExist = await _dbContext.Categories
@@ -75,9 +73,13 @@ public class CatalogService
 
                 if (!isCategoryExist)
                     return Response.Fail(new IncorrectCategory(), "Category not found");
-
-                query = query.Where(product => product.CategoryId == request.CategoryId);
             }
+
+            IQueryable<Product> query = _dbContext.Products.AsNoTracking();
+
+            query = query
+                .FilterByCategory(request.CategoryId)
+                .FilterByWishlist(request.IsWishlist, userId);
 
             int totalCount = await query.CountAsync();
 

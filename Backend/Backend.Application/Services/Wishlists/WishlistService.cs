@@ -48,65 +48,6 @@ public class WishlistService
         }
     }
 
-    public async Task<Response> GetWishlistAsync(int userId, GetWishlistRequest request)
-    {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid) return Response.Fail(new BadRequest(), result.Message);
-
-        try
-        {
-            int wishlistId = await _dbContext.Wishlists
-                .AsNoTracking()
-                .Where(wi => wi.UserId == userId)
-                .Select(wi => wi.Id)
-                .FirstAsync();
-
-            int totalCount = await _dbContext.WishedProducts
-                .AsNoTracking()
-                .Where(wi => wi.WishlistId == wishlistId)
-                .CountAsync();
-
-            List<ProductDto> products = await _dbContext.WishedProducts
-                .AsNoTracking()
-                .Where(wi => wi.WishlistId == wishlistId)
-                .OrderByDescending(wi => wi.AddedAt)
-                .Skip((request.PageNumber - 1) * request.PageSize)
-                .Take(request.PageSize)
-                .Select(wi => new ProductDto
-                {
-                    ProductId = wi.ProductId,
-                    ProductName = wi.Product.Name,
-                    Price = (int)Math.Round(wi.Product.Price, 0),
-                    DiscountPrice =
-                        (int)Math.Round(wi.Product.Price * (100 - wi.Product.DiscountPercent) / 100m, 0),
-                    DiscountPercent = wi.Product.DiscountPercent,
-                    ReviewCount = wi.Product.Reviews.Count,
-                    AverageScore = wi.Product.Reviews.Any()
-                        ? Math.Round(wi.Product.Reviews.Average(r => r.Score), 1)
-                        : 0,
-                    ImageUrl = wi.Product.ProductImages
-                        .OrderBy(pi => pi.Position)
-                        .Select(pi => pi.Path)
-                        .FirstOrDefault()
-                })
-                .ToListAsync();
-
-            return Response.Success(
-                new PaginatedResultDto<ProductDto>
-                {
-                    Items = products,
-                    TotalCount = totalCount,
-                    PageNumber = request.PageNumber,
-                    PageSize = request.PageSize
-                }
-            );
-        }
-        catch (Exception)
-        {
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
-    }
-
     public async Task<Response> AddProductAsync(int userId, AddProductRequest request)
     {
         ValidationResult result = request.Validate();
