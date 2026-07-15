@@ -1,6 +1,6 @@
 ﻿namespace Backend.Application.Common;
 
-public class PagedResultDto<T>
+public class PaginatedResultDto<T>
 {
     public List<T> Items { get; set; } = null!;
     public int TotalCount { get; set; }

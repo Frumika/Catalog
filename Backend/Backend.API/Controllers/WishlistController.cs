@@ -19,13 +19,24 @@ public class WishlistController : ControllerBase
     }
 
     [Authorize]
-    [HttpPost("get")]
-    public async Task<IActionResult> GetWishlist()
+    [HttpPost("preview")]
+    public async Task<IActionResult> GetWishlistPreview()
     {
         int? userId = User.GetUserId();
         if (userId is null) return Unauthorized();
 
-        var response = await _wishlistService.GetWishlistAsync((int)userId);
+        var response = await _wishlistService.GetWishlistPreviewAsync((int)userId);
+        return response.ToHttpResponse();
+    }
+
+    [Authorize]
+    [HttpPost("list")]
+    public async Task<IActionResult> GetWishlist(GetWishlistRequest request)
+    {
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _wishlistService.GetWishlistAsync((int)userId, request);
         return response.ToHttpResponse();
     }
 
@@ -46,7 +57,7 @@ public class WishlistController : ControllerBase
     {
         int? userId = User.GetUserId();
         if (userId is null) return Unauthorized();
-        
+
         var response = await _wishlistService.RemoveProductAsync((int)userId, request);
         return response.ToHttpResponse();
     }

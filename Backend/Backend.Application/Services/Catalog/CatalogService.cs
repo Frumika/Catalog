@@ -103,7 +103,7 @@ public class CatalogService
                 .ToListAsync();
 
             return Response.Success(
-                new PagedResultDto<ProductDto>
+                new PaginatedResultDto<ProductDto>
                 {
                     Items = products,
                     TotalCount = totalCount,
