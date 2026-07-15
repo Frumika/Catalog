@@ -1,16 +1,25 @@
-import type {ProductPreview} from "@/entities/product/model/Product.types.ts";
-import {ProductCard} from "@/entities/product";
 import styles from "./ProductGrid.module.css";
+import {ProductCard, type ProductPreview} from "@/entities/product";
+import {AddToCartButton} from "@/features/add-to-cart";
 
 
-type ProductGridProps = {
+interface ProductGridProps {
     products: ProductPreview[];
-};
+}
 
-export const ProductGrid = ({products}: ProductGridProps) => (
+export const ProductGrid = (
+    {
+        products,
+    }: ProductGridProps) => (
+
     <div className={styles.productGrid}>
         {products.map(product => (
-            <ProductCard key={product.productId} product={product} hasButton/>
+            <ProductCard
+                key={product.productId}
+                product={product}
+                actionSlot={<AddToCartButton productId={product.productId}/>}
+                favoriteSlot={null}
+            />
         ))}
     </div>
 );

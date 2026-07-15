@@ -1,21 +1,19 @@
-import type {ProductPreview} from "../model/Product.types.ts";
+import type {ProductPreview} from "../model/types.ts";
 import styles from "./ProductCard.module.css";
 
 import {formatPrice} from "@/shared/lib";
-import {Button} from "@/shared/ui/button";
 import {Icon} from "@/shared/ui/icon";
-import {useCartActions, usePositionQuantity} from "@/entities/cart";
-import {QuantityButton} from "@/shared/ui/quantity-button";
 
 import StarIcon from "@/shared/assets/icons/star.svg?react";
-import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
-import CartIcon from "@/shared/assets/icons/cart.svg?react";
+
+import type {ReactNode} from "react";
 
 
 interface ProductCardProps {
     product: ProductPreview;
-    hasButton?: boolean;
+    actionSlot?: ReactNode;
+    favoriteSlot?: ReactNode;
     onClick?: () => void;
     className?: string;
 }
@@ -23,17 +21,14 @@ interface ProductCardProps {
 export const ProductCard = (
     {
         product,
-        hasButton = true,
+        actionSlot,
+        favoriteSlot,
         onClick,
         className
     }: ProductCardProps) => {
-    const {addProduct, updateQuantity} = useCartActions();
-    const positionQuantity = usePositionQuantity(product.productId);
-
     const productCardStyles = [styles.productCard, className].filter(Boolean).join(' ');
     const hasDiscount = product.discountPercent !== 0;
     const hasReview = product.reviewCount > 0;
-
 
     return (
         <div className={productCardStyles}>
@@ -71,33 +66,19 @@ export const ProductCard = (
                     </div>
                 )}
 
-                {hasButton && (
+                {actionSlot && (
                     <div className={styles.cartButtonWrapper}>
-                        {positionQuantity > 0 ?
-                            <QuantityButton
-                                size="small"
-                                variant={"secondary"}
-                                quantity={positionQuantity}
-                                incQuantity={() => updateQuantity(product.productId, positionQuantity + 1)}
-                                decQuantity={() => updateQuantity(product.productId, positionQuantity - 1)}
-                            />
-                            :
-                            <Button
-                                fullWidth={true}
-                                size="small"
-                                icon={<CartIcon/>}
-                                onClick={() => addProduct(product.productId)}
-                            >
-                                В корзину
-                            </Button>
-                        }
+                        {actionSlot}
                     </div>
                 )}
             </div>
 
-            <button className={styles.wishlistButton} onClick={(e) => e.stopPropagation()}>
-                <Icon className={styles.wishlistIcon}><WishIcon/></Icon>
-            </button>
+            {favoriteSlot && (
+                <div className={styles.wishlistButton}
+                     onClick={(e) => e.stopPropagation()}>
+                    {favoriteSlot}
+                </div>
+            )}
         </div>
     );
 };

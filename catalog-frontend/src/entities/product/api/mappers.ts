@@ -1,5 +1,5 @@
 import {getFullUrl} from "@/shared/api";
-import type {ProductDetails, ProductPreview} from "../model/Product.types.ts";
+import type {ProductDetails, ProductPreview} from "../model/types.ts";
 import type {ProductDetailsDto, ProductPreviewDto} from "./Product.dto.ts";
 import PlaceholderImage from "@/shared/assets/images/placeholder.png";
 

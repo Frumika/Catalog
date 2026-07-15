@@ -10,14 +10,12 @@ export const CartList = (
     {
         cartPositions,
     }: CartListProps
-) => {
-    return (
-        <section className={styles.cartList}>
-            {cartPositions.map((item) => (
-                <CartPositionCard
-                    key={item.productId}
-                    cartPosition={item}/>
-            ))}
-        </section>
-    );
-}
+) => (
+    <section className={styles.cartList}>
+        {cartPositions.map((item) => (
+            <CartPositionCard
+                key={item.productId}
+                cartPosition={item}/>
+        ))}
+    </section>
+);

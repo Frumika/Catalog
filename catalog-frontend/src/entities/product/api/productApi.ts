@@ -1,5 +1,5 @@
-import {apiClient, ApiError, getFullUrl, type PagedResult} from "@/shared/api";
-import type {ProductDetails, ProductPreview} from "../model/Product.types.ts";
+import {apiClient, ApiError, type PagedResult} from "@/shared/api";
+import type {ProductDetails, ProductPreview} from "../model/types.ts";
 import {mapProductPreview} from "./mappers.ts";
 
 const ENDPOINT = "api/catalog";
