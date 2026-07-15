@@ -1,9 +1,10 @@
-import {useProductList} from "@/entities/product/model/useProductList.ts";
-import {Header} from "@/widgets/header";
-import {ContentContainer} from "@/shared/ui/content-container";
-import {ProductList} from "@/features/product-list";
 import styles from "./HomePage.module.css"
+import {Header} from "@/widgets/header";
 import {Footer} from "@/widgets/footer";
+import {useProductList} from "@/entities/product/model/useProductList.ts";
+import {ContentContainer} from "@/shared/ui/content-container";
+import {ProductGrid} from "@/widgets/product-list";
+import {InfiniteScroll} from "@/shared/ui/infinite-scroll";
 
 
 export const HomePage = () => {
@@ -15,11 +16,9 @@ export const HomePage = () => {
 
             <main className={styles.main}>
                 <ContentContainer>
-                    <ProductList
-                        hasMore={hasMore}
-                        products={items}
-                        onLoadMore={loadMore}
-                    />
+                    <InfiniteScroll hasMore={hasMore} onLoadMore={loadMore}>
+                        <ProductGrid products={items}/>
+                    </InfiniteScroll>
                 </ContentContainer>
             </main>
 
