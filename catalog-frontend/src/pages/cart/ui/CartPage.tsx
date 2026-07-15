@@ -1,33 +1,37 @@
-import {useProductList} from "@/entities/product/model/useProductList.ts";
+import styles from "./CartPage.module.css";
 import {Header} from "@/widgets/header";
 import {Footer} from "@/widgets/footer";
 import {ContentContainer} from "@/shared/ui/content-container";
-import {CartList} from "@/features/cart-list";
-import {ProductList} from "@/features/product-list";
-import styles from "./CartPage.module.css";
-import {useCartPage} from "@/entities/cart";
-import {useIsAuthenticated} from "@/entities/session";
+import {CartList} from "@/widgets/cart-list";
+import {useTotalQuantity} from "@/entities/cart";
+import {CartSummary} from "@/widgets/cart-summary";
 
 
 export const CartPage = () => {
 
-    const isAuthenticated = useIsAuthenticated();
-    const {cartPositions} = useCartPage(isAuthenticated);
+    const totalQuantity = useTotalQuantity();
 
     return (
-        <div className={styles.pageWrapper}>
+        <>
             <Header/>
 
             <main className={styles.main}>
                 <ContentContainer>
+                    <div className={styles.listHeader}>
+                        <h2 className={styles.title}>
+                            Корзина <span className={styles.count}>{totalQuantity}</span>
+                        </h2>
+                    </div>
+
                     <div className={styles.sectionSpacer}>
-                        <CartList cartPositions={cartPositions} />
+                        <CartList/>
+                        <CartSummary/>
                     </div>
 
                 </ContentContainer>
             </main>
 
             <Footer/>
-        </div>
+        </>
     );
 };

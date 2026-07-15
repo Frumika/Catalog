@@ -73,7 +73,7 @@
 }
 
 .large {
-    --button-padding: 12px 20px;
+    --button-padding: 16px 24px;
     font-size: 16px;
     --button-font-weight: 600;
 }

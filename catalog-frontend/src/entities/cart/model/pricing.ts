@@ -19,8 +19,8 @@ export const getCartTotals = (positions: CartPosition[], quantityMap: Map<number
             return {
                 totalBasePrice: acc.totalBasePrice + t.positionBaseTotal,
                 totalDiscountAmount: acc.totalDiscountAmount + t.positionDiscountAmount,
-                finalPrice: acc.finalPrice + t.positionDiscountedTotal,
+                totalDiscountedPrice: acc.totalDiscountedPrice + t.positionDiscountedTotal,
             };
         },
-        {totalBasePrice: 0, totalDiscountAmount: 0, finalPrice: 0}
+        {totalBasePrice: 0, totalDiscountAmount: 0, totalDiscountedPrice: 0}
     );

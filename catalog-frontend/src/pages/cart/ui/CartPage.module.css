@@ -1,29 +1,32 @@
-/* pages/cart/ui/CartPage.css */
-.pageWrapper {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #f2f5f8; /* Фирменный светло-серый фон Ozon под карточки */
+.listHeader {
+    margin-bottom: 24px;
+}
+
+.title {
+    display: inline-flex;
+    align-items: start;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--textPrimary);
+}
+
+.count {
+    color: var(--textTertiary);
+    font-weight: 400;
+    font-size: 16px;
+    margin-left: 2px;
 }
 
 .main {
+    position: relative;
     flex-grow: 1;
     padding-top: 24px;
-    padding-bottom: 48px;
 }
 
 .sectionSpacer {
-    margin-bottom: 40px;
-}
-
-.recommendationsSection {
-    margin-top: 24px;
-}
-
-.recommendationsTitle {
-    font-family: 'Onest', sans-serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #070707;
-    margin-bottom: 16px;
+    position: relative;
+    display: grid;
+    align-items: start;
+    grid-column-gap: 24px;
+    grid-template-columns: 1fr 380px;
 }

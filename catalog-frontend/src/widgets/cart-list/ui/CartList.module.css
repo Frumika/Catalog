@@ -1,0 +1,17 @@
+.cartList {
+    background: var(--bgMain);
+    border-radius: 16px;
+    padding: 16px;
+}
+
+.title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--textPrimary);
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
