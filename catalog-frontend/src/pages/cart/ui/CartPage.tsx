@@ -3,13 +3,17 @@ import {Header} from "@/widgets/header";
 import {Footer} from "@/widgets/footer";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {CartList} from "@/widgets/cart-list";
-import {useTotalQuantity} from "@/entities/cart";
+import {useExtendedCartPositions, useTotalQuantity} from "@/entities/cart";
 import {CartSummary} from "@/widgets/cart-summary";
+import {useIsAuthenticated} from "@/entities/session";
+import {PageLabel} from "@/shared/ui/page-label";
 
 
 export const CartPage = () => {
 
+    const isAuthenticated = useIsAuthenticated();
     const totalQuantity = useTotalQuantity();
+    const {cartPositions} = useExtendedCartPositions(isAuthenticated);
 
     return (
         <>
@@ -17,15 +21,12 @@ export const CartPage = () => {
 
             <main className={styles.main}>
                 <ContentContainer>
-                    <div className={styles.listHeader}>
-                        <h2 className={styles.title}>
-                            Корзина <span className={styles.count}>{totalQuantity}</span>
-                        </h2>
-                    </div>
+
+                    <PageLabel className={styles.pageLabel} title={"Корзина"} quantity={totalQuantity}/>
 
                     <div className={styles.sectionSpacer}>
-                        <CartList/>
-                        <CartSummary/>
+                        <CartList cartPositions={cartPositions}/>
+                        <CartSummary cartPositions={cartPositions} totalQuantity={totalQuantity}/>
                     </div>
 
                 </ContentContainer>

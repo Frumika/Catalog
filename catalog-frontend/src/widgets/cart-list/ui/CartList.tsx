@@ -1,12 +1,16 @@
 import styles from "./CartList.module.css";
-import {CartPositionCard, useCartPage} from "@/entities/cart";
-import {useIsAuthenticated} from "@/entities/session";
+import {type CartPosition, CartPositionCard} from "@/entities/cart";
 
 
-export const CartList = () => {
-    const isAuthenticated = useIsAuthenticated();
-    const {cartPositions} = useCartPage(isAuthenticated);
+interface CartListProps {
+    cartPositions: CartPosition[];
+}
 
+export const CartList = (
+    {
+        cartPositions,
+    }: CartListProps
+) => {
     return (
         <section className={styles.cartList}>
             {cartPositions.map((item) => (

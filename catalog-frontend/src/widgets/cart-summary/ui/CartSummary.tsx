@@ -1,16 +1,21 @@
 import {formatPrice} from "@/shared/lib";
 import styles from "./CartSummary.module.css";
-import {useCartTotals} from "@/entities/cart/model/useCartTotals.ts";
-import {useCartPage, useTotalQuantity} from "@/entities/cart";
-import {useIsAuthenticated} from "@/entities/session";
+import {useCartTotals, type CartPosition} from "@/entities/cart";
 import {Button} from "@/shared/ui/button";
 
 
-export const CartSummary = () => {
 
-    const isAuthenticated = useIsAuthenticated();
-    const totalQuantity = useTotalQuantity();
-    const {cartPositions} = useCartPage(isAuthenticated);
+interface CartSummaryProps {
+    cartPositions: CartPosition[];
+    totalQuantity: number;
+}
+
+export const CartSummary = (
+    {
+        cartPositions,
+        totalQuantity,
+    } : CartSummaryProps
+) => {
     const {totalBasePrice, totalDiscountAmount, totalDiscountedPrice} = useCartTotals(cartPositions);
 
     return (

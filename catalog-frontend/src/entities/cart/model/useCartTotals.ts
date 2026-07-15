@@ -1,6 +1,6 @@
 import type {CartPosition} from "@/entities/cart/model/types.ts";
-import {useCartPositions} from "@/entities/cart";
-import {getCartTotals} from "@/entities/cart/model/pricing.ts";
+import {getCartTotals, useCartPositions} from "@/entities/cart";
+
 import {useMemo} from "react";
 
 

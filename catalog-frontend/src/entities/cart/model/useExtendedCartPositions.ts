@@ -5,7 +5,7 @@ import {cartApi} from "../api/cartApi.ts";
 import {ApiError, toApiError} from "@/shared/api";
 
 
-export const useCartPage = (isAuthenticated: boolean) => {
+export const useExtendedCartPositions = (isAuthenticated: boolean) => {
     const globalPositions = useCartPositions();
     const [localPositions, setLocalPositions] = useState<CartPosition[]>([]);
     const [error, setError] = useState<ApiError | null>(null);
