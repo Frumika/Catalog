@@ -8,14 +8,12 @@ export const CartList = () => {
     const {cartPositions} = useCartPage(isAuthenticated);
 
     return (
-        <div className={styles.cartList}>
-            <div className={styles.list}>
-                {cartPositions.map((item) => (
-                    <CartPositionCard
-                        key={item.productId}
-                        cartPosition={item}/>
-                ))}
-            </div>
-        </div>
+        <section className={styles.cartList}>
+            {cartPositions.map((item) => (
+                <CartPositionCard
+                    key={item.productId}
+                    cartPosition={item}/>
+            ))}
+        </section>
     );
 }
