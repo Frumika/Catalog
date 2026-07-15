@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Backend.Application.DataAccess.Contexts.Configurations;
 
-public class WishlistItemConfiguration : IEntityTypeConfiguration<WishlistItem>
+public class WishlistItemConfiguration : IEntityTypeConfiguration<WishedProduct>
 {
-    public void Configure(EntityTypeBuilder<WishlistItem> entity)
+    public void Configure(EntityTypeBuilder<WishedProduct> entity)
     {
-        entity.ToTable("wishlist_items");
+        entity.ToTable("wished_products");
 
         entity.HasKey(ci => new { ci.WishlistId, ci.ProductId });
 

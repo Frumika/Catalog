@@ -15,9 +15,9 @@ public class Product
     public Seller Seller { get; set; } = null!;
     public Category Category { get; set; } = null!;
 
-    public ICollection<ProductImage> ProductImages { get; set; } = null!;
-    public ICollection<OrderedProduct> OrderedProducts { get; set; } = null!;
-    public ICollection<CartItem> CartItems { get; set; } = null!;
-    public ICollection<WishlistItem> WishlistItems { get; set; } = null!;
-    public ICollection<Review> Reviews { get; set; } = null!;
+    public ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
+    public ICollection<OrderedProduct> OrderedProducts { get; set; } = new List<OrderedProduct>();
+    public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
+    public ICollection<WishedProduct> WishlistItems { get; set; } = new List<WishedProduct>();
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

@@ -1,6 +1,6 @@
 ﻿namespace Backend.Domain.Models;
 
-public class WishlistItem
+public class WishedProduct
 {
     public int WishlistId { get; set; }
     public int ProductId { get; set; }

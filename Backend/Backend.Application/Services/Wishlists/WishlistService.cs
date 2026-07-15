@@ -31,7 +31,7 @@ public class WishlistService
                 .Select(wi => wi.Id)
                 .FirstAsync();
 
-            List<WishedProductDto> ids = await _dbContext.WishlistItems
+            List<WishedProductDto> ids = await _dbContext.WishedProducts
                 .AsNoTracking()
                 .Where(wi => wi.WishlistId == wishlistId)
                 .Select(wi => new WishedProductDto
@@ -61,12 +61,12 @@ public class WishlistService
                 .Select(wi => wi.Id)
                 .FirstAsync();
 
-            int totalCount = await _dbContext.WishlistItems
+            int totalCount = await _dbContext.WishedProducts
                 .AsNoTracking()
                 .Where(wi => wi.WishlistId == wishlistId)
                 .CountAsync();
 
-            List<ProductDto> products = await _dbContext.WishlistItems
+            List<ProductDto> products = await _dbContext.WishedProducts
                 .AsNoTracking()
                 .Where(wi => wi.WishlistId == wishlistId)
                 .OrderByDescending(wi => wi.AddedAt)
@@ -129,19 +129,19 @@ public class WishlistService
             if (productId is null)
                 return Response.Fail(new ProductNotFound(), "The product wasn't found");
 
-            WishlistItem? wishedProduct = await _dbContext.WishlistItems
+            WishedProduct? wishedProduct = await _dbContext.WishedProducts
                 .FirstOrDefaultAsync(wi => wi.WishlistId == wishlistId && wi.ProductId == request.ProductId);
 
             if (wishedProduct is null)
             {
-                wishedProduct = new WishlistItem
+                wishedProduct = new WishedProduct
                 {
                     WishlistId = wishlistId,
                     ProductId = request.ProductId,
                     AddedAt = DateTime.UtcNow
                 };
 
-                _dbContext.WishlistItems.Add(wishedProduct);
+                _dbContext.WishedProducts.Add(wishedProduct);
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -170,11 +170,11 @@ public class WishlistService
                 .Select(c => c.Id)
                 .FirstAsync();
 
-            WishlistItem? wishedProduct = await _dbContext.WishlistItems
+            WishedProduct? wishedProduct = await _dbContext.WishedProducts
                 .FirstOrDefaultAsync(wi => wi.WishlistId == wishlistId && wi.ProductId == request.ProductId);
             if (wishedProduct is not null)
             {
-                _dbContext.WishlistItems.Remove(wishedProduct);
+                _dbContext.WishedProducts.Remove(wishedProduct);
                 await _dbContext.SaveChangesAsync();
             }
 

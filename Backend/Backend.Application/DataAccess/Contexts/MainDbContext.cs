@@ -17,7 +17,7 @@ public class MainDbContext : DbContext
     public DbSet<Cart> Carts => Set<Cart>();
     public DbSet<CartItem> CartItems => Set<CartItem>();
     public DbSet<Wishlist> Wishlists => Set<Wishlist>();
-    public DbSet<WishlistItem> WishlistItems => Set<WishlistItem>();
+    public DbSet<WishedProduct> WishedProducts => Set<WishedProduct>();
     public DbSet<PickupPoint> PickupPoints => Set<PickupPoint>();
     public DbSet<UserPickupPoint> UserPickupPoints => Set<UserPickupPoint>();
 
