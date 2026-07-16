@@ -6,8 +6,11 @@ public class GetProductListRequest : IValidatableRequest
 {
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
+    public ProductSortOrder SortOrder { get; set; } = ProductSortOrder.Default;
     public int? CategoryId { get; set; }
     public bool? IsWishlist { get; set; }
+    public int? MinPrice { get; set; }
+    public int? MaxPrice { get; set; }
 
     public ValidationResult Validate()
     {

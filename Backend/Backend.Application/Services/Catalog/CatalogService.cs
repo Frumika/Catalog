@@ -79,13 +79,13 @@ public class CatalogService
 
             query = query
                 .FilterByCategory(request.CategoryId)
-                .FilterByWishlist(request.IsWishlist, userId);
+                .FilterByWishlist(request.IsWishlist, userId)
+                .FilterByPrice(request.MinPrice, request.MaxPrice)
+                .ApplySorting(request.SortOrder, request.IsWishlist, userId);
 
             int totalCount = await query.CountAsync();
 
             List<ProductDto> products = await query
-                .AsNoTracking()
-                .OrderBy(p => p.Id)
                 .Skip((request.PageNumber - 1) * request.PageSize)
                 .Take(request.PageSize)
                 .Select(p => new ProductDto
