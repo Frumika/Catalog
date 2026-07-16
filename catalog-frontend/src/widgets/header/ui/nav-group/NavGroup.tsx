@@ -1,11 +1,10 @@
-import {NavButton} from "@/shared/ui/nav-button";
-import OrderIcon from "@/shared/assets/icons/order.svg?react";
-import WishIcon from "@/shared/assets/icons/wish.svg?react";
-
 import styles from "./NavGroup.module.css";
+import OrderIcon from "@/shared/assets/icons/order.svg?react";
+import {NavButton} from "@/shared/ui/nav-button";
 import type {ComponentDisplayMode} from "@/shared/lib";
-import {ProfileButton} from "@/features/profile-button";
-import {CartButton} from "@/features/cart-button";
+import {CartButton} from "../cart-button/CartButton.tsx";
+import {ProfileButton} from "../profile-button/ProfileButton.tsx";
+import {WishlistButton} from "../wishlist-button/WishlistButton.tsx";
 
 
 interface NavGroupProps {
@@ -16,6 +15,7 @@ export const NavGroup = (
     {
         displayMode = "full"
     }: NavGroupProps) => {
+
 
     return (
         <div className={styles.navGroup}>
@@ -29,13 +29,7 @@ export const NavGroup = (
                 Заказы
             </NavButton>
 
-            <NavButton
-                displayMode={displayMode}
-                icon={<WishIcon/>}
-                badgeValue={5}
-            >
-                Избранное
-            </NavButton>
+            <WishlistButton displayMode={displayMode}/>
 
             <CartButton displayMode={displayMode}/>
         </div>

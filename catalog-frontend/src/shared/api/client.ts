@@ -22,11 +22,9 @@ async function request<TData>(
         ...(headers as Record<string, string>),
     };
 
-    if (authorization) {
-        const accessToken = tokenLocalStorage.getAccessToken();
-        if (accessToken) {
-            fetchHeaders['Authorization'] = `Bearer ${accessToken}`;
-        }
+    const accessToken = tokenLocalStorage.getAccessToken();
+    if (accessToken) {
+        fetchHeaders['Authorization'] = `Bearer ${accessToken}`;
     }
 
     let response = await fetch(fullUrl, {
@@ -90,23 +88,23 @@ async function request<TData>(
 }
 
 export const apiClient = {
-    get<TData>(url: string, authorization = false, headers?: HeadersInit) {
+    get<TData>(url: string, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'GET', {}, authorization, headers);
     },
 
-    post<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+    post<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'POST', body, authorization, headers);
     },
 
-    put<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+    put<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'PUT', body, authorization, headers);
     },
 
-    patch<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+    patch<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'PATCH', body, authorization, headers);
     },
 
-    delete<TData>(url: string, body: RequestBody = {}, authorization = false, headers?: HeadersInit) {
+    delete<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'DELETE', body, authorization, headers);
     },
 };

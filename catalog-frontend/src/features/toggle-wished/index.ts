@@ -1,0 +1,1 @@
+export {ToggleWishedButton} from "./ui/ToggleWishedButton";

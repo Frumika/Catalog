@@ -8,3 +8,8 @@ export interface ProductPreview extends Omit<ProductPreviewDto, 'imageUrl'> {
 export interface ProductDetails extends Omit<ProductDetailsDto, 'imageUrls'> {
     imageUrls: string[];
 }
+
+export interface ProductFilters {
+    categoryId?: number;
+    isWishlist?: boolean;
+}

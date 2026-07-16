@@ -1,10 +1,10 @@
 import {useState} from "react";
 import {ApiError, toApiError} from "@/shared/api";
-import {cartApi, useApplyPositionUpdate, useClearCartState} from "@/entities/cart";
+import {cartApi, useApplyCartPositionUpdate, useClearCartState} from "@/entities/cart";
 
 
 export const useCartActions = () => {
-    const applyPositionUpdate = useApplyPositionUpdate();
+    const applyPositionUpdate = useApplyCartPositionUpdate();
     const clearCartState = useClearCartState();
 
     const [error, setError] = useState<ApiError | null>(null);
@@ -30,7 +30,7 @@ export const useCartActions = () => {
         }
     };
 
-    const removeProduct = async (productId: number) => {
+    const removePosition = async (productId: number) => {
         setError(null);
         try {
             const position = await cartApi.removeItem(productId);
@@ -50,5 +50,11 @@ export const useCartActions = () => {
         }
     };
 
-    return {addProduct, updateQuantity, removePosition: removeProduct, clearCart, error};
+    return {
+        addProduct,
+        updateQuantity,
+        removePosition,
+        clearCart,
+        error
+    };
 };

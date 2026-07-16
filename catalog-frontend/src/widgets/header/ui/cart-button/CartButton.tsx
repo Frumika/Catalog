@@ -3,7 +3,7 @@ import CartIcon from "@/shared/assets/icons/cart.svg?react";
 import type {ButtonHTMLAttributes} from "react";
 import type {ComponentDisplayMode} from "@/shared/lib";
 import {useNavigate} from "react-router-dom";
-import {useTotalQuantity} from "@/entities/cart";
+import {useCartTotalQuantity} from "@/entities/cart";
 
 
 interface CartButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -19,7 +19,7 @@ export const CartButton = (
 ) => {
 
     const navigate = useNavigate();
-    const totalQuantity = useTotalQuantity();
+    const totalQuantity = useCartTotalQuantity();
 
     return (
         <NavButton

@@ -1,5 +1,5 @@
 import type {CartPosition} from "../model/types.ts";
-import {getPositionTotals, useCartActions, usePositionQuantity} from "@/entities/cart";
+import {getPositionTotals, useCartActions, useCartPositionQuantity} from "@/entities/cart";
 import styles from "./CartPositionCard.module.css";
 
 import TrashcanIcon from "@/shared/assets/icons/trashcan.svg?react";
@@ -25,7 +25,7 @@ export const CartPositionCard = (
     }: CartPositionCard) => {
 
     const hasDiscount = cartPosition.discountPercent > 0;
-    const positionQuantity = usePositionQuantity(cartPosition.productId);
+    const positionQuantity = useCartPositionQuantity(cartPosition.productId);
     const {removePosition, updateQuantity} = useCartActions();
 
     const {positionBaseTotal, positionDiscountedTotal} = useMemo(

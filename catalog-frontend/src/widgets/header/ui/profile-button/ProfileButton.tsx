@@ -1,11 +1,11 @@
 import {NavButton} from "@/shared/ui/nav-button";
 import type {ButtonHTMLAttributes} from "react";
 import type {ComponentDisplayMode} from "@/shared/lib";
-import {AuthModal} from "@/features/profile-button/ui/auth-modal/AuthModal.tsx";
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
-import {useAuthModal} from "@/features/profile-button/model/useAuthModal.ts";
+import {useAuthModal} from "@/widgets/header/model/useAuthModal.ts";
 import {useUser} from "@/entities/user/model/useUser.ts";
 import {useIsAuthenticated, useSession} from "@/entities/session";
+import {AuthModal} from "@/widgets/header/ui/auth-modal/AuthModal.tsx";
 
 
 export interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

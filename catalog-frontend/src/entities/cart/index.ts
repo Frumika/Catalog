@@ -10,10 +10,10 @@ export type {CartPosition, CartPositionPreview} from "./model/types.ts";
 
 export {
     useCartPositions,
-    useTotalQuantity,
+    useCartTotalQuantity,
     useCartPosition,
-    usePositionQuantity,
+    useCartPositionQuantity,
     useSetCartPositions,
-    useApplyPositionUpdate,
+    useApplyCartPositionUpdate,
     useClearCartState,
 } from "./model/cartStore.ts";

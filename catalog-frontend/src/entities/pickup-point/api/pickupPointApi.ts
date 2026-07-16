@@ -6,10 +6,8 @@ const ENDPOINT = 'api/pickup_point';
 
 export const pickupPointApi = {
     getAll: async (): Promise<PickupPoint[]> => {
-        let response = await apiClient.get<PickupPoint[]>(
-            `${ENDPOINT}/all`,
-            true
-        );
+        let response = await apiClient
+            .get<PickupPoint[]>(`${ENDPOINT}/all`);
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
@@ -19,11 +17,8 @@ export const pickupPointApi = {
     },
 
     select: async (id: string): Promise<PickupPoint> => {
-        let response = await apiClient.patch<PickupPoint>(
-            `${ENDPOINT}/select/`,
-            {pickupPointId: id},
-            true
-        );
+        let response = await apiClient
+            .patch<PickupPoint>(`${ENDPOINT}/select/`, {pickupPointId: id});
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
@@ -33,7 +28,8 @@ export const pickupPointApi = {
     },
 
     delete: async (id: string): Promise<void> => {
-        let response = await apiClient.delete<void>(`${ENDPOINT}/remove/${id}`,);
+        let response = await apiClient
+            .delete<void>(`${ENDPOINT}/remove/${id}`);
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
@@ -41,7 +37,8 @@ export const pickupPointApi = {
     },
 
     add: async (address: string): Promise<PickupPoint> => {
-        let response = await apiClient.post<PickupPoint>(ENDPOINT, {address});
+        let response = await apiClient
+            .post<PickupPoint>(ENDPOINT, {address});
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);

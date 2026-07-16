@@ -51,7 +51,7 @@ export const useCartStore = create<CartState & CartActions>((set) => ({
 export const useCartPositions = () =>
     useCartStore((s) => s.cartPositions);
 
-export const useTotalQuantity = () =>
+export const useCartTotalQuantity = () =>
     useCartStore((s) =>
         s.cartPositions.reduce((sum, p) => sum + p.quantity, 0));
 
@@ -59,14 +59,14 @@ export const useCartPosition = (productId: number) =>
     useCartStore((s) =>
         s.cartPositions.find((p) => p.productId === productId));
 
-export const usePositionQuantity = (productId: number) =>
+export const useCartPositionQuantity = (productId: number) =>
     useCartStore((s) =>
     s.cartPositions.find((p) => p.productId === productId)?.quantity ?? 0);
 
 export const useSetCartPositions = () =>
     useCartStore((s) => s.setCartPositions);
 
-export const useApplyPositionUpdate = () =>
+export const useApplyCartPositionUpdate = () =>
     useCartStore((s) => s.applyPositionUpdate);
 
 export const useClearCartState = () =>

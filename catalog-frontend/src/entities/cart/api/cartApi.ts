@@ -8,15 +8,9 @@ const ENDPOINT = "api/cart";
 
 export const cartApi = {
 
-    // Получение минимального набора данных о корзине
     getCartPreview: async (): Promise<CartResponse<CartPositionPreview>> => {
         const response = await apiClient
-            .post<CartResponse<CartPositionPreviewDto>>
-            (
-                `${ENDPOINT}/preview`,
-                {},
-                true
-            );
+            .post<CartResponse<CartPositionPreviewDto>>(`${ENDPOINT}/preview`);
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
@@ -28,14 +22,10 @@ export const cartApi = {
         };
     },
 
-    // Добавление нового товара в корзину
+
     addProduct: async (productId: number): Promise<CartPositionPreview> => {
         const response = await apiClient
-            .post<CartPositionPreviewDto>(
-                `${ENDPOINT}/product/add`,
-                {productId},
-                true
-            );
+            .post<CartPositionPreviewDto>(`${ENDPOINT}/product/add`, {productId});
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
@@ -45,14 +35,9 @@ export const cartApi = {
     },
 
 
-    // Обновление количество уже существующего товара в корзине
     updateQuantity: async (productId: number, quantity: number): Promise<CartPositionPreview> => {
         const response = await apiClient
-            .patch<CartPositionPreviewDto>(
-                `${ENDPOINT}/product/quantity/update`,
-                {productId, quantity},
-                true
-            );
+            .patch<CartPositionPreviewDto>(`${ENDPOINT}/product/quantity/update`, {productId, quantity});
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
@@ -61,14 +46,10 @@ export const cartApi = {
         return response.data;
     },
 
-    // Удаление товара из корзины
+
     removeItem: async (productId: number): Promise<CartPositionPreview> => {
         const response = await apiClient
-            .delete<CartPositionPreviewDto>(
-                `${ENDPOINT}/product/remove`,
-                {productId},
-                true
-            );
+            .delete<CartPositionPreviewDto>(`${ENDPOINT}/product/remove`, {productId});
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
@@ -77,27 +58,19 @@ export const cartApi = {
         return response.data;
     },
 
-    // Очистка всей корзины
+
     clearCart: async () => {
-        let response = await apiClient
-            .delete(
-                `${ENDPOINT}/clear`,
-                {},
-                true
-            );
+        let response = await apiClient.delete(`${ENDPOINT}/clear`);
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);
         }
     },
 
-    // Получение полной информации о корзине и товарах в ней
+
     getCartPositions: async (): Promise<CartResponse<CartPosition>> => {
-        let response = await apiClient.post<CartResponse<CartPositionDto>>(
-            `${ENDPOINT}/get`,
-            {},
-            true
-        );
+        let response = await apiClient
+            .post<CartResponse<CartPositionDto>>(`${ENDPOINT}/get`);
 
         if (!response.ok) {
             throw new ApiError(response.code, response.message);

@@ -1,4 +1,4 @@
-import {useCartActions, usePositionQuantity} from "@/entities/cart";
+import {useCartActions, useCartPositionQuantity} from "@/entities/cart";
 import {QuantityButton} from "@/shared/ui/quantity-button";
 import {Button} from "@/shared/ui/button";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
@@ -17,7 +17,7 @@ export const AddToCartButton = (
     }: AddToCartButtonProps) => {
 
     const {addProduct, updateQuantity} = useCartActions();
-    const quantity = usePositionQuantity(productId);
+    const quantity = useCartPositionQuantity(productId);
 
     return quantity > 0 ? (
         <QuantityButton

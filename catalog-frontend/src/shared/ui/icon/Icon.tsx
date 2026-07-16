@@ -1,6 +1,13 @@
-import type {IconProps} from "@/shared/ui/icon/Icon.types.ts";
 import styles from './Icon.module.css';
+import type {ReactNode} from "react";
+import type {ComponentSize} from "@/shared/lib";
 
+
+interface IconProps {
+    children: ReactNode;
+    size?: ComponentSize;
+    className?: string;
+}
 
 export const Icon = (
     {
