@@ -59,6 +59,7 @@ export const usePaginatedList = <T>(
         pageRef.current = 1;
         isFetchingRef.current = false;
         requestIdRef.current++;
+        setItems([]);
         void load(1, true);
     }, [load]);
 

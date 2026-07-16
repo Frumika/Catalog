@@ -16,7 +16,13 @@ public static class ProductQueryExtensions
     {
         if (isWishlist is not true || userId is null) return query;
 
-        return query.Where(p => p.WishedProducts.Any(wp => wp.Wishlist.UserId == userId));
+        query = query.Where(p => p.WishedProducts.Any(wp => wp.Wishlist.UserId == userId));
+
+        return query
+            .OrderByDescending(p => p.WishedProducts
+                .Where(wp => wp.Wishlist.UserId == userId)
+                .Select(wp => wp.AddedAt)
+                .FirstOrDefault());
     }
 
     public static IQueryable<Product> FilterByPrice(this IQueryable<Product> query, decimal? minPrice,

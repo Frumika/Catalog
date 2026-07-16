@@ -4,11 +4,11 @@ import {Footer} from "@/widgets/footer";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {ProductGrid} from "@/widgets/product-grid";
 import {InfiniteScroll} from "@/shared/ui/infinite-scroll";
-import {useProductList} from "@/entities/product";
+import {useProducts} from "@/entities/product";
 
 
 export const HomePage = () => {
-    const {items, hasMore, loadMore} = useProductList();
+    const {items, hasMore, loadMore} = useProducts();
 
     return (
         <>

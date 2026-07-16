@@ -4,19 +4,16 @@ import {Footer} from "@/widgets/footer";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {InfiniteScroll} from "@/shared/ui/infinite-scroll";
 import {ProductGrid} from "@/widgets/product-grid";
-import {type ProductFilters, useProductList} from "@/entities/product";
+import {type ProductFilters, useProducts} from "@/entities/product";
 import {PageLabel} from "@/shared/ui/page-label";
 import {useWishlistTotalQuantity} from "@/entities/wishlist";
 
 
 export const WishlistPage = () => {
 
-    const filters: ProductFilters = {
-        isWishlist: true,
-    }
-    const {items, hasMore, loadMore} = useProductList(filters);
+    const filters: ProductFilters = {isWishlist: true,}
+    const {items, hasMore, loadMore} = useProducts(filters);
     const totalQuantity = useWishlistTotalQuantity();
-
 
     return (
         <>
