@@ -26,8 +26,7 @@ export const WishlistButton = (
             displayMode={displayMode}
             icon={<WishIcon/>}
             badgeValue={wishlistTotalQuantity}
-            onClick={() => {
-            }}
+            onClick={() => navigate("/wishlist")}
         >
             Избранное
         </NavButton>

@@ -1,0 +1,9 @@
+.main {
+    display: flex;
+    margin-top: 20px;
+    background: var(--bgPrimary);
+}
+
+.pageLabel {
+    margin-bottom: 24px;
+}
