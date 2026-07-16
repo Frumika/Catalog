@@ -12,4 +12,7 @@ export interface ProductDetails extends Omit<ProductDetailsDto, 'imageUrls'> {
 export interface ProductFilters {
     categoryId?: number;
     isWishlist?: boolean;
+    sortOrder?: number;
+    minPrice?: number;
+    maxPrice?: number;
 }

@@ -11,7 +11,10 @@ import {useWishlistTotalQuantity} from "@/entities/wishlist";
 
 export const WishlistPage = () => {
 
-    const filters: ProductFilters = {isWishlist: true,}
+    const filters: ProductFilters = {
+        isWishlist: true,
+        sortOrder: 1,
+    }
     const {items, hasMore, loadMore} = useProducts(filters);
     const totalQuantity = useWishlistTotalQuantity();
 
