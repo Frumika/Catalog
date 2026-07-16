@@ -3,7 +3,7 @@ import OrderIcon from "@/shared/assets/icons/order.svg?react";
 import {NavButton} from "@/shared/ui/nav-button";
 import type {ComponentDisplayMode} from "@/shared/lib";
 import {CartButton} from "../cart-button/CartButton.tsx";
-import {ProfileButton} from "../profile-button/ProfileButton.tsx";
+import {ProfileButton} from "@/features/auth";
 import {WishlistButton} from "../wishlist-button/WishlistButton.tsx";
 
 
