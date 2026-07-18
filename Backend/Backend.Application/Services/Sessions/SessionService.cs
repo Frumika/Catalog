@@ -27,7 +27,7 @@ public class SessionService
         _verificationSender = verificationSender;
         _codeStorage = codeStorage;
     }
-    
+
 
     public async Task<Response> SendCodeAsync(SendCodeRequest request)
     {
@@ -36,7 +36,7 @@ public class SessionService
 
         try
         {
-            string emailLower = request.Email.ToLowerInvariant();
+            string emailLower = request.Email.ToLowerInvariant().Trim();
 
             string code = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
             string hashedCode = Argon2Hasher.HashString(code);
@@ -61,14 +61,13 @@ public class SessionService
 
         try
         {
-            string emailLower = request.Email.ToLowerInvariant();
-
+            string emailLower = request.Email.ToLowerInvariant().Trim();
 
             string? hashedCode = await _codeStorage.GetCodeAsync(emailLower);
             if (hashedCode == null)
                 return Response.Fail(new InvalidVerifyCode(), "Code expired or not found");
 
-            bool isCodeValid = Argon2Hasher.VerifyString(request.Code, hashedCode);
+            bool isCodeValid = Argon2Hasher.VerifyString(request.Code.Trim(), hashedCode);
             if (!isCodeValid)
                 return Response.Fail(new InvalidVerifyCode(), "Incorrect verification code");
 

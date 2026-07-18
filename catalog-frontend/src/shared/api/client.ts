@@ -53,7 +53,7 @@ async function request<TData>(
                             }
                             return response;
                         }
-                        if (res.status === 401 || res.status === 403) {
+                        if (res.status === 401 || res.status === 403 || res.status === 404) {
                             tokenLocalStorage.clearStorage();
                         }
                         return null;
