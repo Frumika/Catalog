@@ -1,0 +1,16 @@
+.content {
+    /*width: 200px;*/
+    padding: 8px;
+
+
+}
+
+
+.button{
+    color: var(--textSecondary);
+    justify-content: start;
+}
+
+.removeButton {
+    color: var(--graphicAccent);
+}

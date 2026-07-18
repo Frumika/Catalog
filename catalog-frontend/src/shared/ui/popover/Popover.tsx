@@ -9,7 +9,7 @@ type Position = { top: number; left: number } | null;
 interface PopoverProps {
     isOpen: boolean;
     onClose: () => void;
-    anchorRef: RefObject<HTMLElement>;
+    anchorRef: RefObject<HTMLElement | null>;
     children: ReactNode;
     className?: string;
     placement?: Placement;
@@ -39,20 +39,19 @@ export const Popover = (
         if (!anchor || !floating) return;
 
         computePosition(anchor, floating, {
-            strategy: 'fixed', // координаты viewport-relative — без position:absolute и без обёртки-контейнера
+            strategy: 'fixed',
             placement,
             middleware: [offset(8), flip(), shift({padding: 8})]
         }).then(({x, y}) => setPosition({top: y, left: x}));
     }, [isOpen, anchorRef, placement]);
 
-    // закрытие по клику вовне
     useEffect(() => {
         if (!isOpen) return;
 
         const handleOutsideClick = (event: MouseEvent) => {
             const target = event.target as Node;
             if (popoverRef.current?.contains(target)) return;
-            if (anchorRef.current?.contains(target)) return; // клик по якорю — не наша забота, им управляет владелец anchor'а
+            if (anchorRef.current?.contains(target)) return;
             onClose();
         };
 

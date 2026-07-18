@@ -1,16 +1,18 @@
 import styles from './Button.module.css';
 import {Icon} from "@/shared/ui/icon";
-import type {ButtonHTMLAttributes, ReactNode} from "react";
+import  {type ButtonHTMLAttributes, type ReactNode} from "react";
 import type {ComponentSize} from "@/shared/lib";
+import * as React from "react";
 
 
-export type ButtonVariant = 'primary' | 'secondaryGhost' | 'secondary' | 'ghost' | 'neutral';
+export type ButtonVariant = 'primary' | 'secondaryGhost' | 'secondary' | 'ghost' | 'neutral' | 'popover';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-    icon?: ReactNode;
-    variant?: ButtonVariant;
-    size?: ComponentSize;
-    fullWidth?: boolean;
+    icon?: ReactNode,
+    variant?: ButtonVariant,
+    size?: ComponentSize,
+    fullWidth?: boolean,
+    ref?: React.RefObject<HTMLButtonElement | null>
 }
 
 export const Button = (

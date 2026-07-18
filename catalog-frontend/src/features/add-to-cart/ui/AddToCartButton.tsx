@@ -28,7 +28,12 @@ export const AddToCartButton = (
             decQuantity={() => updateQuantity(productId, quantity - 1)}
         />
     ) : (
-        <Button fullWidth size={size} icon={<CartIcon/>} onClick={() => addProduct(productId)}>
+        <Button
+            variant={"primary"}
+            fullWidth
+            size={size}
+            icon={<CartIcon/>}
+            onClick={() => addProduct(productId)}>
             В корзину
         </Button>
     );

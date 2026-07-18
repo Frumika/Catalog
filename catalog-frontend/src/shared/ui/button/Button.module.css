@@ -55,6 +55,14 @@
     background: var(--graphicNeutral);
 }
 
+.popover {
+    background-color: transparent;
+}
+
+.popover:hover {
+    background-color: var(--graphicNeutralLight);
+}
+
 .fullWidth {
     display: flex;
     width: 100%;
@@ -63,7 +71,7 @@
 .small {
     --button-padding: 8px 12px;
     font-size: 14px;
-    --button-font-weight: 600;
+    --button-font-weight: 500;
 }
 
 .medium {

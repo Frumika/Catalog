@@ -12,7 +12,7 @@
 }
 
 .hasHover:hover {
-    border-color: var(--graphicNeutralLight);
+    border-color: var(--graphicNeutralLightBlue);
 }
 
 .selected {

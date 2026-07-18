@@ -2,6 +2,9 @@ import type {AddressCardProps} from "./AddressCard.types.ts";
 import KebabMenuIcon from "@/shared/assets/icons/kebab-menu.svg?react";
 import styles from "./AddressCard.module.css";
 import {Button} from "@/shared/ui/button";
+import {CardPopover} from "../card-popover/CardPopover.tsx";
+import {useCardPopover} from "../../model/useCardPopover.ts";
+import {useRef} from "react";
 
 
 export const AddressCard = (
@@ -12,6 +15,9 @@ export const AddressCard = (
         className
     }: AddressCardProps
 ) => {
+
+    const anchorRef = useRef<HTMLButtonElement>(null);
+    const {isOpen, open, close} = useCardPopover();
 
     const addressItemStyles = [
         styles.addressItem,
@@ -40,13 +46,20 @@ export const AddressCard = (
             </div>
 
             <Button
+                ref={anchorRef}
                 className={styles.kebabMenuButton}
                 variant={"ghost"}
                 size={"medium"}
                 icon={<KebabMenuIcon/>}
                 onClick={(event) => {
                     event.stopPropagation();
+                    open();
                 }}
+            />
+
+            <CardPopover isOpen={isOpen}
+                         onClose={close}
+                         anchorRef={anchorRef}
             />
         </div>
     );
