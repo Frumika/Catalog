@@ -1,0 +1,7 @@
+.popover {
+    position: fixed;
+    z-index: 100;
+    background: var(--bgMain);
+    border-radius: 16px;
+    box-shadow: var(--shadowPopover, 0 4px 16px rgba(0, 0, 0, 0.12));
+}
