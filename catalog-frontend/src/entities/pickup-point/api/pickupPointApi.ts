@@ -1,4 +1,4 @@
-import type {PickupPoint} from "@/entities/pickup-point/model/PickupPoint.types.ts";
+import type {PickupPoint} from "@/entities/pickup-point/model/types.ts";
 import {apiClient, ApiError} from "@/shared/api";
 
 
@@ -27,7 +27,7 @@ export const pickupPointApi = {
         return response.data;
     },
 
-    delete: async (id: string): Promise<void> => {
+    remove: async (id: string): Promise<void> => {
         let response = await apiClient
             .delete<void>(`${ENDPOINT}/remove/${id}`);
 

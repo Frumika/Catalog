@@ -41,13 +41,13 @@ public class PickupPointController : ControllerBase
     }
 
     [Authorize]
-    [HttpDelete("remove")]
-    public async Task<IActionResult> RemovePoint(RemovePointRequest request)
+    [HttpDelete("remove/{pickupPointId:int}")]
+    public async Task<IActionResult> RemovePoint([FromRoute] int pickupPointId)
     {
         int? userId = User.GetUserId();
         if (userId is null) return Unauthorized();
-        
-        var response = await _pickupPointService.RemovePointAsync((int)userId, request);
+
+        var response = await _pickupPointService.RemovePointAsync((int)userId, pickupPointId);
         return response.ToHttpResponse();
     }
 }

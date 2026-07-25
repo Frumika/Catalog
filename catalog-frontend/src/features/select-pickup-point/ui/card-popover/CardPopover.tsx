@@ -4,9 +4,12 @@ import {Button} from "@/shared/ui/button";
 import type {RefObject} from "react";
 import TrashIcon from "@/shared/assets/icons/trashcan.svg?react";
 import CopyIcon from "@/shared/assets/icons/copy.svg?react";
+import {type PickupPoint, useRemovePickupPoint} from "@/entities/pickup-point";
+import {pickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
 
 
 interface CardPopoverProps {
+    pickupPoint: PickupPoint;
     isOpen: boolean;
     onClose: () => void;
     anchorRef: RefObject<HTMLElement | null>;
@@ -14,11 +17,14 @@ interface CardPopoverProps {
 
 export const CardPopover = (
     {
+        pickupPoint,
         isOpen,
         onClose,
         anchorRef,
     }: CardPopoverProps
 ) => {
+
+    const removePickupPoint = useRemovePickupPoint();
 
     const removeButtonStyles = [
         styles.button,
@@ -37,7 +43,17 @@ export const CardPopover = (
                     fullWidth
                     variant={"popover"}
                     icon={<CopyIcon/>}
-                    size={"small"}>
+                    size={"small"}
+                    onClick={async (event) => {
+                        event.stopPropagation();
+
+                        try {
+                            await navigator.clipboard.writeText(pickupPoint.address);
+                        } catch (error) {
+                            console.error("Не удалось скопировать адрес: ", error);
+                        }
+                    }}
+                >
                     Копировать адрес
                 </Button>
 
@@ -47,6 +63,15 @@ export const CardPopover = (
                     variant={"popover"}
                     icon={<TrashIcon/>}
                     size={"small"}
+                    onClick={async (event) => {
+                        event.stopPropagation();
+                        try {
+                            await pickupPointApi.remove(pickupPoint.id);
+                            removePickupPoint(pickupPoint);
+                        } catch (error) {
+                            console.log("Что-то пошло не так, надо разобраться");
+                        }
+                    }}
                 >
                     Удалить
                 </Button>

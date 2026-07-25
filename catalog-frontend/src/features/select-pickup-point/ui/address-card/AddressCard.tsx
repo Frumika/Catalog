@@ -1,4 +1,4 @@
-import type {AddressCardProps} from "./AddressCard.types.ts";
+import type {PickupPoint} from "@/entities/pickup-point";
 import KebabMenuIcon from "@/shared/assets/icons/kebab-menu.svg?react";
 import styles from "./AddressCard.module.css";
 import {Button} from "@/shared/ui/button";
@@ -7,9 +7,16 @@ import {useCardPopover} from "../../model/useCardPopover.ts";
 import {useRef} from "react";
 
 
+interface AddressCardProps {
+    pickupPoint: PickupPoint,
+    selected?: boolean,
+    onSelect?: (pickupPoint: PickupPoint) => void
+    className?: string,
+}
+
 export const AddressCard = (
     {
-        deliveryAddress,
+        pickupPoint,
         selected = false,
         onSelect,
         className
@@ -28,20 +35,20 @@ export const AddressCard = (
     return (
         <div
             className={addressItemStyles}
-            onClick={() => onSelect?.(deliveryAddress.id)}
+            onClick={() => onSelect?.(pickupPoint)}
         >
             <header className={styles.header}>
                 <span className={styles.title}>Пункт выдачи</span>
-                <span className={styles.id}>{`№ ${deliveryAddress.id}`}</span>
+                <span className={styles.id}>{`№ ${pickupPoint.id}`}</span>
             </header>
 
             <div className={styles.description}>
                 <span className={styles.address}>
-                    {deliveryAddress.address}
+                    {pickupPoint.address}
                 </span>
 
                 <span className={styles.shelfLife}>
-                    {`Срок хранения заказа – ${deliveryAddress.shelfLifetime} дней`}
+                    {`Срок хранения заказа – ${pickupPoint.shelfLifetime} дней`}
                 </span>
             </div>
 
@@ -57,9 +64,11 @@ export const AddressCard = (
                 }}
             />
 
-            <CardPopover isOpen={isOpen}
-                         onClose={close}
-                         anchorRef={anchorRef}
+            <CardPopover
+                pickupPoint={pickupPoint}
+                isOpen={isOpen}
+                onClose={close}
+                anchorRef={anchorRef}
             />
         </div>
     );

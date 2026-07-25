@@ -1,6 +1,7 @@
 import {AppRoutes} from "./routes/AppRoutes.tsx";
 import {CartSync} from "./providers/CartSync.tsx";
-import {WishlistSync} from "./providers/WishlistSync.ts";
+import {WishlistSync} from "./providers/WishlistSync.tsx";
+import {PickupPointSync} from "@/app/providers/PickupPointSync.tsx";
 
 
 function App() {
@@ -8,6 +9,7 @@ function App() {
         <>
             <CartSync/>
             <WishlistSync/>
+            <PickupPointSync/>
             <AppRoutes/>
         </>
     );

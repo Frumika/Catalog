@@ -3,18 +3,23 @@ import {Modal} from "@/shared/ui/modal";
 import {AddressCard} from "@/features/select-pickup-point/ui/address-card/AddressCard.tsx";
 import {Button} from "@/shared/ui/button";
 import styles from "./AddressModal.module.css";
+import {
+    useCurrentPickupPoint,
+    usePickupPointActions,
+    usePickupPoints
+} from "@/entities/pickup-point";
 
 
 export const AddressModal = (
     {
-        addresses,
-        selectedAddress,
         isOpen,
         onClose,
-        onSelect,
-        onRemove
     }: AddressModalProps
 ) => {
+
+    const pickupPoints = usePickupPoints()
+    const currentPickupPoint = useCurrentPickupPoint();
+    const {selectPickupPoint} = usePickupPointActions()
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} className={styles.addressModal}>
@@ -23,13 +28,13 @@ export const AddressModal = (
             </div>
 
             <div className={styles.main}>
-                {addresses?.map(
+                {pickupPoints?.map(
                     deliveryAddress => (
                         <AddressCard
                             key={deliveryAddress.id}
-                            deliveryAddress={deliveryAddress}
-                            selected={selectedAddress?.id === deliveryAddress.id}
-                            onSelect={onSelect}
+                            pickupPoint={deliveryAddress}
+                            selected={currentPickupPoint?.id === deliveryAddress.id}
+                            onSelect={selectPickupPoint}
                         />
                     ))}
             </div>

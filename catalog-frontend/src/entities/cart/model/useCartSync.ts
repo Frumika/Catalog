@@ -2,6 +2,7 @@ import {cartApi, useClearCartState, useSetCartPositions} from "@/entities/cart";
 import {useEffect, useState} from "react";
 import {ApiError, toApiError} from "@/shared/api";
 
+
 export const useCartSync = (isAuthenticated: boolean) => {
     const setCartPositions = useSetCartPositions();
     const clearCartState = useClearCartState();

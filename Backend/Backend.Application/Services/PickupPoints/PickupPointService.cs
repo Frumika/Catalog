@@ -93,16 +93,12 @@ public class PickupPointService
         }
     }
 
-    public async Task<Response> RemovePointAsync(int userId, RemovePointRequest request)
+    public async Task<Response> RemovePointAsync(int userId, int pickupPointId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
         try
         {
             await _dbContext.UserPickupPoints
-                .Where(upp => upp.UserId == userId && upp.PickupPointId == request.PickupPointId)
+                .Where(upp => upp.UserId == userId && upp.PickupPointId == pickupPointId)
                 .ExecuteDeleteAsync();
 
             return Response.Success("The record was successfully deleted.");

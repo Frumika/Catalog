@@ -1,18 +1,24 @@
-import type {AddressButtonProps} from "./AddressButton.types.ts";
 import styles from "./AddressButton.module.css";
+import {useCurrentPickupPoint} from "@/entities/pickup-point/model/pickupPointStore.ts";
 
+
+interface AddressButtonProps {
+    onClick: () => void;
+    className?: string;
+}
 
 export const AddressButton = (
     {
-        address,
+        onClick,
         className,
         ...props
     }: AddressButtonProps
 ) => {
+    const currentPickupPoint = useCurrentPickupPoint();
 
-    const hasAddress = !!address;
+    const hasAddress = !!currentPickupPoint;
     const label: string = hasAddress ? "Пункт выдачи •" : "Укажите пункт выдачи •";
-    const destination: string = hasAddress ? address : "Выбрать";
+    const destination: string = hasAddress ? currentPickupPoint.address : "Выбрать";
 
     const deliveryButtonStyles = [
         styles.addressButton,
@@ -23,6 +29,7 @@ export const AddressButton = (
     return (
         <button
             {...props}
+            onClick={onClick}
             className={deliveryButtonStyles}>
             <span className={styles.label}>{label}</span>
             <span className={styles.destination}>{destination}</span>

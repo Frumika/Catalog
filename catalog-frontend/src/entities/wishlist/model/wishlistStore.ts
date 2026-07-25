@@ -13,7 +13,7 @@ interface WishlistActions {
     clearWishlist: () => void;
 }
 
-export const useWishlistStore = create<WishlistState & WishlistActions>((set) => ({
+const useWishlistStore = create<WishlistState & WishlistActions>((set) => ({
     products: [],
 
     setProducts: (products: WishedProduct[]) => set({products}),
