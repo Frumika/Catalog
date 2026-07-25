@@ -1,8 +1,17 @@
-import type {NavButtonProps} from "@/shared/ui/nav-button/NavButton.types.ts";
 import styles from "./NavButton.module.css";
 import {Badge} from "@/shared/ui/badge";
 import {Icon} from "@/shared/ui/icon";
+import type {ButtonHTMLAttributes, ReactNode, RefObject} from "react";
+import type {ComponentDisplayMode} from "@/shared/lib";
 
+
+export interface NavButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+    icon?: ReactNode;
+    badgeValue?: number;
+    badgeVisible?: boolean;
+    displayMode?: ComponentDisplayMode;
+    ref?: RefObject<HTMLButtonElement | null>;
+}
 
 export const NavButton = (
     {

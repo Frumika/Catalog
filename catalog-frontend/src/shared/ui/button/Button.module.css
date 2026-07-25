@@ -57,6 +57,8 @@
 
 .popover {
     background-color: transparent;
+    --button-color: var(--textSecondary);
+    justify-content: start;
 }
 
 .popover:hover {

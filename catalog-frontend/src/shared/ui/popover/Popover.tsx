@@ -86,7 +86,9 @@ export const Popover = (
                     : {top: 0, left: 0, visibility: 'hidden'}
             }
         >
-            {children}
+            <div className={styles.content}>
+                {children}
+            </div>
         </div>,
         document.body
     );

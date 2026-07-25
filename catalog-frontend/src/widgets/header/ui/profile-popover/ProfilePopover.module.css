@@ -1,0 +1,7 @@
+.profilePopover {
+    width: 250px;
+}
+
+.leaveButton {
+    color: var(--graphicAccent);
+}

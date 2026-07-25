@@ -4,15 +4,14 @@ import {Button} from "@/shared/ui/button";
 import type {RefObject} from "react";
 import TrashIcon from "@/shared/assets/icons/trashcan.svg?react";
 import CopyIcon from "@/shared/assets/icons/copy.svg?react";
-import {type PickupPoint, useRemovePickupPoint} from "@/entities/pickup-point";
-import {pickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
+import {type PickupPoint, usePickupPointActions} from "@/entities/pickup-point";
 
 
 interface CardPopoverProps {
     pickupPoint: PickupPoint;
     isOpen: boolean;
     onClose: () => void;
-    anchorRef: RefObject<HTMLElement | null>;
+    anchorRef: RefObject<HTMLButtonElement | null>;
 }
 
 export const CardPopover = (
@@ -24,58 +23,49 @@ export const CardPopover = (
     }: CardPopoverProps
 ) => {
 
-    const removePickupPoint = useRemovePickupPoint();
-
-    const removeButtonStyles = [
-        styles.button,
-        styles.removeButton
-    ].filter(Boolean).join(' ');
-
+    const {removePickupPoint} = usePickupPointActions();
 
     return (
         <Popover isOpen={isOpen}
                  onClose={onClose}
                  anchorRef={anchorRef}>
 
-            <div className={styles.content}>
-                <Button
-                    className={styles.button}
-                    fullWidth
-                    variant={"popover"}
-                    icon={<CopyIcon/>}
-                    size={"small"}
-                    onClick={async (event) => {
-                        event.stopPropagation();
+            <Button
+                fullWidth
+                variant={"popover"}
+                icon={<CopyIcon/>}
+                size={"small"}
+                onClick={async (event) => {
+                    event.stopPropagation();
 
-                        try {
-                            await navigator.clipboard.writeText(pickupPoint.address);
-                        } catch (error) {
-                            console.error("Не удалось скопировать адрес: ", error);
-                        }
-                    }}
-                >
-                    Копировать адрес
-                </Button>
+                    try {
+                        await navigator.clipboard.writeText(pickupPoint.address);
+                    } catch (error) {
+                        console.error("Не удалось скопировать адрес: ", error);
+                    }
+                }}
+            >
+                Копировать адрес
+            </Button>
 
-                <Button
-                    className={removeButtonStyles}
-                    fullWidth
-                    variant={"popover"}
-                    icon={<TrashIcon/>}
-                    size={"small"}
-                    onClick={async (event) => {
-                        event.stopPropagation();
-                        try {
-                            await pickupPointApi.remove(pickupPoint.id);
-                            removePickupPoint(pickupPoint);
-                        } catch (error) {
-                            console.log("Что-то пошло не так, надо разобраться");
-                        }
-                    }}
-                >
-                    Удалить
-                </Button>
-            </div>
+            <Button
+                className={styles.removeButton}
+                fullWidth
+                variant={"popover"}
+                icon={<TrashIcon/>}
+                size={"small"}
+                onClick={async (event) => {
+                    event.stopPropagation();
+                    try {
+                        await removePickupPoint(pickupPoint);
+                    } catch (error) {
+                        console.log("Что-то пошло не так, надо разобраться");
+                    }
+                }}
+            >
+                Удалить
+            </Button>
+
         </Popover>
     );
 }

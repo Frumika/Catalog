@@ -1,21 +1,25 @@
 import {NavButton} from "@/shared/ui/nav-button";
-import type {ButtonHTMLAttributes} from "react";
+import {type ButtonHTMLAttributes} from "react";
 import type {ComponentDisplayMode} from "@/shared/lib";
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
 import {useAuthModal} from "@/features/auth/model/useAuthModal.ts";
 import {useUser} from "@/entities/user/model/useUser.ts";
 import {useIsAuthenticated, useSession} from "@/entities/session";
 import {AuthModal} from "@/features/auth/ui/AuthModal.tsx";
+import * as React from "react";
 
 
-export interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     displayMode?: ComponentDisplayMode;
+    ref?: React.RefObject<HTMLButtonElement | null>
 }
 
 export const ProfileButton = (
     {
         displayMode = "full",
         className,
+        onClick,
+        ref,
         ...props
     }: ProfileButtonProps
 ) => {
@@ -33,15 +37,17 @@ export const ProfileButton = (
     })();
 
     const badgeVisible = !isAuthenticated;
+    const calledMethod = isAuthenticated ? onClick : open;
 
     return (
         <>
             <NavButton
+                ref={ref}
                 {...props}
                 badgeVisible={badgeVisible}
                 displayMode={displayMode}
                 icon={<ProfileIcon/>}
-                onClick={open}
+                onClick={calledMethod}
             >
                 {displayContent}
             </NavButton>
