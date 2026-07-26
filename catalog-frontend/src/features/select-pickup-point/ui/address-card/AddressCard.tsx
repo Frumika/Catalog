@@ -3,8 +3,8 @@ import KebabMenuIcon from "@/shared/assets/icons/kebab-menu.svg?react";
 import styles from "./AddressCard.module.css";
 import {Button} from "@/shared/ui/button";
 import {CardPopover} from "../card-popover/CardPopover.tsx";
-import {useCardPopover} from "../../model/useCardPopover.ts";
 import {useRef} from "react";
+import {useDisclosure} from "@/shared/lib";
 
 
 interface AddressCardProps {
@@ -24,7 +24,7 @@ export const AddressCard = (
 ) => {
 
     const anchorRef = useRef<HTMLButtonElement>(null);
-    const {isOpen, open, close} = useCardPopover();
+    const {isOpen, open, close} = useDisclosure();
 
     const addressItemStyles = [
         styles.addressItem,
