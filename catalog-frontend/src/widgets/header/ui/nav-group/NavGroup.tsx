@@ -5,9 +5,6 @@ import type {ComponentDisplayMode} from "@/shared/lib";
 import {CartButton} from "../cart-button/CartButton.tsx";
 import {ProfileButton} from "@/features/auth";
 import {WishlistButton} from "../wishlist-button/WishlistButton.tsx";
-import {ProfilePopover} from "@/widgets/header/ui/profile-popover/ProfilePopover.tsx";
-import {useRef} from "react";
-import {useProfilePopover} from "@/widgets/header/model/useProfilePopover.ts";
 
 
 interface NavGroupProps {
@@ -19,21 +16,10 @@ export const NavGroup = (
         displayMode = "full"
     }: NavGroupProps) => {
 
-    const anchorRef = useRef<HTMLButtonElement>(null);
-    const {isOpen, open, close} = useProfilePopover();
-
     return (
         <div className={styles.navGroup}>
-            <ProfileButton
-                ref={anchorRef}
-                displayMode={displayMode}
-                onClick={open}
-            />
 
-            <ProfilePopover
-                isOpen={isOpen}
-                onClose={close}
-                anchorRef={anchorRef}/>
+            <ProfileButton displayMode={displayMode}/>
 
             <NavButton
                 displayMode={displayMode}

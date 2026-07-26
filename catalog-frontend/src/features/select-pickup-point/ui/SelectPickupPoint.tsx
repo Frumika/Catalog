@@ -1,14 +1,11 @@
 import {AddressButton} from "./address-button/AddressButton.tsx";
 import {AddressModal} from "./address-modal/AddressModal.tsx";
-import {useAddressModal} from "@/features/select-pickup-point/model/useAddressModal.ts";
+import {useDisclosure} from "@/shared/lib";
 
 
 export const SelectPickupPoint = () => {
-    const {
-        isOpen,
-        open,
-        close,
-    } = useAddressModal();
+
+    const {isOpen, open, close} = useDisclosure();
 
     return (
         <>

@@ -22,7 +22,6 @@ export const ProfilePopover = (
 ) => {
     const {logout} = useSession();
 
-
     return (
         <Popover
             className={styles.profilePopover}

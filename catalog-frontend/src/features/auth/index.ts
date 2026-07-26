@@ -1,1 +1,1 @@
-export {ProfileButton} from "./ui/ProfileButton";
+export {ProfileButton} from "./ui/profile-button/ProfileButton.tsx";

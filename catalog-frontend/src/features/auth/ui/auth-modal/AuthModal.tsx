@@ -3,27 +3,23 @@ import styles from "./AuthModal.module.css"
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
 import {useState} from "react";
+import {useSession} from "@/entities/session";
 
 
 interface AuthModalProps {
     isOpen: boolean;
     onClose?: () => void;
-    isCodeSend?: boolean;
-    sendCode?: (email: string) => void;
-    verify?: (email: string, code: string) => void;
 }
 
 export const AuthModal = (
     {
         isOpen,
         onClose,
-        isCodeSend,
-        sendCode,
-        verify,
     }: AuthModalProps
 ) => {
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
+    const {isCodeSend, sendCode, verify} = useSession();
 
     const handleSendCode = () => sendCode?.(email);
     const handleVerify = () => {
