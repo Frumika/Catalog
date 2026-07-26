@@ -19,7 +19,7 @@ export const ProductGrid = (
                 key={product.productId}
                 product={product}
                 actionSlot={<AddToCartButton productId={product.productId}/>}
-                favoriteSlot={<ToggleWishedButton productId={product.productId}/>}
+                favoriteSlot={<ToggleWishedButton productId={product.productId} buttonType={'productCard'}/>}
             />
         ))}
     </div>

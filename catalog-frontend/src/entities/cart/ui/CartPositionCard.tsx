@@ -3,16 +3,16 @@ import {getPositionTotals, useCartActions, useCartPositionQuantity} from "@/enti
 import styles from "./CartPositionCard.module.css";
 
 import TrashcanIcon from "@/shared/assets/icons/trashcan.svg?react";
-import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import {formatPrice} from "@/shared/lib";
 import {QuantityButton} from "@/shared/ui/quantity-button";
 import {Button} from "@/shared/ui/button";
-import {useMemo} from "react";
+import {type ReactNode, useMemo} from "react";
 
 
 interface CartPositionCard {
     cartPosition: CartPosition;
     onClick?: () => void;
+    wishButtonSlot?: ReactNode;
     className?: string;
 }
 
@@ -20,6 +20,7 @@ export const CartPositionCard = (
     {
         cartPosition,
         onClick,
+        wishButtonSlot,
         className,
 
     }: CartPositionCard) => {
@@ -59,12 +60,7 @@ export const CartPositionCard = (
                 </span>
 
                 <div className={styles.contentButtonWrapper}>
-                    <Button
-                        className={styles.wishButton}
-                        variant={"neutral"}
-                        icon={<WishIcon/>}
-                        size={"small"}
-                    />
+                    {wishButtonSlot}
 
                     <Button
                         variant={"neutral"}

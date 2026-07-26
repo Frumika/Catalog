@@ -1,20 +1,44 @@
-.toggleButton {
+.productCard {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: none;
     border: none;
+    background: none;
     cursor: pointer;
+    padding: 0;
+    transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.normal {
+.productCard:hover {
+    opacity: 0.8;
+}
+
+.productCard:active {
+    transform: scale(0.92);
+}
+
+.productCard .icon {
+    transition: stroke 0.2s ease, color 0.2s ease;
+}
+
+.productCard[data-wished="false"] .icon {
     stroke: var(--graphicTertiary);
     stroke-width: 2px;
     color: var(--bgMain);
 }
 
-.wished{
+.productCard[data-wished="true"] .icon {
     stroke: none;
     stroke-width: 0;
     color: var(--graphicAccent);
+}
+
+.wishButton {
+    color: var(--graphicAccent);
+    background-color: var(--bgAccentSecondary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.wishButton:hover {
+    background-color: var(--bgAccentSecondaryDark);
 }

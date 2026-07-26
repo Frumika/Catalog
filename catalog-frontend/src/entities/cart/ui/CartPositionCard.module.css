@@ -56,15 +56,6 @@
     gap: 8px;
 }
 
-.wishButton {
-    color: var(--graphicAccent);
-    background-color: var(--bgAccentSecondary);
-}
-
-.wishButton:hover {
-    background-color: var(--bgAccentSecondaryDark);
-}
-
 .priceWrapper {
     display: flex;
     flex-direction: column;
