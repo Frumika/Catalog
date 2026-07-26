@@ -1,6 +1,12 @@
 .cartPositionCard {
     display: flex;
     flex-direction: row;
+}
+
+.activeArea {
+    display: flex;
+    flex-direction: row;
+    cursor: pointer;
     align-items: start;
     width: 100%;
 }

@@ -42,54 +42,58 @@ export const CartPositionCard = (
 
     return (
         <div className={cartPositionCardStyles}>
-            <div className={styles.imageWrapper}>
-                <img
-                    className={styles.image}
-                    src={cartPosition.imageUrl}
-                    alt={""}
-                    onClick={() => onClick?.()}
-                />
-            </div>
+            <div className={styles.activeArea}
+                 onClick={() => onClick?.()}>
+                <div className={styles.imageWrapper}>
+                    <img
+                        className={styles.image}
+                        src={cartPosition.imageUrl}
+                        alt={""}
+                    />
+                </div>
 
 
-            <div className={styles.contentWrapper}
-                 onClick={() => onClick?.()}
-            >
+                <div className={styles.contentWrapper}>
                 <span className={styles.text}>
                     {cartPosition.productName}
                 </span>
 
-                <div className={styles.contentButtonWrapper}>
-                    {wishButtonSlot}
+                    <div className={styles.contentButtonWrapper}>
+                        {wishButtonSlot}
 
-                    <Button
-                        variant={"neutral"}
-                        icon={<TrashcanIcon/>}
-                        onClick={() => removePosition(cartPosition.productId)}
-                        size={"small"}
-                    />
+                        <Button
+                            variant={"neutral"}
+                            icon={<TrashcanIcon/>}
+                            size={"small"}
+                            onClick={async (event) => {
+                                event.stopPropagation();
+                                await removePosition(cartPosition.productId)
+                            }}/>
 
-                    <Button
-                        variant={"neutral"}
-                        size={"small"}>
-                        Купить
-                    </Button>
+                        <Button
+                            variant={"neutral"}
+                            size={"small"}
+                            onClick={(event) => {
+                                event.stopPropagation();
+                            }}>
+                            Купить
+                        </Button>
+                    </div>
                 </div>
-            </div>
 
 
-            <div className={styles.priceWrapper}>
-                {hasDiscount && (
-                    <span className={styles.discountPrice}>
+                <div className={styles.priceWrapper}>
+                    {hasDiscount && (
+                        <span className={styles.discountPrice}>
                         {`${formatPrice(positionDiscountedTotal)}₽`}
                     </span>
-                )}
+                    )}
 
-                <span className={hasDiscount ? styles.oldPrice : styles.freshPrice}>
+                    <span className={hasDiscount ? styles.oldPrice : styles.freshPrice}>
                     {`${formatPrice(positionBaseTotal)}₽`}
                 </span>
+                </div>
             </div>
-
 
             <div className={styles.quantityWrapper}>
                 <QuantityButton
