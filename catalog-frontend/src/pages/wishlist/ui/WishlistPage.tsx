@@ -7,14 +7,13 @@ import {ProductGrid} from "@/widgets/product-grid";
 import {type ProductFilters, useProducts} from "@/entities/product";
 import {PageLabel} from "@/shared/ui/page-label";
 import {useWishlistTotalQuantity} from "@/entities/wishlist";
+import {useState} from "react";
+import {SortDropdown} from "@/features/sort-dropdown";
 
 
 export const WishlistPage = () => {
 
-    const filters: ProductFilters = {
-        isWishlist: true,
-        sortOrder: 1,
-    }
+    const [filters, setFilters] = useState<ProductFilters>({isWishlist: true, sortOrder: 1});
     const {items, hasMore, loadMore} = useProducts(filters);
     const totalQuantity = useWishlistTotalQuantity();
 
@@ -25,6 +24,11 @@ export const WishlistPage = () => {
             <main className={styles.main}>
                 <ContentContainer>
                     <PageLabel className={styles.pageLabel} title={"Избранное"} quantity={totalQuantity}/>
+
+                    <SortDropdown
+                        currentSortOptionId={filters.sortOrder}
+                        onSelect={(sortOrder) => setFilters(f => ({...f, sortOrder}))}
+                    />
 
                     <InfiniteScroll hasMore={hasMore} onLoadMore={loadMore}>
                         <ProductGrid products={items}/>
