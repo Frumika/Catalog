@@ -4,14 +4,15 @@
     align-items: center;
     cursor: pointer;
     user-select: none;
-
     padding: 0 8px;
-
+    border-radius: 12px;
     gap: 8px;
-    width: 250px;
     height: 44px;
+    transition: all 0.2s ease;
+}
 
-    transition: all 0.2ms ease;
+.sortOptionItem:hover {
+    background-color: var(--bgPrimary);
 }
 
 .selected {

@@ -81,14 +81,13 @@ export const Popover = (
             ref={popoverRef}
             className={popoverStyles}
             style={
-                position
-                    ? {top: position.top, left: position.left, visibility: 'visible'}
-                    : {top: 0, left: 0, visibility: 'hidden'}
+                position ?
+                    {top: position.top, left: position.left, visibility: 'visible'}
+                    :
+                    {top: 0, left: 0, visibility: 'hidden'}
             }
         >
-            <div className={styles.content}>
-                {children}
-            </div>
+            {children}
         </div>,
         document.body
     );

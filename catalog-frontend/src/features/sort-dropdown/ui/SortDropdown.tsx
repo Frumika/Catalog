@@ -45,6 +45,7 @@ export const SortDropdown = (
             </div>
 
             <Popover
+                className={styles.popover}
                 isOpen={isOpen}
                 onClose={close}
                 anchorRef={anchorRef}
