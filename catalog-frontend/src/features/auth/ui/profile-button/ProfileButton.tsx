@@ -27,7 +27,7 @@ export const ProfileButton = (
     const isAuthenticated = useIsAuthenticated();
 
     const {isOpen: isModalOpen, open: openModal, close: closeModal} = useDisclosure();
-    const {isOpen: isPopoverOpen, open: openPopover, close: closePopover} = useDisclosure();
+    const {isOpen: isPopoverOpen, toggle: togglePopover, close: closePopover} = useDisclosure();
     const {user, isLoading: isUserLoading} = useUser(isAuthenticated);
 
     const displayContent = (() => {
@@ -35,7 +35,7 @@ export const ProfileButton = (
         return user.login;
     })();
 
-    const handleClick = isAuthenticated ? openPopover : openModal;
+    const handleClick = isAuthenticated ? togglePopover : openModal;
 
     return (
         <>
