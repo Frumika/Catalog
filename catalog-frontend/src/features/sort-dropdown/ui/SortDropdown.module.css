@@ -1,40 +1,4 @@
-.currentSortOption {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-
-    background-color: var(--bgMain);
-    border-radius: 12px;
-    padding: 0 16px;
-    max-width: 250px;
-    margin-bottom: 12px;
-
-    height: 44px;
-
-    cursor: pointer;
-}
-
-.currentSortOption[data-open="false"] {
-    box-shadow: inset 0 0 0 1px var(--graphicNeutral);
-}
-
-.currentSortOption[data-open="true"] {
-    box-shadow: inset 0 0 0 2px var(--graphicPrimary);
-}
-
-.label {
-    color: var(--textPrimary);
-    font-size: 16px;
-    align-items: center;
-    font-weight: 400;
-    user-select: none;
-}
-
-.icon {
-    color: var(--graphicTertiary);
-}
-
-.popover{
+.sortDropdown {
     width: 250px;
+    margin-bottom: 12px;
 }

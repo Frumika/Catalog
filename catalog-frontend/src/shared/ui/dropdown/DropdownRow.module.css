@@ -1,7 +1,8 @@
-.sortOptionItem {
+.row {
     display: flex;
     flex-direction: row;
     align-items: center;
+    justify-content: space-between;
     cursor: pointer;
     user-select: none;
     padding: 0 8px;
@@ -11,18 +12,17 @@
     transition: all 0.2s ease;
 }
 
-.sortOptionItem:hover {
+.row:hover {
     background-color: var(--bgPrimary);
-}
-
-.selected {
-    justify-content: space-between;
 }
 
 .label {
     color: var(--textPrimary);
     font-size: 16px;
     font-weight: 400;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .icon {

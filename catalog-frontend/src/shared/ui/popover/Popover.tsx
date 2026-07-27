@@ -4,7 +4,7 @@ import {computePosition, offset, flip, shift, type Placement} from '@floating-ui
 import styles from './Popover.module.css';
 
 
-type Position = { top: number; left: number } | null;
+type Position = { top: number; left: number; width?: number } | null;
 
 interface PopoverProps {
     isOpen: boolean;
@@ -13,6 +13,7 @@ interface PopoverProps {
     children: ReactNode;
     className?: string;
     placement?: Placement;
+    matchWidth?: boolean;
 }
 
 export const Popover = (
@@ -22,7 +23,8 @@ export const Popover = (
         anchorRef,
         children,
         className,
-        placement = 'bottom-end'
+        placement = 'bottom-end',
+        matchWidth = false,
     }: PopoverProps) => {
 
     const popoverRef = useRef<HTMLDivElement>(null);
@@ -42,7 +44,10 @@ export const Popover = (
             strategy: 'fixed',
             placement,
             middleware: [offset(8), flip(), shift({padding: 8})]
-        }).then(({x, y}) => setPosition({top: y, left: x}));
+        }).then(({x, y}) => {
+            const width = matchWidth ? anchor.getBoundingClientRect().width : undefined;
+            setPosition({top: y, left: x, width});
+        });
     }, [isOpen, anchorRef, placement]);
 
     useEffect(() => {
@@ -82,7 +87,12 @@ export const Popover = (
             className={popoverStyles}
             style={
                 position ?
-                    {top: position.top, left: position.left, visibility: 'visible'}
+                    {
+                        top: position.top,
+                        left: position.left,
+                        width: position.width,
+                        visibility: 'visible'
+                    }
                     :
                     {top: 0, left: 0, visibility: 'hidden'}
             }

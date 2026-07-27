@@ -25,10 +25,7 @@ export const WishlistPage = () => {
                 <ContentContainer>
                     <PageLabel className={styles.pageLabel} title={"Избранное"} quantity={totalQuantity}/>
 
-                    <SortDropdown
-                        currentSortOptionId={filters.sortOrder}
-                        onSelect={(sortOrder) => setFilters(f => ({...f, sortOrder}))}
-                    />
+                    <SortDropdown onSelect={(sortOrder) => setFilters(f => ({...f, sortOrder}))}/>
 
                     <InfiniteScroll hasMore={hasMore} onLoadMore={loadMore}>
                         <ProductGrid products={items}/>
