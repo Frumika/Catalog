@@ -14,6 +14,7 @@ using Backend.Domain.Interfaces;
 using Backend.Domain.Settings;
 using Backend.Infrastructure.Services.Background;
 using Backend.Infrastructure.Services.Notifications;
+using Backend.Infrastructure.Services.Payment;
 using Backend.Infrastructure.Services.Storage;
 using Backend.Infrastructure.Services.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -104,6 +105,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped<TokenCleanupService>();
         services.AddScoped<ReviewService>();
         services.AddScoped<PickupPointService>();
+        services.AddScoped<IPaymentService, StubPaymentService>();
 
         services.AddHostedService<OrdersCleanupBackgroundService>();
         services.AddHostedService<TokenCleanupBackgroundService>();

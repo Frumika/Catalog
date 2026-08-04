@@ -21,3 +21,8 @@ public record InvalidVerifyCode : Conflict
 {
     public override string Code => "invalid_verify_code";
 }
+
+public record LimitExceeded : Conflict
+{
+    public override string Code => "limit_exceeded";
+}

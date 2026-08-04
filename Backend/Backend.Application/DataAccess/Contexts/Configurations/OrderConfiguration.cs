@@ -7,7 +7,7 @@ namespace Backend.Application.DataAccess.Contexts.Configurations;
 public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     private const string MoneyType = "numeric(10,2)";
-    
+
     public void Configure(EntityTypeBuilder<Order> entity)
     {
         entity.ToTable("orders");
@@ -27,6 +27,10 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnName("created_at")
             .IsRequired();
 
+        entity.Property(o => o.DeliveryDate)
+            .HasColumnName("delivery_date")
+            .IsRequired();
+
         entity.Property(o => o.DeletionTime)
             .HasColumnName("deletion_time")
             .IsRequired();
@@ -38,9 +42,18 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasColumnName("user_id")
             .IsRequired();
 
+        entity.Property(o => o.PickupPointId)
+            .HasColumnName("pickup_point_id")
+            .IsRequired();
+
         entity.HasOne(o => o.User)
             .WithMany(o => o.Orders)
             .HasForeignKey(o => o.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        entity.HasOne(o => o.PickupPoint)
+            .WithMany(pp => pp.Orders)
+            .HasForeignKey(o => o.PickupPointId)
             .OnDelete(DeleteBehavior.Cascade);
 
         entity.HasIndex(o => o.UserId);

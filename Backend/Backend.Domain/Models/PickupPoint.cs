@@ -12,4 +12,5 @@ public class PickupPoint
     public DateTime AddedAt { get; set; }
 
     public ICollection<UserPickupPoint> UserPickupPoints { get; set; } = new List<UserPickupPoint>();
+    public ICollection<Order> Orders { get; set; } = new List<Order>();
 }
