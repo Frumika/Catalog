@@ -22,23 +22,32 @@ public class OrderController : ControllerBase
     [HttpPost("make")]
     public async Task<IActionResult> MakeOrder([FromBody] MakeOrderRequest request)
     {
-        var response = await _orderService.MakeOrderAsync(request);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _orderService.MakeOrderAsync((int)userId, request);
         return response.ToHttpResponse();
     }
 
     [Authorize]
-    [HttpPost("pay")]
-    public async Task<IActionResult> PayOrder([FromBody] PayOrderRequest request)
+    [HttpPost("pay/{orderId:int}")]
+    public async Task<IActionResult> PayOrder([FromRoute] int orderId)
     {
-        var response = await _orderService.PayOrderAsync(request);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _orderService.PayOrderAsync((int)userId, orderId);
         return response.ToHttpResponse();
     }
 
     [Authorize]
-    [HttpDelete("cancel")]
-    public async Task<IActionResult> CancelOrder([FromBody] CancelOrderRequest request)
+    [HttpDelete("cancel/{orderId:int}")]
+    public async Task<IActionResult> CancelOrder([FromRoute] int orderId)
     {
-        var response = await _orderService.CancelOrderAsync(request);
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _orderService.CancelOrderAsync((int)userId, orderId);
         return response.ToHttpResponse();
     }
 }

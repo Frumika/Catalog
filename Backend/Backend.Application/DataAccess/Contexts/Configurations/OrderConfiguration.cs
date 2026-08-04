@@ -23,11 +23,6 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasMaxLength(20)
             .IsRequired();
 
-        entity.Property(o => o.TotalPrice)
-            .HasColumnName("total_price")
-            .HasColumnType(MoneyType)
-            .IsRequired();
-
         entity.Property(o => o.CreatedAt)
             .HasColumnName("created_at")
             .IsRequired();

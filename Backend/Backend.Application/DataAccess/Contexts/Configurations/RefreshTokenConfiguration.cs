@@ -36,22 +36,12 @@ public class RefreshTokenConfiguration : IEntityTypeConfiguration<RefreshToken>
             .HasColumnName("user_id")
             .IsRequired();
 
-        entity.Property(us => us.OrderId)
-            .HasColumnName("order_id")
-            .HasDefaultValue(null);
-
         entity.HasOne(us => us.User)
             .WithMany(u => u.RefreshTokens)
             .HasForeignKey(us => us.UserId)
             .OnDelete(DeleteBehavior.Cascade);
-
-        entity.HasOne(us => us.PendingOrder)
-            .WithOne(o => o.RefreshToken)
-            .HasForeignKey<RefreshToken>(us => us.OrderId)
-            .OnDelete(DeleteBehavior.SetNull);
-
+        
         entity.HasIndex(us => us.UserId);
-        entity.HasIndex(us => us.OrderId).IsUnique();
         entity.HasIndex(us => us.Token);
     }
 }

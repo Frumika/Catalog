@@ -13,9 +13,9 @@ public class MainDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Seller> Sellers => Set<Seller>();
     public DbSet<Order> Orders => Set<Order>();
-    public DbSet<OrderedProduct> OrderedProducts => Set<OrderedProduct>();
+    public DbSet<OrderPosition> OrderedProducts => Set<OrderPosition>();
     public DbSet<Cart> Carts => Set<Cart>();
-    public DbSet<CartItem> CartItems => Set<CartItem>();
+    public DbSet<CartPosition> CartPositions => Set<CartPosition>();
     public DbSet<Wishlist> Wishlists => Set<Wishlist>();
     public DbSet<WishedProduct> WishedProducts => Set<WishedProduct>();
     public DbSet<PickupPoint> PickupPoints => Set<PickupPoint>();

@@ -29,7 +29,7 @@ public class CartService
                 .Select(c => c.Id)
                 .FirstAsync();
 
-            List<CartPositionDto> cartPositions = await _dbContext.CartItems
+            List<CartPositionDto> cartPositions = await _dbContext.CartPositions
                 .AsNoTracking()
                 .Where(ci => ci.CartId == cartId)
                 .OrderBy(ci => ci.AddedAt)
@@ -63,7 +63,7 @@ public class CartService
                 .Select(c => c.Id)
                 .FirstAsync();
 
-            List<CartPositionExtendedDto> cartItems = await _dbContext.CartItems
+            List<CartPositionExtendedDto> cartItems = await _dbContext.CartPositions
                 .AsNoTracking()
                 .Where(ci => ci.CartId == cartId)
                 .OrderBy(ci => ci.AddedAt)
@@ -120,12 +120,12 @@ public class CartService
             if (productId is null)
                 return Response.Fail(new ProductNotFound(), "The product wasn't found");
 
-            CartItem? cartItem = await _dbContext.CartItems
+            CartPosition? cartItem = await _dbContext.CartPositions
                 .Where(ci => ci.CartId == cartId && ci.ProductId == request.ProductId)
                 .FirstOrDefaultAsync();
             if (cartItem is null)
             {
-                cartItem = new CartItem
+                cartItem = new CartPosition
                 {
                     CartId = cartId,
                     ProductId = request.ProductId,
@@ -133,7 +133,7 @@ public class CartService
                     AddedAt = DateTime.UtcNow
                 };
 
-                _dbContext.CartItems.Add(cartItem);
+                _dbContext.CartPositions.Add(cartItem);
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -166,7 +166,7 @@ public class CartService
             .Select(c => c.Id)
             .FirstAsync();
 
-        CartItem? cartItem = await _dbContext.CartItems
+        CartPosition? cartItem = await _dbContext.CartPositions
             .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
         if (cartItem is null)
             return Response.Fail(new ProductNotFound(), "The product in the cart wasn't found");
@@ -200,11 +200,11 @@ public class CartService
                 .Select(c => c.Id)
                 .FirstAsync();
 
-            CartItem? cartItem = await _dbContext.CartItems
+            CartPosition? cartItem = await _dbContext.CartPositions
                 .FirstOrDefaultAsync(ci => ci.CartId == cartId && ci.ProductId == request.ProductId);
             if (cartItem is not null)
             {
-                _dbContext.CartItems.Remove(cartItem);
+                _dbContext.CartPositions.Remove(cartItem);
                 await _dbContext.SaveChangesAsync();
             }
 
@@ -232,7 +232,7 @@ public class CartService
                 .Select(c => c.Id)
                 .FirstOrDefaultAsync();
 
-            await _dbContext.CartItems
+            await _dbContext.CartPositions
                 .Where(ci => ci.CartId == cartId)
                 .ExecuteDeleteAsync();
 

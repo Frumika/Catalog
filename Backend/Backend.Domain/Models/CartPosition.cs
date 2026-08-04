@@ -1,6 +1,6 @@
 ﻿namespace Backend.Domain.Models;
 
-public class CartItem
+public class CartPosition
 {
     public int CartId { get; set; }
     public int ProductId { get; set; }

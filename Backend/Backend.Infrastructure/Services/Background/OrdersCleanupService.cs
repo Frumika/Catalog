@@ -54,7 +54,7 @@ public class OrdersCleanupService
                 return;
             }
 
-            foreach (OrderedProduct orderedProduct in order.OrderedProducts)
+            foreach (OrderPosition orderedProduct in order.OrderedProducts)
             {
                 orderedProduct.Product.Quantity += orderedProduct.Quantity;
             }

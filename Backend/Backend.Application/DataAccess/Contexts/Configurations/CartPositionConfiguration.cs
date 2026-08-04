@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Backend.Application.DataAccess.Contexts.Configurations;
 
-public class CartItemConfiguration : IEntityTypeConfiguration<CartItem>
+public class CartPositionConfiguration : IEntityTypeConfiguration<CartPosition>
 {
-    public void Configure(EntityTypeBuilder<CartItem> entity)
+    public void Configure(EntityTypeBuilder<CartPosition> entity)
     {
-        entity.ToTable("cart_items");
+        entity.ToTable("cart_positions");
 
         entity.HasKey(ci => new { ci.CartId, ci.ProductId });
 

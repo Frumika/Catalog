@@ -3,17 +3,20 @@ using System;
 using Backend.Application.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Backend.DataAccess.Postgres.Migrations
+namespace Backend.Application.DataAccess.Migrations
 {
     [DbContext(typeof(MainDbContext))]
-    partial class MainDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260730140353_RemoveRelation")]
+    partial class RemoveRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,7 +46,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.ToTable("carts", (string)null);
                 });
 
-            modelBuilder.Entity("Backend.Domain.Models.CartPosition", b =>
+            modelBuilder.Entity("Backend.Domain.Models.CartItem", b =>
                 {
                     b.Property<int>("CartId")
                         .HasColumnType("integer")
@@ -67,7 +70,7 @@ namespace Backend.DataAccess.Postgres.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("cart_positions", (string)null);
+                    b.ToTable("cart_items", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Domain.Models.Category", b =>
@@ -114,17 +117,26 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("paid_at");
 
+                    b.Property<int?>("RefreshTokenId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(20)
                         .HasColumnType("character varying(20)")
                         .HasColumnName("status");
 
+                    b.Property<decimal>("TotalPrice")
+                        .HasColumnType("numeric(10,2)")
+                        .HasColumnName("total_price");
+
                     b.Property<int>("UserId")
                         .HasColumnType("integer")
                         .HasColumnName("user_id");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RefreshTokenId");
 
                     b.HasIndex("Status");
 
@@ -133,7 +145,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.ToTable("orders", (string)null);
                 });
 
-            modelBuilder.Entity("Backend.Domain.Models.OrderPosition", b =>
+            modelBuilder.Entity("Backend.Domain.Models.OrderedProduct", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("integer")
@@ -143,15 +155,9 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("product_id");
 
-                    b.Property<byte>("DiscountPercent")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("smallint")
-                        .HasDefaultValue((byte)0)
-                        .HasColumnName("discount_percent");
-
-                    b.Property<decimal>("Price")
+                    b.Property<decimal>("ProductPrice")
                         .HasColumnType("numeric(10,2)")
-                        .HasColumnName("price");
+                        .HasColumnName("product_price");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("integer")
@@ -163,7 +169,7 @@ namespace Backend.DataAccess.Postgres.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("order_positions", (string)null);
+                    b.ToTable("ordered_products", (string)null);
                 });
 
             modelBuilder.Entity("Backend.Domain.Models.PickupPoint", b =>
@@ -531,7 +537,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Backend.Domain.Models.CartPosition", b =>
+            modelBuilder.Entity("Backend.Domain.Models.CartItem", b =>
                 {
                     b.HasOne("Backend.Domain.Models.Cart", "Cart")
                         .WithMany("CartItems")
@@ -552,16 +558,22 @@ namespace Backend.DataAccess.Postgres.Migrations
 
             modelBuilder.Entity("Backend.Domain.Models.Order", b =>
                 {
+                    b.HasOne("Backend.Domain.Models.RefreshToken", "RefreshToken")
+                        .WithMany()
+                        .HasForeignKey("RefreshTokenId");
+
                     b.HasOne("Backend.Domain.Models.User", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("RefreshToken");
+
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Backend.Domain.Models.OrderPosition", b =>
+            modelBuilder.Entity("Backend.Domain.Models.OrderedProduct", b =>
                 {
                     b.HasOne("Backend.Domain.Models.Order", "Order")
                         .WithMany("OrderedProducts")
@@ -570,7 +582,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                         .IsRequired();
 
                     b.HasOne("Backend.Domain.Models.Product", "Product")
-                        .WithMany("OrderPositions")
+                        .WithMany("OrderedProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -713,7 +725,7 @@ namespace Backend.DataAccess.Postgres.Migrations
                 {
                     b.Navigation("CartItems");
 
-                    b.Navigation("OrderPositions");
+                    b.Navigation("OrderedProducts");
 
                     b.Navigation("ProductImages");
 

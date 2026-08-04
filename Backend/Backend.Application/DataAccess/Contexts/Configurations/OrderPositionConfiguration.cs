@@ -4,21 +4,26 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Backend.Application.DataAccess.Contexts.Configurations;
 
-public class OrderedProductConfiguration : IEntityTypeConfiguration<OrderedProduct>
+public class OrderPositionConfiguration : IEntityTypeConfiguration<OrderPosition>
 {
     private const string MoneyType = "numeric(10,2)";
 
-    public void Configure(EntityTypeBuilder<OrderedProduct> entity)
+    public void Configure(EntityTypeBuilder<OrderPosition> entity)
     {
-        entity.ToTable("ordered_products");
+        entity.ToTable("order_positions");
 
         entity.HasKey(o => new { o.OrderId, o.ProductId });
 
-        entity.Property(o => o.ProductPrice)
-            .HasColumnName("product_price")
+        entity.Property(o => o.Price)
+            .HasColumnName("price")
             .HasColumnType(MoneyType)
             .IsRequired();
-
+        
+        entity.Property(op => op.DiscountPercent)
+            .HasColumnName("discount_percent")
+            .HasDefaultValue(0)
+            .IsRequired();
+        
         entity.Property(o => o.Quantity)
             .HasColumnName("quantity")
             .IsRequired();
@@ -37,7 +42,7 @@ public class OrderedProductConfiguration : IEntityTypeConfiguration<OrderedProdu
             .OnDelete(DeleteBehavior.Cascade);
 
         entity.HasOne(o => o.Product)
-            .WithMany(o => o.OrderedProducts)
+            .WithMany(o => o.OrderPositions)
             .HasForeignKey(o => o.ProductId)
             .OnDelete(DeleteBehavior.Cascade);
 

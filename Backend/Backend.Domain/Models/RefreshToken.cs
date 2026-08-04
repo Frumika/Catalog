@@ -9,8 +9,5 @@ public class RefreshToken
     public bool IsRevoked { get; set; }
 
     public int UserId { get; set; }
-    public int? OrderId { get; set; }
-
     public User User { get; set; } = null!;
-    public Order? PendingOrder { get; set; }
 }

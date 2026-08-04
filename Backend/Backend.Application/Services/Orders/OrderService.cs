@@ -1,5 +1,4 @@
 ﻿using Backend.Application.Common;
-using Backend.Application.Common.Base;
 using Backend.Application.Common.Statuses;
 using Backend.Application.DataAccess.Contexts;
 using Backend.Application.Services.Orders.Dtos;
@@ -8,6 +7,7 @@ using Backend.Domain.Models;
 using Backend.Domain.Settings;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+
 
 namespace Backend.Application.Services.Orders;
 
@@ -22,51 +22,37 @@ public class OrderService
         _dbContext = dbContext;
     }
 
-    public async Task<Response> MakeOrderAsync(MakeOrderRequest request)
+    public async Task<Response> MakeOrderAsync(int userId, MakeOrderRequest request)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
+        if (request.ProductIds.Count == 0)
+            return Response.Fail(new BadRequest(), "No products specified for ordering");
 
-        RefreshToken? refreshToken;
-        try
-        {
-            refreshToken = await _dbContext.RefreshTokens
-                .Where(us => us.Token == request.RefreshToken)
-                .FirstOrDefaultAsync();
-
-            if (refreshToken is null)
-                return Response.Fail(new UserNotFound(), "The user session wasn't found");
-
-            if (refreshToken.OrderId is not null) await CancelOrderAsync(refreshToken.OrderId.Value);
-        }
-        catch (Exception)
-        {
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
+        List<int> requestedProductIds = request.ProductIds.Distinct().ToList();
 
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            List<OrderedProduct> orderedProducts = new();
-            List<OrderItemDto> orderItems = new();
-
             int cartId = await _dbContext.Carts
                 .AsNoTracking()
-                .Where(c => c.UserId == refreshToken.UserId)
+                .Where(c => c.UserId == userId)
                 .Select(c => c.Id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
 
-            List<CartItem> cartItems = await _dbContext.CartItems
-                .Where(ci => ci.CartId == cartId)
+            List<CartPosition> cartItems = await _dbContext.CartPositions
+                .Where(ci => ci.CartId == cartId && requestedProductIds.Contains(ci.ProductId))
                 .OrderBy(ci => ci.AddedAt)
                 .Include(ci => ci.Product)
+                .ThenInclude(p => p.ProductImages)
                 .ToListAsync();
-            if (cartItems.Count == 0)
-                throw new ServiceException(new CartNotFound(), "The cart is empty");
 
-            decimal totalPrice = 0m;
-            foreach (CartItem cartItem in cartItems)
+            if (cartItems.Count < requestedProductIds.Count)
+                return Response.Fail(new BadRequest(), "One or more requested products are not in the cart");
+
+
+            List<OrderPosition> orderedPositions = new();
+            List<OrderPositionDto> orderPositionDtos = new();
+
+            foreach (CartPosition cartItem in cartItems)
             {
                 Product product = cartItem.Product;
 
@@ -77,33 +63,48 @@ public class OrderService
                     );
 
                 product.Quantity -= cartItem.Quantity;
-                totalPrice += product.Price * cartItem.Quantity;
 
-                OrderedProduct orderedProduct = new(product, cartItem.Quantity);
-                OrderItemDto orderItemDto = new(product, cartItem.Quantity);
+                OrderPosition orderPosition = new()
+                {
+                    ProductId = product.Id,
+                    Quantity = cartItem.Quantity,
+                    DiscountPercent = product.DiscountPercent,
+                    Price = product.Price,
+                };
 
-                orderedProducts.Add(orderedProduct);
-                orderItems.Add(orderItemDto);
+                OrderPositionDto orderPositionDto = new()
+                {
+                    ProductId = product.Id,
+                    ProductName = product.Name,
+                    Quantity = cartItem.Quantity,
+                    Price = (int)Math.Round(product.Price, 0),
+                    DiscountPercent = product.DiscountPercent,
+                    DiscountedPrice = (int)Math.Round(product.Price * (100 - product.DiscountPercent) / 100m, 0),
+                    ImageUrl = product.ProductImages
+                        .OrderBy(pi => pi.Position)
+                        .Select(pi => pi.Path)
+                        .FirstOrDefault()
+                };
+
+                orderedPositions.Add(orderPosition);
+                orderPositionDtos.Add(orderPositionDto);
             }
 
             DateTime createdAt = DateTime.UtcNow;
             Order order = new()
             {
                 Status = OrderStatus.Pending,
-                TotalPrice = totalPrice,
                 CreatedAt = createdAt,
                 DeletionTime = createdAt + _settings.Lifetime,
-                UserId = refreshToken.UserId,
-                OrderedProducts = orderedProducts
+                UserId = userId,
+                OrderedProducts = orderedPositions
             };
-
-            refreshToken.PendingOrder = order;
 
             await _dbContext.Orders.AddAsync(order);
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return Response.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
+            return Response.Success(orderPositionDtos);
         }
         catch (ServiceException e)
         {
@@ -118,52 +119,23 @@ public class OrderService
     }
 
 
-    public async Task<Response> PayOrderAsync(PayOrderRequest request)
+    public async Task<Response> PayOrderAsync(int userId, int orderId)
     {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
-        RefreshToken? refreshToken;
-        try
-        {
-            refreshToken = await _dbContext.RefreshTokens
-                .Where(us => us.Token == request.RefreshToken)
-                .Include(us => us.PendingOrder)
-                .FirstOrDefaultAsync();
-            if (refreshToken is null)
-                return Response.Fail(new TokenNotFound(), "The user session wasn't found");
-
-            if (refreshToken.PendingOrder is null)
-                return Response.Fail(new OrderNotFound(), "Order wasn't found");
-        }
-        catch (Exception)
-        {
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
-
         await using var transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
-            Order pendingOrder = refreshToken.PendingOrder;
+            Order? pendingOrder = await _dbContext.Orders
+                .Where(o => o.Id == orderId && o.UserId == userId && o.Status == OrderStatus.Pending)
+                .FirstOrDefaultAsync();
+
+            if (pendingOrder is null)
+                return Response.Fail(new OrderNotFound(), "Pending Order doesn't exist");
 
             pendingOrder.Status = OrderStatus.Paid;
             pendingOrder.PaidAt = DateTime.UtcNow;
 
-            refreshToken.PendingOrder = null;
-
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
-
-            int? cartId = await _dbContext.Carts
-                .AsNoTracking()
-                .Where(c => c.UserId == refreshToken.UserId)
-                .Select(c => (int?)c.Id)
-                .FirstOrDefaultAsync();
-
-            await _dbContext.CartItems
-                .Where(ci => ci.Cart.Id == cartId)
-                .ExecuteDeleteAsync();
 
             return Response.Success("The payment was successful");
         }
@@ -180,41 +152,16 @@ public class OrderService
     }
 
 
-    public async Task<Response> CancelOrderAsync(CancelOrderRequest request)
-    {
-        ValidationResult result = request.Validate();
-        if (!result.IsValid)
-            return Response.Fail(new BadRequest(), result.Message);
-
-        try
-        {
-            RefreshToken? refreshToken = await _dbContext.RefreshTokens
-                .AsNoTracking()
-                .Where(us => us.Token == request.RefreshToken)
-                .FirstOrDefaultAsync();
-            if (refreshToken is null)
-                return Response.Fail(new TokenNotFound(), "User session wasn't found");
-
-            return refreshToken.OrderId is null
-                ? Response.Success("The order was canceled")
-                : await CancelOrderAsync(refreshToken.OrderId.Value);
-        }
-        catch (Exception)
-        {
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
-    }
-
-
-    private async Task<Response> CancelOrderAsync(int orderId)
+    public async Task<Response> CancelOrderAsync(int userId, int orderId)
     {
         await using IDbContextTransaction transaction = await _dbContext.Database.BeginTransactionAsync();
         try
         {
             Order? order = await _dbContext.Orders
+                .Where(o => o.Id == orderId && o.UserId == userId && o.Status == OrderStatus.Pending)
                 .Include(o => o.OrderedProducts)
                 .ThenInclude(op => op.Product)
-                .FirstOrDefaultAsync(o => o.Id == orderId);
+                .FirstOrDefaultAsync();
 
             if (order is null)
                 return Response.Success("The order doesn't exist");
@@ -223,7 +170,7 @@ public class OrderService
                 throw new ServiceException(new InvalidOrderStatus(), "The order has already been paid");
 
 
-            foreach (OrderedProduct orderedProduct in order.OrderedProducts)
+            foreach (OrderPosition orderedProduct in order.OrderedProducts)
             {
                 orderedProduct.Product.Quantity += orderedProduct.Quantity;
             }
@@ -250,36 +197,38 @@ public class OrderService
 
     private async Task<Response> GetPendingOrderAsync(string refreshToken)
     {
-        try
-        {
-            int? orderId = await _dbContext.RefreshTokens
-                .Where(us => us.Token == refreshToken)
-                .Select(us => us.OrderId)
-                .FirstOrDefaultAsync();
-            if (orderId is null)
-                return Response.Fail(new OrderNotFound(), "The order wasn't found");
+        // try
+        // {
+        //     int? orderId = await _dbContext.RefreshTokens
+        //         .Where(us => us.Token == refreshToken)
+        //         .Select(us => us.OrderId)
+        //         .FirstOrDefaultAsync();
+        //     if (orderId is null)
+        //         return Response.Fail(new OrderNotFound(), "The order wasn't found");
+        //
+        //     var orderItems = await _dbContext.OrderedProducts
+        //         .AsNoTracking()
+        //         .Where(op => op.OrderId == orderId)
+        //         .Select(op => new OrderItemDto
+        //         {
+        //             Id = op.ProductId,
+        //             Name = op.Product.Name,
+        //             Quantity = op.Quantity,
+        //             Price = op.ProductPrice
+        //         })
+        //         .ToListAsync();
+        //
+        //     decimal totalPrice = 0m;
+        //     foreach (var orderItem in orderItems)
+        //         totalPrice += orderItem.TotalPrice;
+        //
+        //     return Response.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
+        // }
+        // catch (Exception)
+        // {
+        //     return Response.Fail(new UnknownError(), "Internal server error");
+        // }
 
-            var orderItems = await _dbContext.OrderedProducts
-                .AsNoTracking()
-                .Where(op => op.OrderId == orderId)
-                .Select(op => new OrderItemDto
-                {
-                    Id = op.ProductId,
-                    Name = op.Product.Name,
-                    Quantity = op.Quantity,
-                    Price = op.ProductPrice
-                })
-                .ToListAsync();
-
-            decimal totalPrice = 0m;
-            foreach (var orderItem in orderItems)
-                totalPrice += orderItem.TotalPrice;
-
-            return Response.Success(new OrderDto { OrderItems = orderItems, TotalPrice = totalPrice });
-        }
-        catch (Exception)
-        {
-            return Response.Fail(new UnknownError(), "Internal server error");
-        }
+        return Response.Success();
     }
 }
