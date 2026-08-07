@@ -1,6 +1,4 @@
 :root {
-
-
     --bgMain: #ffffff;
     --bgPrimary: #f5f7fa;
     --bgPrimaryDark: #ebeef2;
@@ -9,8 +7,7 @@
     --bgAccentSecondary: rgba(255, 145, 175, 0.1);
     --bgAccentSecondaryDark: rgba(255, 145, 175, 0.2);
 
-    --colorMain: #ffffff;
-
+    --graphicMain: #ffffff;
     --graphicPrimary: #005bff;
     --graphicPrimaryDark: #0050E0;
     --graphicSecondary: #ebf7ff;
@@ -19,6 +16,7 @@
     --graphicTertiary: rgba(0, 26, 52, 0.4);
     --graphicTertiaryDark: rgba(0, 26, 51, 0.6);
     --graphicNeutral: rgba(204, 214, 228, 0.6);
+    --graphicNeutralDark: rgba(204, 212, 228, 0.8);
     --graphicNeutralLight: rgba(204, 214, 228, 0.2);
     --graphicNeutralLightBlue: rgba(55, 175, 255, 0.1);
     --graphicQuarter: #b3bcc5;

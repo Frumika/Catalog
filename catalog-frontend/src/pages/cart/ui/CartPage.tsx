@@ -7,6 +7,7 @@ import {useExtendedCartPositions, useCartTotalQuantity} from "@/entities/cart";
 import {CartSummary} from "@/widgets/cart-summary";
 import {useIsAuthenticated} from "@/entities/session";
 import {PageLabel} from "@/shared/ui/page-label";
+import {useCartSelection} from "@/pages/cart/model/useCartSelection.ts";
 
 
 export const CartPage = () => {
@@ -14,6 +15,11 @@ export const CartPage = () => {
     const isAuthenticated = useIsAuthenticated();
     const totalQuantity = useCartTotalQuantity();
     const {cartPositions} = useExtendedCartPositions(isAuthenticated);
+    const {
+        selectedPositions,
+        isPositionsSelected,
+        togglePosition
+    } = useCartSelection(cartPositions);
 
     return (
         <>
@@ -25,8 +31,12 @@ export const CartPage = () => {
                     <PageLabel className={styles.pageLabel} title={"Корзина"} quantity={totalQuantity}/>
 
                     <div className={styles.sectionSpacer}>
-                        <CartList cartPositions={cartPositions}/>
-                        <CartSummary cartPositions={cartPositions} totalQuantity={totalQuantity}/>
+                        <CartList
+                            cartPositions={cartPositions}
+                            isSelected={isPositionsSelected}
+                            onTogglePosition={togglePosition}
+                        />
+                        <CartSummary cartPositions={selectedPositions} totalQuantity={totalQuantity}/>
                     </div>
 
                 </ContentContainer>

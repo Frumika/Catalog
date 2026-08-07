@@ -31,6 +31,11 @@
     object-fit: cover;
 }
 
+.checkbox {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+}
 
 .contentWrapper {
     display: flex;

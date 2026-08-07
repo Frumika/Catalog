@@ -7,11 +7,14 @@ import {formatPrice} from "@/shared/lib";
 import {QuantityButton} from "@/shared/ui/quantity-button";
 import {Button} from "@/shared/ui/button";
 import {type ReactNode, useMemo} from "react";
+import {Checkbox} from "@/shared/ui/checkbox";
 
 
 interface CartPositionCard {
     cartPosition: CartPosition;
+    isSelected?: boolean;
     onClick?: () => void;
+    onTogglePosition?: (cartPosition: CartPosition) => void;
     wishButtonSlot?: ReactNode;
     className?: string;
 }
@@ -19,7 +22,9 @@ interface CartPositionCard {
 export const CartPositionCard = (
     {
         cartPosition,
+        isSelected = false,
         onClick,
+        onTogglePosition,
         wishButtonSlot,
         className,
 
@@ -50,6 +55,12 @@ export const CartPositionCard = (
                         src={cartPosition.imageUrl}
                         alt={""}
                     />
+
+                    <Checkbox
+                        className={styles.checkbox}
+                        selected={isSelected}
+                        onChange={() => onTogglePosition?.(cartPosition)}/>
+
                 </div>
 
 
