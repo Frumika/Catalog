@@ -1,22 +1,21 @@
 import {formatPrice} from "@/shared/lib";
 import styles from "./CartSummary.module.css";
-import {useCartTotals, type CartPosition} from "@/entities/cart";
+import {useCartTotals} from "@/entities/cart";
 import {Button} from "@/shared/ui/button";
-
+import {useCartSelectionContext} from "@/features/cart-selection";
 
 
 interface CartSummaryProps {
-    cartPositions: CartPosition[];
     totalQuantity: number;
 }
 
 export const CartSummary = (
     {
-        cartPositions,
         totalQuantity,
-    } : CartSummaryProps
+    }: CartSummaryProps
 ) => {
-    const {totalBasePrice, totalDiscountAmount, totalDiscountedPrice} = useCartTotals(cartPositions);
+    const {selectedPositions} = useCartSelectionContext();
+    const {totalBasePrice, totalDiscountAmount, totalDiscountedPrice} = useCartTotals(selectedPositions);
 
     return (
         <section className={styles.cartSummary}>

@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import type {CartPosition} from "@/entities/cart";
-import {selectionStorage} from "@/pages/cart/model/selectionStorage.ts";
+import {selectionStorage} from "@/features/cart-selection/model/selectionStorage.ts";
 
 
 export const useCartSelection = (cartPositions: CartPosition[]) => {
@@ -52,7 +52,7 @@ export const useCartSelection = (cartPositions: CartPosition[]) => {
 
     return {
         selectedPositions,
-        isPositionsSelected,
+        isSelected: isPositionsSelected,
         togglePosition,
         toggleAll,
         isAllSelected,
