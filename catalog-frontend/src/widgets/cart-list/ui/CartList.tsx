@@ -17,7 +17,7 @@ export const CartList = (
     }: CartListProps
 ) => {
     const {clearCart} = useCartActions();
-    const {isAllSelected, toggleAll, isSelected, togglePosition} = useCartSelectionContext();
+    const {isAllSelected, toggleAll, togglePosition, isSelected} = useCartSelectionContext();
 
     return (
         <section className={styles.cartList}>

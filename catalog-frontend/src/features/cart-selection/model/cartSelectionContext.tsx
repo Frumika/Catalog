@@ -28,5 +28,9 @@ export const CartSelectionProvider = (
 };
 
 export const useCartSelectionContext = () => {
-    return useContext(CartSelectionContext);
+    const context = useContext(CartSelectionContext);
+    if (!context) {
+        throw new Error('useCartSelectionContext must be used within CartSelectionProvider');
+    }
+    return context;
 };
