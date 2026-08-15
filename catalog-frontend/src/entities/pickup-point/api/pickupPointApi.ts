@@ -16,7 +16,7 @@ export const pickupPointApi = {
         return response.data;
     },
 
-    select: async (id: string): Promise<PickupPoint> => {
+    select: async (id: number): Promise<PickupPoint> => {
         let response = await apiClient
             .patch<PickupPoint>(`${ENDPOINT}/select/`, {pickupPointId: id});
 
@@ -27,7 +27,7 @@ export const pickupPointApi = {
         return response.data;
     },
 
-    remove: async (id: string): Promise<void> => {
+    remove: async (id: number): Promise<void> => {
         let response = await apiClient
             .delete<void>(`${ENDPOINT}/remove/${id}`);
 

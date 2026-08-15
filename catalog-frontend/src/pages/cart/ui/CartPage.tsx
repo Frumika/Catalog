@@ -28,7 +28,7 @@ export const CartPage = () => {
                     <CartSelectionProvider cartPositions={cartPositions}>
                         <div className={styles.sectionSpacer}>
                             <CartList cartPositions={cartPositions}/>
-                            <CartSummary totalQuantity={totalQuantity}/>
+                            <CartSummary/>
                         </div>
                     </CartSelectionProvider>
 

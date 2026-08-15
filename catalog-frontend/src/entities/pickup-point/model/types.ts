@@ -1,5 +1,5 @@
 export interface PickupPoint {
-    id: string;
+    id: number;
     address: string;
     shelfLifetime: number;
     selectedAt: string;

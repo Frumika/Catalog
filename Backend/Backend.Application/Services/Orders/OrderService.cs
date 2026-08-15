@@ -25,6 +25,38 @@ public class OrderService
         _paymentService = paymentService;
     }
 
+    public async Task<Response> GetByIdAsync(int userId, int orderId)
+    {
+        try
+        {
+            Order? order = await _dbContext.Orders
+                .AsNoTracking()
+                .Where(order => order.UserId == userId && order.Id == orderId)
+                .FirstOrDefaultAsync();
+
+            if (order is null)
+                return Response.Fail(new OrderNotFound(), "Order doesn't exist");
+
+            List<OrderPositionDto> orderPositions = await GetOrderPositions(orderId);
+
+            return Response.Success(
+                new ExtendedOrderDto
+                {
+                    OrderId = orderId,
+                    CreatedAt = order.CreatedAt,
+                    DeliveryDate = order.DeliveryDate,
+                    Status = order.Status.ToString(),
+                    PaidAt = order.PaidAt,
+                    OrderPositions = orderPositions
+                }
+            );
+        }
+        catch (Exception)
+        {
+            return Response.Fail(new UnknownError(), "Internal server error");
+        }
+    }
+
     public async Task<Response> MakeOrderAsync(int userId, MakeOrderRequest request)
     {
         if (request.ProductIds.Count == 0)
@@ -116,7 +148,7 @@ public class OrderService
                 DeletionTime = createdAt + _settings.Lifetime,
                 UserId = userId,
                 PickupPointId = request.PickupPointId,
-                OrderedProducts = orderedPositions
+                OrderPositions = orderedPositions
             };
 
             await _dbContext.Orders.AddAsync(order);
@@ -153,21 +185,21 @@ public class OrderService
         try
         {
             Order? pendingOrder = await _dbContext.Orders
-                .Include(o => o.OrderedProducts)
+                .Include(o => o.OrderPositions)
                 .Where(o => o.Id == orderId && o.UserId == userId && o.Status == OrderStatus.Pending)
                 .FirstOrDefaultAsync();
 
             if (pendingOrder is null)
                 throw new ServiceException(new OrderNotFound(), "Order doesn't exist");
-            
+
             int cartId = await _dbContext.Carts
                 .Where(c => c.UserId == userId)
                 .Select(c => c.Id)
                 .FirstOrDefaultAsync();
 
-            if (pendingOrder.OrderedProducts.Any())
+            if (pendingOrder.OrderPositions.Any())
             {
-                var orderedProductIds = pendingOrder.OrderedProducts.Select(op => op.ProductId).ToList();
+                var orderedProductIds = pendingOrder.OrderPositions.Select(op => op.ProductId).ToList();
 
                 List<CartPosition> cartPositions = await _dbContext.CartPositions
                     .Where(cp => cp.CartId == cartId && orderedProductIds.Contains(cp.ProductId))
@@ -175,10 +207,10 @@ public class OrderService
 
                 _dbContext.CartPositions.RemoveRange(cartPositions);
             }
-            
+
             pendingOrder.Status = OrderStatus.Paid;
             pendingOrder.PaidAt = DateTime.UtcNow;
-            
+
             await _paymentService.Pay(pendingOrder);
 
             await _dbContext.SaveChangesAsync();
@@ -215,7 +247,7 @@ public class OrderService
         {
             Order? order = await _dbContext.Orders
                 .Where(o => o.Id == orderId && o.UserId == userId && o.Status == OrderStatus.Pending)
-                .Include(o => o.OrderedProducts)
+                .Include(o => o.OrderPositions)
                 .ThenInclude(op => op.Product)
                 .FirstOrDefaultAsync();
 
@@ -226,7 +258,7 @@ public class OrderService
                 throw new ServiceException(new InvalidOrderStatus(), "The order has already been paid");
 
 
-            foreach (OrderPosition orderedProduct in order.OrderedProducts)
+            foreach (OrderPosition orderedProduct in order.OrderPositions)
             {
                 orderedProduct.Product.Quantity += orderedProduct.Quantity;
             }
@@ -236,7 +268,16 @@ public class OrderService
             await _dbContext.SaveChangesAsync();
             await transaction.CommitAsync();
 
-            return Response.Success("The order was canceled");
+            return Response.Success(
+                new OrderDto
+                {
+                    OrderId = orderId,
+                    CreatedAt = order.CreatedAt,
+                    DeliveryDate = order.DeliveryDate,
+                    Status = order.Status.ToString(),
+                    PaidAt = order.PaidAt,
+                }
+            );
         }
         catch (ServiceException e)
         {
@@ -287,23 +328,7 @@ public class OrderService
             if (order is null)
                 return Response.Fail(new OrderNotFound(), "The order doesn't exist");
 
-            List<OrderPositionDto> orderPositionDtos = await _dbContext.OrderedProducts
-                .AsNoTracking()
-                .Where(op => op.OrderId == orderId)
-                .Select(op => new OrderPositionDto
-                {
-                    ProductId = op.ProductId,
-                    ProductName = op.Product.Name,
-                    Quantity = op.Quantity,
-                    Price = (int)Math.Round(op.Price, 0),
-                    DiscountPercent = op.DiscountPercent,
-                    DiscountedPrice = (int)Math.Round(op.Price * (100 - op.DiscountPercent) / 100m, 0),
-                    ImageUrl = op.Product.ProductImages
-                        .OrderBy(pi => pi.Position)
-                        .Select(pi => pi.Path)
-                        .FirstOrDefault()
-                })
-                .ToListAsync();
+            List<OrderPositionDto> orderPositionDtos = await GetOrderPositions(orderId);
 
             return Response.Success(
                 new ExtendedOrderDto
@@ -319,5 +344,29 @@ public class OrderService
         {
             return Response.Fail(new UnknownError(), "Internal server error");
         }
+    }
+
+
+    private async Task<List<OrderPositionDto>> GetOrderPositions(int orderId)
+    {
+        List<OrderPositionDto> orderPositions = await _dbContext.OrderPositions
+            .AsNoTracking()
+            .Where(op => op.OrderId == orderId)
+            .Select(op => new OrderPositionDto
+            {
+                ProductId = op.ProductId,
+                ProductName = op.Product.Name,
+                Quantity = op.Quantity,
+                Price = (int)Math.Round(op.Price, 0),
+                DiscountPercent = op.DiscountPercent,
+                DiscountedPrice = (int)Math.Round(op.Price * (100 - op.DiscountPercent) / 100m, 0),
+                ImageUrl = op.Product.ProductImages
+                    .OrderBy(pi => pi.Position)
+                    .Select(pi => pi.Path)
+                    .FirstOrDefault()
+            })
+            .ToListAsync();
+
+        return orderPositions;
     }
 }

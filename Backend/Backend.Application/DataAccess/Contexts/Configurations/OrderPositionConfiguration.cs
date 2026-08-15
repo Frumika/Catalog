@@ -37,7 +37,7 @@ public class OrderPositionConfiguration : IEntityTypeConfiguration<OrderPosition
             .IsRequired();
 
         entity.HasOne(o => o.Order)
-            .WithMany(o => o.OrderedProducts)
+            .WithMany(o => o.OrderPositions)
             .HasForeignKey(o => o.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
 

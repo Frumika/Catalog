@@ -44,7 +44,7 @@ public class OrdersCleanupService
         {
             Domain.Models.Order? order = await _dbContext.Orders
                 .Where(o => o.Status == OrderStatus.Pending)
-                .Include(o => o.OrderedProducts)
+                .Include(o => o.OrderPositions)
                 .ThenInclude(op => op.Product)
                 .FirstOrDefaultAsync(o => o.Id == orderId, cancellationToken);
 
@@ -54,7 +54,7 @@ public class OrdersCleanupService
                 return;
             }
 
-            foreach (OrderPosition orderedProduct in order.OrderedProducts)
+            foreach (OrderPosition orderedProduct in order.OrderPositions)
             {
                 orderedProduct.Product.Quantity += orderedProduct.Quantity;
             }

@@ -3,19 +3,34 @@ import styles from "./CartSummary.module.css";
 import {useCartTotals} from "@/entities/cart";
 import {Button} from "@/shared/ui/button";
 import {useCartSelectionContext} from "@/features/cart-selection";
+import {useOrderActions} from "@/entities/order/model/useOrderActions.ts";
+import {useCurrentPickupPoint} from "@/entities/pickup-point";
+import {useNavigate} from "react-router-dom";
+import {useSetActiveCheckoutOrder} from "@/entities/order";
 
 
-interface CartSummaryProps {
-    totalQuantity: number;
-}
-
-export const CartSummary = (
-    {
-        totalQuantity,
-    }: CartSummaryProps
-) => {
+export const CartSummary = () => {
     const {selectedPositions} = useCartSelectionContext();
+    const goodsQuantity = selectedPositions.length;
+
     const {totalBasePrice, totalDiscountAmount, totalDiscountedPrice} = useCartTotals(selectedPositions);
+    const {makeOrder} = useOrderActions();
+    const setActiveOrder = useSetActiveCheckoutOrder();
+
+    const currentPickupPoint = useCurrentPickupPoint();
+
+    const navigate = useNavigate();
+
+
+    const handleCheckout = async () => {
+        const productIds: number[] = selectedPositions.map(cp => cp.productId);
+        const pickupPointId: number = currentPickupPoint?.id ?? 1;
+        const createdOrder = await makeOrder(productIds, pickupPointId);
+        setActiveOrder(createdOrder);
+
+        navigate('/checkout');
+    };
+
 
     return (
         <section className={styles.cartSummary}>
@@ -24,7 +39,8 @@ export const CartSummary = (
                 className={styles.checkoutButton}
                 size={"large"}
                 variant={"primary"}
-                fullWidth>
+                fullWidth
+                onClick={handleCheckout}>
                 Перейти к оформлению
             </Button>
 
@@ -34,12 +50,12 @@ export const CartSummary = (
                         Ваша корзина
                     </h3>
                     <span className={styles.summaryCountBadge}>
-                            {totalQuantity}
+                            {goodsQuantity}
                         </span>
                 </div>
 
                 <div className={styles.summaryRow}>
-                    <span>Товары ({totalQuantity})</span>
+                    <span>Товары ({goodsQuantity})</span>
                     <span className={styles.oldPriceSum}>
                             {formatPrice(totalBasePrice)} ₽
                         </span>

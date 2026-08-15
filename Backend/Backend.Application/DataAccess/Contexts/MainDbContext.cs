@@ -13,7 +13,7 @@ public class MainDbContext : DbContext
     public DbSet<Category> Categories => Set<Category>();
     public DbSet<Seller> Sellers => Set<Seller>();
     public DbSet<Order> Orders => Set<Order>();
-    public DbSet<OrderPosition> OrderedProducts => Set<OrderPosition>();
+    public DbSet<OrderPosition> OrderPositions => Set<OrderPosition>();
     public DbSet<Cart> Carts => Set<Cart>();
     public DbSet<CartPosition> CartPositions => Set<CartPosition>();
     public DbSet<Wishlist> Wishlists => Set<Wishlist>();

@@ -27,7 +27,7 @@ public class ReviewService
 
         try
         {
-            bool isProductWasOrdered = await _dbContext.OrderedProducts
+            bool isProductWasOrdered = await _dbContext.OrderPositions
                 .AnyAsync(op => op.ProductId == request.ProductId && op.Order.UserId == userId);
             if (!isProductWasOrdered)
                 return Response.Fail(new ProductNotFound(), "The product wasn't purchased");

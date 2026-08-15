@@ -19,6 +19,17 @@ public class OrderController : ControllerBase
     }
 
     [Authorize]
+    [HttpGet("{orderId:int}")]
+    public async Task<IActionResult> GetByIdAsync(int orderId)
+    {
+        int? userId = User.GetUserId();
+        if (userId is null) return Unauthorized();
+
+        var response = await _orderService.GetByIdAsync((int)userId, orderId);
+        return response.ToHttpResponse();
+    }
+
+    [Authorize]
     [HttpPost("make")]
     public async Task<IActionResult> MakeOrder([FromBody] MakeOrderRequest request)
     {

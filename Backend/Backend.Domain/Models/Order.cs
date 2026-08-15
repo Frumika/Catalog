@@ -15,5 +15,5 @@ public class Order
     public int PickupPointId { get; set; }
     public PickupPoint PickupPoint { get; set; } = null!;
 
-    public ICollection<OrderPosition> OrderedProducts { get; set; } = null!;
+    public ICollection<OrderPosition> OrderPositions { get; set; } = null!;
 }
