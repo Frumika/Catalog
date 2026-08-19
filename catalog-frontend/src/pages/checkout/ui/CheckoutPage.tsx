@@ -6,6 +6,7 @@ import {Footer} from "@/widgets/footer";
 import {CheckoutList} from "@/widgets/checkout-list";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {CheckoutSummary} from "@/widgets/checkout-summary";
+import {CheckoutHeader} from "./checkout-header/CheckoutHeader.tsx";
 
 
 export const CheckoutPage = () => {
@@ -27,6 +28,7 @@ export const CheckoutPage = () => {
 
     return (
         <>
+            <CheckoutHeader/>
 
             <main className={styles.main}>
                 <ContentContainer>
