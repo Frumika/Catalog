@@ -3,7 +3,7 @@ import styles from "./PageLabel.module.css";
 
 interface PageLabelProps {
     title: string;
-    quantity: number;
+    quantity?: number;
     className?: string;
 }
 
@@ -23,7 +23,7 @@ export const PageLabel = (
     return (
         <div className={pageLabelStyles}>
             <h2 className={styles.title}>{title}</h2>
-            <span className={styles.count}>{quantity}</span>
+            {quantity && <span className={styles.count}>{quantity}</span>}
         </div>
     );
 }

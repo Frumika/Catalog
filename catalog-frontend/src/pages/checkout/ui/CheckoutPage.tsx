@@ -7,6 +7,7 @@ import {CheckoutList} from "@/widgets/checkout-list";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {CheckoutSummary} from "@/widgets/checkout-summary";
 import {CheckoutHeader} from "./checkout-header/CheckoutHeader.tsx";
+import {PageLabel} from "@/shared/ui/page-label";
 
 
 export const CheckoutPage = () => {
@@ -32,10 +33,15 @@ export const CheckoutPage = () => {
 
             <main className={styles.main}>
                 <ContentContainer>
+                    <PageLabel className={styles.pageLabel} title={"Оформление заказа"}/>
+
                     {order !== null &&
                         <div className={styles.sectionSpacer}>
                             <CheckoutList order={order}/>
-                            <CheckoutSummary orderPositions={order.orderPositions}/>
+                            <CheckoutSummary
+                                orderPositions={order.orderPositions}
+                                onPay={() => payOrder(order.orderId)}
+                            />
                         </div>
                     }
                 </ContentContainer>

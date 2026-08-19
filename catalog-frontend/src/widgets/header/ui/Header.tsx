@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Logo} from "@/shared/ui/logo";
 import {CatalogButton} from "./catalog-button/CatalogButton.tsx";
 import {SearchBar} from "@/features/search-bar";
@@ -20,6 +20,11 @@ export const Header = (
     }: HeaderProps
 ) => {
     const [query, setQuery] = useState('');
+    const [isSticky, setIsSticky] = useState(false);
+    const [upperHeight, setUpperHeight] = useState(0);
+
+    const sentinelRef = useRef<HTMLDivElement>(null);
+    const upperRef = useRef<HTMLDivElement>(null);
 
     const isLaptop = useMediaQuery('(max-width: 1200px)');
     const isTablet = useMediaQuery('(max-width: 1100px)');
@@ -29,15 +34,48 @@ export const Header = (
     const catalogDisplayMode: ComponentDisplayMode = isLaptop ? 'compact' : 'full';
     const navDisplayMode: ComponentDisplayMode = isMobile ? 'compact' : 'full';
 
-    return (
-        <header className={styles.header}>
-            <ContentContainer>
-                <div className={styles.content}>
-                    <div className={styles.upper}>
-                        <Logo
-                            disabled={disabledLogo}
-                            displayMode={logoDisplayMode}/>
+    useEffect(() => {
+        const upperEl = upperRef.current;
+        if (!upperEl) return;
 
+        const resizeObserver = new ResizeObserver(([entry]) => {
+            setUpperHeight(entry.borderBoxSize[0].blockSize);
+        });
+
+        resizeObserver.observe(upperEl);
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setIsSticky(!entry.isIntersecting);
+            },
+            {threshold: 1.0}
+        );
+
+        if (sentinelRef.current) {
+            observer.observe(sentinelRef.current);
+        }
+
+        return () => {
+            resizeObserver.disconnect();
+            observer.disconnect();
+        };
+    }, []);
+
+
+    const upperStyles = [
+        styles.upper,
+        isSticky && styles.upperSticky
+    ].filter(Boolean).join(' ');
+
+    return (
+        <>
+            <div ref={sentinelRef} className={styles.sentinel}/>
+
+            <header className={styles.upperWrapper}>
+                <ContentContainer>
+                    <div ref={upperRef} className={upperStyles}>
+
+                        <Logo disabled={disabledLogo} displayMode={logoDisplayMode}/>
                         <CatalogButton displayMode={catalogDisplayMode}/>
 
                         <SearchBar
@@ -51,38 +89,39 @@ export const Header = (
 
                         <NavGroup displayMode={navDisplayMode}/>
                     </div>
+                </ContentContainer>
+            </header>
 
-                    <div className={styles.bottom}>
+            <div className={styles.bottomWrapper}>
+
+                <ContentContainer>
+                    <div className={styles.bottom} style={{paddingTop: `${upperHeight}px`}}>
+
                         <div className={styles.categoryItemContainer}>
-                            <CategoryButton
-                                onClick={() => {
-                                }}>
+                            <CategoryButton onClick={() => {
+                            }}>
                                 Одежда
                             </CategoryButton>
 
-                            <CategoryButton
-                                onClick={() => {
-                                }}>
+                            <CategoryButton onClick={() => {
+                            }}>
                                 Электроника
                             </CategoryButton>
 
-                            <CategoryButton
-                                onClick={() => {
-                                }}>
+                            <CategoryButton onClick={() => {
+                            }}>
                                 Дом и сад
                             </CategoryButton>
 
-                            <CategoryButton
-                                onClick={() => {
-                                }}>
+                            <CategoryButton onClick={() => {
+                            }}>
                                 Сертификаты
                             </CategoryButton>
                         </div>
-
                         <SelectPickupPoint/>
                     </div>
-                </div>
-            </ContentContainer>
-        </header>
+                </ContentContainer>
+            </div>
+        </>
     );
-}
+};

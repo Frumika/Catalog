@@ -1,7 +1,16 @@
+.main{
+    display: flex;
+    flex-direction: column;
+}
+
 .sectionSpacer {
     position: relative;
     display: grid;
     align-items: start;
     grid-column-gap: 24px;
-    grid-template-columns: 1fr 380px;
+    grid-template-columns: 1fr 460px;
+}
+
+.pageLabel{
+    margin-bottom: 18px;
 }
