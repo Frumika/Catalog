@@ -1,13 +1,14 @@
-import type {ExtendedOrderDto, OrderDto, OrderPositionDto} from "@/entities/order/api/dto.ts";
+import type {OrderDto, OrderPositionDto} from "@/entities/order/api/dto.ts";
 
-export interface OrderPosition extends OrderPositionDto {
+
+export interface OrderPosition extends Omit<OrderPositionDto, 'deliveryDate'> {
     imageUrl: string;
+    deliveryDate: Date;
 }
 
-export interface Order extends Omit<OrderDto, 'createdAt' | 'paidAt' | 'deliveryDate'> {
+export interface Order extends Omit<OrderDto, 'createdAt' | 'paidAt'> {
     createdAt: Date;
     paidAt: Date | null;
-    deliveryDate: Date;
 }
 
 export interface ExtendedOrder extends Order {

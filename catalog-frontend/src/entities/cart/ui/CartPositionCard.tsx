@@ -1,9 +1,8 @@
 import type {CartPosition} from "../model/types.ts";
-import {getPositionTotals, useCartActions, useCartPositionQuantity} from "@/entities/cart";
+import {useCartActions, useCartPositionQuantity} from "@/entities/cart";
 import styles from "./CartPositionCard.module.css";
-
 import TrashcanIcon from "@/shared/assets/icons/trashcan.svg?react";
-import {formatPrice} from "@/shared/lib";
+import {formatPrice, getPositionTotals} from "@/shared/lib";
 import {QuantityButton} from "@/shared/ui/quantity-button";
 import {Button} from "@/shared/ui/button";
 import {type ReactNode, useMemo} from "react";

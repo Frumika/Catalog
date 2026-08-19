@@ -1,0 +1,7 @@
+.sectionSpacer {
+    position: relative;
+    display: grid;
+    align-items: start;
+    grid-column-gap: 24px;
+    grid-template-columns: 1fr 380px;
+}

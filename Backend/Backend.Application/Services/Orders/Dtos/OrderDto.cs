@@ -6,5 +6,4 @@ public class OrderDto
     public string Status { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime? PaidAt { get; set; }
-    public DateTime DeliveryDate { get; set; }
 }

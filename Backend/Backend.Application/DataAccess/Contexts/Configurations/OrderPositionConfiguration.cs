@@ -18,12 +18,16 @@ public class OrderPositionConfiguration : IEntityTypeConfiguration<OrderPosition
             .HasColumnName("price")
             .HasColumnType(MoneyType)
             .IsRequired();
-        
+
+        entity.Property(op => op.DeliveryDate)
+            .HasColumnName("delivery_date")
+            .IsRequired();
+
         entity.Property(op => op.DiscountPercent)
             .HasColumnName("discount_percent")
             .HasDefaultValue(0)
             .IsRequired();
-        
+
         entity.Property(o => o.Quantity)
             .HasColumnName("quantity")
             .IsRequired();

@@ -44,7 +44,6 @@ public class OrderService
                 {
                     OrderId = orderId,
                     CreatedAt = order.CreatedAt,
-                    DeliveryDate = order.DeliveryDate,
                     Status = order.Status.ToString(),
                     PaidAt = order.PaidAt,
                     OrderPositions = orderPositions
@@ -106,12 +105,15 @@ public class OrderService
 
                 product.Quantity -= cartItem.Quantity;
 
+                DateTime currentTime = DateTime.UtcNow;
+
                 OrderPosition orderPosition = new()
                 {
                     ProductId = product.Id,
                     Quantity = cartItem.Quantity,
                     DiscountPercent = product.DiscountPercent,
                     Price = product.Price,
+                    DeliveryDate = currentTime + TimeSpan.FromDays(Random.Shared.Next(1, 15)),
                 };
 
                 OrderPositionDto orderPositionDto = new()
@@ -119,7 +121,7 @@ public class OrderService
                     ProductId = product.Id,
                     ProductName = product.Name,
                     Quantity = cartItem.Quantity,
-                    Price = (int)Math.Round(product.Price, 0),
+                    BasePrice = (int)Math.Round(product.Price, 0),
                     DiscountPercent = product.DiscountPercent,
                     DiscountedPrice = (int)Math.Round(product.Price * (100 - product.DiscountPercent) / 100m, 0),
                     ImageUrl = product.ProductImages
@@ -137,14 +139,12 @@ public class OrderService
             if (!pickupPointExists)
                 return Response.Fail(new PickupPointNotFound(), "PickupPoint doesn't exist");
 
-            DateTime createdAt = DateTime.UtcNow;
-            DateTime deliveryDate = createdAt + TimeSpan.FromDays(14);
 
+            DateTime createdAt = DateTime.UtcNow;
             Order order = new()
             {
                 Status = OrderStatus.Pending,
                 CreatedAt = createdAt,
-                DeliveryDate = deliveryDate,
                 DeletionTime = createdAt + _settings.Lifetime,
                 UserId = userId,
                 PickupPointId = request.PickupPointId,
@@ -161,7 +161,6 @@ public class OrderService
                     OrderId = order.Id,
                     Status = order.Status.ToString(),
                     CreatedAt = order.CreatedAt,
-                    DeliveryDate = order.DeliveryDate,
                     OrderPositions = orderPositionDtos
                 }
             );
@@ -222,7 +221,6 @@ public class OrderService
                     OrderId = orderId,
                     CreatedAt = pendingOrder.CreatedAt,
                     PaidAt = pendingOrder.PaidAt,
-                    DeliveryDate = pendingOrder.DeliveryDate,
                     Status = pendingOrder.Status.ToString(),
                 }
             );
@@ -273,7 +271,6 @@ public class OrderService
                 {
                     OrderId = orderId,
                     CreatedAt = order.CreatedAt,
-                    DeliveryDate = order.DeliveryDate,
                     Status = order.Status.ToString(),
                     PaidAt = order.PaidAt,
                 }
@@ -357,9 +354,10 @@ public class OrderService
                 ProductId = op.ProductId,
                 ProductName = op.Product.Name,
                 Quantity = op.Quantity,
-                Price = (int)Math.Round(op.Price, 0),
+                BasePrice = (int)Math.Round(op.Price, 0),
                 DiscountPercent = op.DiscountPercent,
                 DiscountedPrice = (int)Math.Round(op.Price * (100 - op.DiscountPercent) / 100m, 0),
+                DeliveryDate = op.DeliveryDate,
                 ImageUrl = op.Product.ProductImages
                     .OrderBy(pi => pi.Position)
                     .Select(pi => pi.Path)

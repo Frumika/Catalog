@@ -26,11 +26,7 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
         entity.Property(o => o.CreatedAt)
             .HasColumnName("created_at")
             .IsRequired();
-
-        entity.Property(o => o.DeliveryDate)
-            .HasColumnName("delivery_date")
-            .IsRequired();
-
+        
         entity.Property(o => o.DeletionTime)
             .HasColumnName("deletion_time")
             .IsRequired();

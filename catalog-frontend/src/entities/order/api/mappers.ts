@@ -7,16 +7,16 @@ import PlaceholderImage from "@/shared/assets/images/placeholder.png";
 export const mapOrderPosition = (dto: OrderPositionDto): OrderPosition => ({
     ...dto,
     imageUrl: dto.imageUrl ? getFullUrl(dto.imageUrl) : PlaceholderImage,
+    deliveryDate: new Date(dto.deliveryDate),
 });
 
 export const mapOrder = (dto: OrderDto): Order => ({
     ...dto,
     createdAt: new Date(dto.createdAt),
     paidAt: dto.paidAt ? new Date(dto.paidAt) : null,
-    deliveryDate: new Date(dto.deliveryDate),
 });
 
 export const mapExtendedOrder = (dto: ExtendedOrderDto): ExtendedOrder => ({
-    ...mapOrder(dto),
+    ...mapOrder(dto as OrderDto),
     orderPositions: dto.orderPositions.map(mapOrderPosition),
 });

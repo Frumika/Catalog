@@ -5,6 +5,7 @@ import {ApiError, toApiError} from "@/shared/api";
 import {Footer} from "@/widgets/footer";
 import {CheckoutList} from "@/widgets/checkout-list";
 import {ContentContainer} from "@/shared/ui/content-container";
+import {CheckoutSummary} from "@/widgets/checkout-summary";
 
 
 export const CheckoutPage = () => {
@@ -26,12 +27,14 @@ export const CheckoutPage = () => {
 
     return (
         <>
+
             <main className={styles.main}>
                 <ContentContainer>
                     {order !== null &&
-                        <CheckoutList order={order}/>
-
-
+                        <div className={styles.sectionSpacer}>
+                            <CheckoutList order={order}/>
+                            <CheckoutSummary orderPositions={order.orderPositions}/>
+                        </div>
                     }
                 </ContentContainer>
             </main>

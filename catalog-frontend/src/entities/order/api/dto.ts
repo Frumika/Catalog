@@ -1,11 +1,9 @@
-export interface OrderPositionDto {
-    productId: number;
+import type {PricedPosition} from "@/shared/types";
+
+export interface OrderPositionDto extends PricedPosition {
     imageUrl: string | null;
     productName: string;
-    quantity: number;
-    price: number;
-    discountPercent: number;
-    discountPrice: number;
+    deliveryDate: string;
 }
 
 export interface OrderDto {
@@ -13,7 +11,6 @@ export interface OrderDto {
     status: string;
     createdAt: string;
     paidAt: string | null;
-    deliveryDate: string;
 }
 
 export interface ExtendedOrderDto extends OrderDto {
