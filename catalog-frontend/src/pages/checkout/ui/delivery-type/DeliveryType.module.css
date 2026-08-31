@@ -1,0 +1,42 @@
+.deliveryType {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+
+    padding: 16px 24px 8px;
+
+    background-color: var(--bgMain);
+}
+
+.header {
+
+}
+
+.pickupPoint {
+
+}
+
+.pointLabel {
+
+}
+
+.address {
+
+}
+
+.shelfLifetime {
+
+}
+
+.user {
+
+}
+
+.login {
+
+}
+
+.phoneNumber {
+
+}

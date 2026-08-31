@@ -8,4 +8,5 @@ export {
     useClearCheckout,
 } from "./model/checkoutStore.ts"
 
-export {PositionsGroupCard} from "./ui/PositionsGroupCard.tsx";
+export {PositionsGroupCard} from "./ui/positions-group-card/PositionsGroupCard.tsx";
+export {CheckoutPositionCard} from "./ui/position-card/CheckoutPositionCard.tsx";

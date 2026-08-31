@@ -1,8 +1,7 @@
 import styles from "./CheckoutModal.module.css";
 import {Modal} from "@/shared/ui/modal";
-import type {OrderPositionGroup} from "@/entities/order";
+import {CheckoutPositionCard, type OrderPositionGroup} from "@/entities/order";
 import {formatDate, formatGoodsQuantity, getGoodsQuantity} from "@/shared/lib";
-import {PositionCard} from "../../pages/checkout/ui/position-card/PositionCard.tsx";
 
 
 interface CheckoutModalProps {
@@ -22,6 +21,7 @@ export const CheckoutModal = (
     const goodsQuantity = getGoodsQuantity(positionsGroup.orderPositions);
     const lastPositionId = positionsGroup.orderPositions[positionsGroup.orderPositions.length - 1].productId;
 
+
     return (
         <Modal isOpen={isOpen} onClose={onClose} className={styles.checkoutModal}>
             <div className={styles.header}>
@@ -34,11 +34,9 @@ export const CheckoutModal = (
             </div>
 
             <div className={styles.content}>
-                {
-                    positionsGroup.orderPositions.map(position =>
-                        <PositionCard orderPosition={position} isLastCard={position.productId == lastPositionId}/>
-                    )
-                }
+                {positionsGroup.orderPositions.map(position =>
+                    <CheckoutPositionCard orderPosition={position} isLastCard={position.productId == lastPositionId}/>
+                )}
             </div>
 
         </Modal>

@@ -1,8 +1,8 @@
 .checkoutModal {
-    width: 700px;
+    width: 650px;
     min-width: 330px;
 
-    padding: 24px 44px 24px;
+    padding: 24px 44px 20px;
 
     max-height: min(65vh, 700px);
 }
@@ -12,6 +12,22 @@
     flex-direction: column;
 
     padding-bottom: 24px;
+}
+
+.deliveryDate {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: 30px;
+    color: var(--textPrimary);
+}
+
+.quantity {
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0;
+    line-height: 20px;
+    color: var(--textSecondary);
 }
 
 .content {

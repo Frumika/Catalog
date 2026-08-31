@@ -7,6 +7,7 @@ import {CheckoutList} from "@/widgets/checkout-list";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {CheckoutSummary} from "@/widgets/checkout-summary";
 import {CheckoutHeader} from "./checkout-header/CheckoutHeader.tsx";
+import {DeliveryType} from "./delivery-type/DeliveryType.tsx";
 import {PageLabel} from "@/shared/ui/page-label";
 import {CheckoutModal} from "@/widgets/checkout-modal";
 import {useDisclosure} from "@/shared/lib";
@@ -19,6 +20,8 @@ export const CheckoutPage = () => {
     const {getOrderById, payOrder, cancelOrder} = useOrderActions();
     const [selectedGroup, setSelectedGroup] = useState<OrderPositionGroup | null>(null);
     const {isOpen, open, close} = useDisclosure();
+
+
 
     useEffect(() => {
         if (!activeOrderId) {
@@ -41,6 +44,7 @@ export const CheckoutPage = () => {
         setSelectedGroup(positionGroup);
     }
 
+
     return (
         <>
             <CheckoutHeader/>
@@ -51,6 +55,8 @@ export const CheckoutPage = () => {
 
                     {order !== null &&
                         <div className={styles.sectionSpacer}>
+                            <DeliveryType/>
+
                             <CheckoutList order={order} onGroupSelect={onModalOpen}/>
 
                             {selectedGroup &&

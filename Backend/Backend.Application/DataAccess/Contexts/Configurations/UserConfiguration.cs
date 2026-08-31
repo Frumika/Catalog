@@ -25,6 +25,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasMaxLength(100)
             .IsRequired();
 
+        entity.Property(user => user.PhoneNumber)
+            .HasColumnName("phone_number")
+            .HasMaxLength(20);
+
         entity.Property(user => user.CreatedAt)
             .HasColumnName("created_at")
             .IsRequired();

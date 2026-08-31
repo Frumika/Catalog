@@ -8,7 +8,7 @@ interface PositionCardProps {
     isLastCard: boolean;
 }
 
-export const PositionCard = (
+export const CheckoutPositionCard = (
     {
         orderPosition,
         isLastCard,
@@ -20,6 +20,7 @@ export const PositionCard = (
         styles.positionCard,
         !isLastCard ? styles.dividingLine : null,
     ].filter(Boolean).join(' ');
+
 
     return (
         <div className={positionCardStyles}>

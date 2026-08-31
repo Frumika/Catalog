@@ -23,40 +23,36 @@ export const PositionsGroupCard = (
 
 
     return (
-        <>
 
-            <div className={styles.checkoutPositionCard}>
-                <div className={styles.header}>
+        <div className={styles.checkoutPositionCard}>
+            <div className={styles.header}>
                 <span className={styles.headerText}
                       onClick={() => onClick?.()}>
                     {`Ожидаемая дата доставки: ${deliveryDateDisplay}`}
                 </span>
 
-                    <div className={styles.quantity}>
-                        {positionsQuantityDisplay}
-                    </div>
+                <div className={styles.quantity}>
+                    {positionsQuantityDisplay}
                 </div>
+            </div>
 
+            <div className={styles.productContainer}>
+                {
+                    positionsGroup.orderPositions.map(
+                        position =>
+                            <img
+                                className={styles.image}
+                                src={position.imageUrl}
+                                alt=""
+                                onClick={() => onClick?.()}
+                            />
+                    )
+                }
+            </div>
 
-                <div className={styles.productContainer}>
-                    {
-                        positionsGroup.orderPositions.map(
-                            position =>
-                                <img
-                                    className={styles.image}
-                                    src={position.imageUrl}
-                                    alt=""
-                                    onClick={() => onClick?.()}
-                                />
-                        )
-                    }
-                </div>
-
-                <span className={styles.deliveryType}>
+            <span className={styles.deliveryType}>
                 {"Доставка в пункт выдачи заказов"}
             </span>
-
-            </div>
-        </>
+        </div>
     )
 }
