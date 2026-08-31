@@ -8,6 +8,7 @@ public class OrderPositionDto
     public int ProductId { get; set; }
     public string? ImageUrl { get; set; }
     public string ProductName { get; set; } = string.Empty;
+    public string SellerName { get; set; } = string.Empty;
     public int Quantity { get; set; }
     public int BasePrice { get; set; }
     public byte DiscountPercent { get; set; }

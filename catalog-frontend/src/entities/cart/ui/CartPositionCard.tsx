@@ -94,14 +94,14 @@ export const CartPositionCard = (
 
                 <div className={styles.priceWrapper}>
                     {hasDiscount && (
-                        <span className={styles.discountPrice}>
+                        <span className={styles.discountedPrice}>
                         {`${formatPrice(positionDiscountedTotal)}₽`}
                     </span>
                     )}
 
                     <span className={hasDiscount ? styles.oldPrice : styles.freshPrice}>
-                    {`${formatPrice(positionBaseTotal)}₽`}
-                </span>
+                        {`${formatPrice(positionBaseTotal)}₽`}
+                    </span>
                 </div>
             </div>
 

@@ -3,6 +3,7 @@ import type {PricedPosition} from "@/shared/types";
 export interface OrderPositionDto extends PricedPosition {
     imageUrl: string | null;
     productName: string;
+    sellerName: string;
     deliveryDate: string;
 }
 

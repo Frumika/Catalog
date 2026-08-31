@@ -1,18 +1,19 @@
 import styles from "./CheckoutList.module.css";
-import {CheckoutPositionCard, type ExtendedOrder, type OrderPosition} from "@/entities/order";
+import {PositionsGroupCard, type ExtendedOrder, type OrderPosition, type OrderPositionGroup} from "@/entities/order";
 import {useMemo} from 'react';
 
 
 interface CheckoutListProps {
     order: ExtendedOrder;
+    onGroupSelect: (positionGroup: OrderPositionGroup) => void;
 }
 
-interface OrderPositionGroup {
-    date: Date;
-    orderPositions: OrderPosition[];
-}
-
-export const CheckoutList = ({order}: CheckoutListProps) => {
+export const CheckoutList = (
+    {
+        order,
+        onGroupSelect,
+    }: CheckoutListProps
+) => {
     const orderPositionsGroups = useMemo(() => {
 
         const groupsRecord = order.orderPositions.reduce((acc, position) => {
@@ -39,14 +40,16 @@ export const CheckoutList = ({order}: CheckoutListProps) => {
 
 
     return (
+
         <section className={styles.checkoutList}>
             {orderPositionsGroups.map(opg =>
-                <CheckoutPositionCard
+                <PositionsGroupCard
                     key={opg.date.getTime()}
-                    deliveryDate={opg.date}
-                    orderPositions={opg.orderPositions}
+                    positionsGroup={opg}
+                    onClick={() => onGroupSelect(opg)}
                 />
             )}
         </section>
+
     );
 };

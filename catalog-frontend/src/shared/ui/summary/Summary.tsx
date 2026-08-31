@@ -1,7 +1,7 @@
 import styles from "./Summary.module.css";
 import type {PricedPosition} from "@/shared/types";
 import type {ReactNode} from "react";
-import {formatPrice, getPositionsTotals, getTotalQuantity} from "@/shared/lib";
+import {formatPrice, getPositionsTotals, getGoodsQuantity} from "@/shared/lib";
 
 
 interface SummaryProps {
@@ -20,7 +20,7 @@ export const Summary = (
     }: SummaryProps) => {
 
     const {totalBasePrice, totalDiscountAmount, totalDiscountedPrice} = getPositionsTotals(positions);
-    const totalQuantity = getTotalQuantity(positions);
+    const totalQuantity = getGoodsQuantity(positions);
 
     return (
         <section className={`${styles.summary} ${className ?? ''}`}>

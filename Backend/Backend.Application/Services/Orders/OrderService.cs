@@ -353,6 +353,7 @@ public class OrderService
             {
                 ProductId = op.ProductId,
                 ProductName = op.Product.Name,
+                SellerName = op.Product.Seller.Name,
                 Quantity = op.Quantity,
                 BasePrice = (int)Math.Round(op.Price, 0),
                 DiscountPercent = op.DiscountPercent,

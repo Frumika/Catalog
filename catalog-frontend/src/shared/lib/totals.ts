@@ -25,6 +25,6 @@ export const getPositionsTotals = (positions: PricedPosition[]) => {
     );
 }
 
-export const getTotalQuantity = (positions: PricedPosition[]) => {
+export const getGoodsQuantity = (positions: PricedPosition[]) => {
     return positions.reduce((acc: number, pos: PricedPosition) => acc + pos.quantity, 0);
 };

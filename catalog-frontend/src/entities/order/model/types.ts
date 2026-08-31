@@ -6,6 +6,11 @@ export interface OrderPosition extends Omit<OrderPositionDto, 'deliveryDate'> {
     deliveryDate: Date;
 }
 
+export interface OrderPositionGroup {
+    date: Date;
+    orderPositions: OrderPosition[];
+}
+
 export interface Order extends Omit<OrderDto, 'createdAt' | 'paidAt'> {
     createdAt: Date;
     paidAt: Date | null;

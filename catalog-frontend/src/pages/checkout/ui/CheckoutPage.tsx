@@ -1,5 +1,5 @@
 import styles from "./CheckoutPage.module.css";
-import {type ExtendedOrder, useGetCheckoutOrderId, useOrderActions} from "@/entities/order";
+import {type ExtendedOrder, type OrderPositionGroup, useGetCheckoutOrderId, useOrderActions} from "@/entities/order";
 import {useEffect, useState} from "react";
 import {ApiError, toApiError} from "@/shared/api";
 import {Footer} from "@/widgets/footer";
@@ -8,6 +8,8 @@ import {ContentContainer} from "@/shared/ui/content-container";
 import {CheckoutSummary} from "@/widgets/checkout-summary";
 import {CheckoutHeader} from "./checkout-header/CheckoutHeader.tsx";
 import {PageLabel} from "@/shared/ui/page-label";
+import {CheckoutModal} from "@/widgets/checkout-modal";
+import {useDisclosure} from "@/shared/lib";
 
 
 export const CheckoutPage = () => {
@@ -15,6 +17,8 @@ export const CheckoutPage = () => {
     const [order, setOrder] = useState<ExtendedOrder | null>(null);
     const [error, setError] = useState<ApiError | null>(null);
     const {getOrderById, payOrder, cancelOrder} = useOrderActions();
+    const [selectedGroup, setSelectedGroup] = useState<OrderPositionGroup | null>(null);
+    const {isOpen, open, close} = useDisclosure();
 
     useEffect(() => {
         if (!activeOrderId) {
@@ -27,6 +31,16 @@ export const CheckoutPage = () => {
 
     }, [activeOrderId]);
 
+    const onModalClose = () => {
+        close();
+        setSelectedGroup(null);
+    }
+
+    const onModalOpen = (positionGroup: OrderPositionGroup) => {
+        open();
+        setSelectedGroup(positionGroup);
+    }
+
     return (
         <>
             <CheckoutHeader/>
@@ -37,7 +51,16 @@ export const CheckoutPage = () => {
 
                     {order !== null &&
                         <div className={styles.sectionSpacer}>
-                            <CheckoutList order={order}/>
+                            <CheckoutList order={order} onGroupSelect={onModalOpen}/>
+
+                            {selectedGroup &&
+                                <CheckoutModal
+                                    isOpen={isOpen}
+                                    onClose={onModalClose}
+                                    positionsGroup={selectedGroup}
+                                />
+                            }
+
                             <CheckoutSummary
                                 orderPositions={order.orderPositions}
                                 onPay={() => payOrder(order.orderId)}

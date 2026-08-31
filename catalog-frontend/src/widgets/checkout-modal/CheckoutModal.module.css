@@ -1,0 +1,23 @@
+.checkoutModal {
+    width: 700px;
+    min-width: 330px;
+
+    padding: 24px 44px 24px;
+
+    max-height: min(65vh, 700px);
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+
+    padding-bottom: 24px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+
+    gap: 16px;
+}

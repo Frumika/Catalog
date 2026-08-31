@@ -1,4 +1,4 @@
-export type {OrderPosition, Order, ExtendedOrder} from "./model/types.ts";
+export type {OrderPosition, OrderPositionGroup, Order, ExtendedOrder} from "./model/types.ts";
 
 export {useOrderActions} from "./model/useOrderActions.ts";
 
@@ -8,4 +8,4 @@ export {
     useClearCheckout,
 } from "./model/checkoutStore.ts"
 
-export {CheckoutPositionCard} from "./ui/CheckoutPositionCard.tsx";
+export {PositionsGroupCard} from "./ui/PositionsGroupCard.tsx";
