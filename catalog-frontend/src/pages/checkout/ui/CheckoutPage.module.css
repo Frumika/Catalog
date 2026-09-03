@@ -11,6 +11,12 @@
     grid-template-columns: 1fr 460px;
 }
 
+.leftSection{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 .pageLabel{
     margin-bottom: 18px;
 }

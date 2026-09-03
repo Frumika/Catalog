@@ -9,13 +9,12 @@ let refreshPromise: Promise<ApiResponse<RefreshResponse> | null> | null = null;
 async function request<TData>(
     url: string,
     method: string,
-    body: RequestBody = {},
+    body: RequestBody | undefined,
     authorization = true,
     headers?: HeadersInit
 ): Promise<ApiResponse<TData>> {
 
     let fullUrl = getFullUrl(url);
-    const resultBody: RequestBody = {...body};
 
     let fetchHeaders: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -27,11 +26,13 @@ async function request<TData>(
         fetchHeaders['Authorization'] = `Bearer ${accessToken}`;
     }
 
-    let response = await fetch(fullUrl, {
+    const request = {
         method,
         headers: fetchHeaders,
-        ...(method !== 'GET' && {body: JSON.stringify(resultBody)}),
-    });
+        ...(method !== 'GET' && body !== undefined && {body: JSON.stringify(body)}),
+    }
+
+    let response = await fetch(fullUrl, request);
 
     if (response.status === 401 && authorization) {
         const refreshToken = tokenLocalStorage.getRefreshToken();
@@ -71,11 +72,7 @@ async function request<TData>(
             if (refreshResult) {
                 fetchHeaders['Authorization'] = `Bearer ${refreshResult.data.accessToken}`;
 
-                response = await fetch(fullUrl, {
-                    method,
-                    headers: fetchHeaders,
-                    ...(method !== 'GET' && {body: JSON.stringify(resultBody)}),
-                });
+                response = await fetch(fullUrl, request);
             }
         } else {
             tokenLocalStorage.clearStorage();
@@ -89,22 +86,22 @@ async function request<TData>(
 
 export const apiClient = {
     get<TData>(url: string, authorization = true, headers?: HeadersInit) {
-        return request<TData>(url, 'GET', {}, authorization, headers);
+        return request<TData>(url, 'GET', undefined, authorization, headers);
     },
 
-    post<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
+    post<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'POST', body, authorization, headers);
     },
 
-    put<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
+    put<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'PUT', body, authorization, headers);
     },
 
-    patch<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
+    patch<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'PATCH', body, authorization, headers);
     },
 
-    delete<TData>(url: string, body: RequestBody = {}, authorization = true, headers?: HeadersInit) {
+    delete<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'DELETE', body, authorization, headers);
     },
 };

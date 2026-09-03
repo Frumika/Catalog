@@ -4,7 +4,7 @@ import styles from "./AddressCard.module.css";
 import {Button} from "@/shared/ui/button";
 import {CardPopover} from "../card-popover/CardPopover.tsx";
 import {useRef} from "react";
-import {useDisclosure} from "@/shared/lib";
+import {formatDays, useDisclosure} from "@/shared/lib";
 
 
 interface AddressCardProps {
@@ -48,7 +48,7 @@ export const AddressCard = (
                 </span>
 
                 <span className={styles.shelfLife}>
-                    {`Срок хранения заказа – ${pickupPoint.shelfLifetime} дней`}
+                    {`Срок хранения заказа – ${formatDays(pickupPoint.shelfLifetime)}`}
                 </span>
             </div>
 

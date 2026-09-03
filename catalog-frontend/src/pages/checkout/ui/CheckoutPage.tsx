@@ -17,10 +17,9 @@ export const CheckoutPage = () => {
     const activeOrderId = useGetCheckoutOrderId();
     const [order, setOrder] = useState<ExtendedOrder | null>(null);
     const [error, setError] = useState<ApiError | null>(null);
-    const {getOrderById, payOrder, cancelOrder} = useOrderActions();
+    const {getOrderById, payOrder} = useOrderActions();
     const [selectedGroup, setSelectedGroup] = useState<OrderPositionGroup | null>(null);
     const {isOpen, open, close} = useDisclosure();
-
 
 
     useEffect(() => {
@@ -53,12 +52,14 @@ export const CheckoutPage = () => {
                 <ContentContainer>
                     <PageLabel className={styles.pageLabel} title={"Оформление заказа"}/>
 
+
                     {order !== null &&
                         <div className={styles.sectionSpacer}>
-                            <DeliveryType/>
 
-                            <CheckoutList order={order} onGroupSelect={onModalOpen}/>
-
+                            <div className={styles.leftSection}>
+                                <DeliveryType/>
+                                <CheckoutList order={order} onGroupSelect={onModalOpen}/>
+                            </div>
                             {selectedGroup &&
                                 <CheckoutModal
                                     isOpen={isOpen}

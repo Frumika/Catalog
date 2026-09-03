@@ -28,6 +28,7 @@ public class UserService
                 {
                     Login = u.Login,
                     Email = u.Email,
+                    PhoneNumber = u.PhoneNumber,
                 }).FirstOrDefaultAsync();
 
             return userSession is not null
