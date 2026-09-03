@@ -11,6 +11,8 @@ export const useExtendedCartPositions = (isAuthenticated: boolean) => {
     const [error, setError] = useState<ApiError | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
+    console.log("Global ", globalPositions);
+
     useEffect(() => {
         if (!isAuthenticated) {
             setLocalPositions([]);
@@ -25,13 +27,15 @@ export const useExtendedCartPositions = (isAuthenticated: boolean) => {
     }, [isAuthenticated]);
 
     const cartPositions = useMemo(() => {
-        const activeIds = new Set(globalPositions.map((gp) => gp.productId));
+        const globalMap = new Map(globalPositions.map((gp) => [gp.productId, gp]));
 
-        return localPositions.filter((detailed) =>
-            activeIds.has(detailed.productId)
-        );
+        return localPositions
+            .filter((detailed) => globalMap.has(detailed.productId))
+            .map((detailed) => ({
+                ...detailed,
+                quantity: globalMap.get(detailed.productId)!.quantity,
+            }));
     }, [localPositions, globalPositions]);
-
     return {
         cartPositions,
         isLoading,

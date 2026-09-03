@@ -30,7 +30,7 @@ export const CartPositionCard = (
     }: CartPositionCard) => {
 
     const hasDiscount = cartPosition.discountPercent > 0;
-    const positionQuantity = useCartPositionQuantity(cartPosition.productId);
+    const positionQuantity =cartPosition.quantity;
     const {removePosition, updateQuantity} = useCartActions();
 
     const {positionBaseTotal, positionDiscountedTotal} = useMemo(

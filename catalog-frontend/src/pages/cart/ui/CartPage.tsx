@@ -15,6 +15,8 @@ export const CartPage = () => {
     const totalQuantity = useCartTotalQuantity();
     const {cartPositions} = useExtendedCartPositions(isAuthenticated);
 
+    console.log("CartPositions ", cartPositions);
+
 
     return (
         <>
