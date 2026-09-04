@@ -49,7 +49,7 @@ export const NotificationContainer = () => {
         return null;
     }
 
-    const visibleNotifications = notifications.slice(0, MAX_NOTIFICATIONS);
+    const visibleNotifications = [...notifications].reverse().slice(0, MAX_NOTIFICATIONS);
 
     return (
         <div className={styles.notificationContainer}
