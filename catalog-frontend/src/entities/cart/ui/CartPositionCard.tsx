@@ -1,8 +1,8 @@
 import type {CartPosition} from "../model/types.ts";
-import {useCartActions, useCartPositionQuantity} from "@/entities/cart";
+import {useCartActions} from "@/entities/cart";
 import styles from "./CartPositionCard.module.css";
 import TrashcanIcon from "@/shared/assets/icons/trashcan.svg?react";
-import {formatPrice, getPositionTotals} from "@/shared/lib";
+import {formatPrice, getPositionTotals, useNotify} from "@/shared/lib";
 import {QuantityButton} from "@/shared/ui/quantity-button";
 import {Button} from "@/shared/ui/button";
 import {type ReactNode, useMemo} from "react";
@@ -12,7 +12,7 @@ import {Checkbox} from "@/shared/ui/checkbox";
 interface CartPositionCard {
     cartPosition: CartPosition;
     isSelected?: boolean;
-    onClick?: () => void;
+    onCheckout: (productIds: number[]) => void;
     onTogglePosition?: (cartPosition: CartPosition) => void;
     wishButtonSlot?: ReactNode;
     className?: string;
@@ -22,7 +22,7 @@ export const CartPositionCard = (
     {
         cartPosition,
         isSelected = false,
-        onClick,
+        onCheckout,
         onTogglePosition,
         wishButtonSlot,
         className,
@@ -30,13 +30,15 @@ export const CartPositionCard = (
     }: CartPositionCard) => {
 
     const hasDiscount = cartPosition.discountPercent > 0;
-    const positionQuantity =cartPosition.quantity;
+    const positionQuantity = cartPosition.quantity;
     const {removePosition, updateQuantity} = useCartActions();
+    const notify = useNotify();
 
     const {positionBaseTotal, positionDiscountedTotal} = useMemo(
         () => getPositionTotals(cartPosition, positionQuantity),
         [cartPosition, positionQuantity]
     );
+
 
     const cartPositionCardStyles =
         [
@@ -44,10 +46,12 @@ export const CartPositionCard = (
             className,
         ].filter(Boolean).join(' ');
 
+
     return (
         <div className={cartPositionCardStyles}>
             <div className={styles.activeArea}
-                 onClick={() => onClick?.()}>
+                 onClick={() => {notify("warning", "Страница товара пока не реализована")}}>
+
                 <div className={styles.imageWrapper}>
                     <img
                         className={styles.image}
@@ -85,6 +89,7 @@ export const CartPositionCard = (
                             size={"small"}
                             onClick={(event) => {
                                 event.stopPropagation();
+                                onCheckout([cartPosition.productId])
                             }}>
                             Купить
                         </Button>

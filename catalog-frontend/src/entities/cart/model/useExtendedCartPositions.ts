@@ -11,8 +11,6 @@ export const useExtendedCartPositions = (isAuthenticated: boolean) => {
     const [error, setError] = useState<ApiError | null>(null);
     const [isLoading, setIsLoading] = useState(false);
 
-    console.log("Global ", globalPositions);
-
     useEffect(() => {
         if (!isAuthenticated) {
             setLocalPositions([]);

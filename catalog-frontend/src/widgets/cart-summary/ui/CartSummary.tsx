@@ -1,31 +1,20 @@
 import styles from "./CartSummary.module.css";
 import {Button} from "@/shared/ui/button";
 import {useCartSelectionContext} from "@/features/cart-selection";
-import {useOrderActions} from "@/entities/order/model/useOrderActions.ts";
-import {useCurrentPickupPoint} from "@/entities/pickup-point";
-import {useNavigate} from "react-router-dom";
-import {useSetActiveCheckoutOrder} from "@/entities/order";
 import {Summary} from "@/shared/ui/summary";
 
 
-export const CartSummary = () => {
+interface CartSummaryProps {
+    onCheckout: (productIds: number[]) => void;
+}
+
+export const CartSummary = (
+    {
+        onCheckout,
+    }: CartSummaryProps
+) => {
     const {selectedPositions} = useCartSelectionContext();
-    const {makeOrder} = useOrderActions();
-    const setActiveOrder = useSetActiveCheckoutOrder();
-    const currentPickupPoint = useCurrentPickupPoint();
-    const navigate = useNavigate();
-
-    const handleCheckout = async () => {
-        if (currentPickupPoint === null) return;
-
-        const productIds: number[] = selectedPositions.map(cp => cp.productId);
-        const pickupPointId: number = currentPickupPoint.id;
-        const createdOrder = await makeOrder(productIds, pickupPointId);
-        setActiveOrder(createdOrder);
-
-        navigate('/checkout');
-    };
-
+    const productIds = selectedPositions.map(cp => cp.productId);
 
     return (
         <Summary
@@ -37,7 +26,9 @@ export const CartSummary = () => {
                     size={"large"}
                     variant={"primary"}
                     fullWidth
-                    onClick={handleCheckout}>
+                    onClick={() => {
+                        onCheckout(productIds);
+                    }}>
                     Перейти к оформлению
                 </Button>
             }

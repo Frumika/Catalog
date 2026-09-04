@@ -9,15 +9,18 @@ import {useCartSelectionContext} from "@/features/cart-selection";
 
 interface CartListProps {
     cartPositions: CartPosition[];
+    onCheckout: (productIds: number[]) => void;
 }
 
 export const CartList = (
     {
-        cartPositions
+        cartPositions,
+        onCheckout,
     }: CartListProps
 ) => {
     const {clearCart} = useCartActions();
     const {isAllSelected, toggleAll, togglePosition, isSelected} = useCartSelectionContext();
+
 
     return (
         <section className={styles.cartList}>
@@ -46,6 +49,7 @@ export const CartList = (
                             <ToggleWishedButton productId={cartPosition.productId}
                                                 buttonType={"cartPosition"}/>
                         }
+                        onCheckout={onCheckout}
                     />
                 ))}
             </div>

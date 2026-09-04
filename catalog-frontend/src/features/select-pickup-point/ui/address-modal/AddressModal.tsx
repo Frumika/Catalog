@@ -1,13 +1,10 @@
+import styles from "./AddressModal.module.css";
 import type {AddressModalProps} from "./AddressModal.types.ts";
 import {Modal} from "@/shared/ui/modal";
 import {AddressCard} from "@/features/select-pickup-point/ui/address-card/AddressCard.tsx";
 import {Button} from "@/shared/ui/button";
-import styles from "./AddressModal.module.css";
-import {
-    useCurrentPickupPoint,
-    usePickupPointActions,
-    usePickupPoints
-} from "@/entities/pickup-point";
+import {useCurrentPickupPoint, usePickupPointActions, usePickupPoints} from "@/entities/pickup-point";
+import {useNotify} from "@/shared/lib";
 
 
 export const AddressModal = (
@@ -20,6 +17,7 @@ export const AddressModal = (
     const pickupPoints = usePickupPoints()
     const currentPickupPoint = useCurrentPickupPoint();
     const {selectPickupPoint} = usePickupPointActions()
+    const notify = useNotify();
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} className={styles.addressModal}>
@@ -44,7 +42,8 @@ export const AddressModal = (
                     className={styles.addButton}
                     variant="secondary"
                     size="large"
-                    fullWidth>
+                    fullWidth
+                    onClick={() => notify("warning", "Данный функционал пока не реализован")}>
                     <div className={styles.buttonContent}>
                         <span className={styles.buttonTitle}>
                             Добавить

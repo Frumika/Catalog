@@ -6,7 +6,7 @@ import {CategoryButton} from "./category-button/CategoryButton.tsx";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {SelectPickupPoint} from "@/features/select-pickup-point/ui/SelectPickupPoint.tsx";
 import {NavGroup} from "./nav-group/NavGroup.tsx";
-import {type ComponentDisplayMode, useMediaQuery} from "@/shared/lib";
+import {type ComponentDisplayMode, useMediaQuery, useNotify} from "@/shared/lib";
 import styles from "./Header.module.css"
 
 
@@ -33,6 +33,11 @@ export const Header = (
     const logoDisplayMode: ComponentDisplayMode = isTablet ? 'compact' : 'full';
     const catalogDisplayMode: ComponentDisplayMode = isLaptop ? 'compact' : 'full';
     const navDisplayMode: ComponentDisplayMode = isMobile ? 'compact' : 'full';
+
+    const notify = useNotify();
+    const onCategoryClick = () => {
+        notify("warning", "Кнопки категорий пока не реализованы");
+    }
 
     useEffect(() => {
         const upperEl = upperRef.current;
@@ -83,7 +88,7 @@ export const Header = (
                             value={query}
                             placeholder={"Ищите на Wildboars"}
                             onChange={setQuery}
-                            onSearch={() => console.log(query)}
+                            onSearch={() => notify("warning", "Поиск товара пока не реализован")}
                             onClear={() => setQuery("")}
                         />
 
@@ -98,23 +103,19 @@ export const Header = (
                     <div className={styles.bottom} style={{paddingTop: `${upperHeight}px`}}>
 
                         <div className={styles.categoryItemContainer}>
-                            <CategoryButton onClick={() => {
-                            }}>
+                            <CategoryButton onClick={onCategoryClick}>
                                 Одежда
                             </CategoryButton>
 
-                            <CategoryButton onClick={() => {
-                            }}>
+                            <CategoryButton onClick={onCategoryClick}>
                                 Электроника
                             </CategoryButton>
 
-                            <CategoryButton onClick={() => {
-                            }}>
+                            <CategoryButton onClick={onCategoryClick}>
                                 Дом и сад
                             </CategoryButton>
 
-                            <CategoryButton onClick={() => {
-                            }}>
+                            <CategoryButton onClick={onCategoryClick}>
                                 Сертификаты
                             </CategoryButton>
                         </div>

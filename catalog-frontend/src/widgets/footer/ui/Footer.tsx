@@ -7,9 +7,12 @@ import VkIcon from "@/shared/assets/icons/vk.svg?react";
 import TgIcon from "@/shared/assets/icons/tg.svg?react";
 import OkIcon from "@/shared/assets/icons/ok.svg?react";
 import GlassesIcon from "@/shared/assets/icons/glasses.svg?react";
+import {useNotify} from "@/shared/lib";
 
 
 export const Footer = () => {
+    const notify = useNotify();
+
     return (
         <footer className={styles.footer}>
             <ContentContainer>
@@ -71,14 +74,38 @@ export const Footer = () => {
 
                         <div className={styles.mediaWrapper}>
                             <div className={styles.socialMedia}>
-                                <Button variant={"neutral"} icon={<VkIcon/>}/>
+                                <Button
+                                    variant={"neutral"}
+                                    icon={<VkIcon/>}
+                                    onClick={() =>
+                                        notify("warning", "Переход в соц. сети пока не реализован")
+                                    }
+                                />
 
-                                <Button variant={"neutral"} icon={<OkIcon/>}/>
+                                <Button
+                                    variant={"neutral"}
+                                    icon={<OkIcon/>}
+                                    onClick={() =>
+                                        notify("warning", "Переход в соц. сети пока не реализован")
+                                    }
+                                />
 
-                                <Button variant={"neutral"} icon={<TgIcon/>}/>
+                                <Button
+                                    variant={"neutral"}
+                                    icon={<TgIcon/>}
+                                    onClick={() =>
+                                        notify("warning", "Переход в соц. сети пока не реализован")
+                                    }
+                                />
                             </div>
 
-                            <Button variant={"primary"} icon={<GlassesIcon/>}>
+                            <Button
+                                variant={"primary"}
+                                icon={<GlassesIcon/>}
+                                onClick={() =>
+                                    notify("warning", "Режим для слабовидящих пока не реализован")
+                                }
+                            >
                                 Для слабовидящих
                             </Button>
                         </div>

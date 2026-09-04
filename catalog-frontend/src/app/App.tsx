@@ -2,6 +2,7 @@ import {AppRoutes} from "./routes/AppRoutes.tsx";
 import {CartSync} from "./providers/CartSync.tsx";
 import {WishlistSync} from "./providers/WishlistSync.tsx";
 import {PickupPointSync} from "@/app/providers/PickupPointSync.tsx";
+import {NotificationContainer} from "@/app/providers/notification-container/NotificationContainer.tsx";
 
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
             <WishlistSync/>
             <PickupPointSync/>
             <AppRoutes/>
+            <NotificationContainer/>
         </>
     );
 }

@@ -10,7 +10,8 @@ import {CheckoutHeader} from "./checkout-header/CheckoutHeader.tsx";
 import {DeliveryType} from "./delivery-type/DeliveryType.tsx";
 import {PageLabel} from "@/shared/ui/page-label";
 import {CheckoutModal} from "@/widgets/checkout-modal";
-import {useDisclosure} from "@/shared/lib";
+import {useDisclosure, useNotify} from "@/shared/lib";
+import {useNavigate} from "react-router-dom";
 
 
 export const CheckoutPage = () => {
@@ -20,6 +21,8 @@ export const CheckoutPage = () => {
     const {getOrderById, payOrder} = useOrderActions();
     const [selectedGroup, setSelectedGroup] = useState<OrderPositionGroup | null>(null);
     const {isOpen, open, close} = useDisclosure();
+    const navigate = useNavigate();
+    const notify = useNotify();
 
 
     useEffect(() => {
@@ -41,6 +44,12 @@ export const CheckoutPage = () => {
     const onModalOpen = (positionGroup: OrderPositionGroup) => {
         open();
         setSelectedGroup(positionGroup);
+    }
+
+    const onPay = async (orderId: number) => {
+        await payOrder(orderId);
+        notify("success", "Оплата прошла успешно");
+        navigate("/");
     }
 
 
@@ -70,7 +79,7 @@ export const CheckoutPage = () => {
 
                             <CheckoutSummary
                                 orderPositions={order.orderPositions}
-                                onPay={() => payOrder(order.orderId)}
+                                onPay={() => onPay(order.orderId)}
                             />
                         </div>
                     }

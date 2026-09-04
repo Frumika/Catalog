@@ -1,0 +1,19 @@
+.notificationContainer {
+    position: fixed;
+    top: 20px;
+    left: calc(50vw - 320px / 2);
+    z-index: 1000;
+
+    width: 320px;
+    padding: 2px;
+    max-height: 700px;
+    overflow-y: hidden;
+
+    display: grid;
+    grid-auto-rows: 1fr;
+    gap: 16px;
+}
+
+.timerWrapper {
+    height: 100%;
+}

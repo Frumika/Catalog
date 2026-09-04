@@ -89,19 +89,19 @@ export const apiClient = {
         return request<TData>(url, 'GET', undefined, authorization, headers);
     },
 
-    post<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
+    post<TData>(url: string, body: RequestBody | undefined = undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'POST', body, authorization, headers);
     },
 
-    put<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
+    put<TData>(url: string, body: RequestBody | undefined = undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'PUT', body, authorization, headers);
     },
 
-    patch<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
+    patch<TData>(url: string, body: RequestBody | undefined = undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'PATCH', body, authorization, headers);
     },
 
-    delete<TData>(url: string, body: undefined, authorization = true, headers?: HeadersInit) {
+    delete<TData>(url: string, body: RequestBody | undefined = undefined, authorization = true, headers?: HeadersInit) {
         return request<TData>(url, 'DELETE', body, authorization, headers);
     },
 };

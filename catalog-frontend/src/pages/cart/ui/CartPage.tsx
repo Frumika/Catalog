@@ -8,6 +8,9 @@ import {CartSummary} from "@/widgets/cart-summary";
 import {useIsAuthenticated} from "@/entities/session";
 import {PageLabel} from "@/shared/ui/page-label";
 import {CartSelectionProvider} from "@/features/cart-selection";
+import {useOrderActions, useSetActiveCheckoutOrder} from "@/entities/order";
+import {useCurrentPickupPoint} from "@/entities/pickup-point";
+import {useNavigate} from "react-router-dom";
 
 
 export const CartPage = () => {
@@ -15,8 +18,19 @@ export const CartPage = () => {
     const totalQuantity = useCartTotalQuantity();
     const {cartPositions} = useExtendedCartPositions(isAuthenticated);
 
-    console.log("CartPositions ", cartPositions);
+    const {makeOrder} = useOrderActions();
+    const setActiveOrder = useSetActiveCheckoutOrder();
+    const pickupPoint = useCurrentPickupPoint();
+    const navigate = useNavigate();
 
+    const handleCheckout = async (productIds: number[]) => {
+        if (!pickupPoint) return;
+
+        const createdOrder = await makeOrder(productIds, pickupPoint.id);
+        setActiveOrder(createdOrder);
+
+        navigate('/checkout');
+    }
 
     return (
         <>
@@ -29,8 +43,8 @@ export const CartPage = () => {
 
                     <CartSelectionProvider cartPositions={cartPositions}>
                         <div className={styles.sectionSpacer}>
-                            <CartList cartPositions={cartPositions}/>
-                            <CartSummary/>
+                            <CartList cartPositions={cartPositions} onCheckout={handleCheckout}/>
+                            <CartSummary onCheckout={handleCheckout}/>
                         </div>
                     </CartSelectionProvider>
 
