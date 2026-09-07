@@ -37,8 +37,8 @@ public static class ProductQueryExtensions
                     .Where(wp => wp.Wishlist.UserId == userId)
                     .Select(wp => wp.AddedAt)
                     .FirstOrDefault()),
-                ProductSortOrder.PriceAsc => query.OrderBy(p => p.Price),
-                ProductSortOrder.PriceDesc => query.OrderByDescending(p => p.Price),
+                ProductSortOrder.PriceAsc => query.OrderBy(p => p.Price * (100 - p.DiscountPercent) / 100m),
+                ProductSortOrder.PriceDesc => query.OrderByDescending(p => p.Price * (100 - p.DiscountPercent) / 100m),
                 ProductSortOrder.DiscountDesc => query.OrderByDescending(p => p.DiscountPercent),
                 _ => query.OrderBy(p => p.Id)
             };

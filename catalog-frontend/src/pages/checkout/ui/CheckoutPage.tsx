@@ -11,12 +11,14 @@ import {PageLabel} from "@/shared/ui/page-label";
 import {CheckoutModal} from "./checkout-modal/CheckoutModal.tsx";
 import {useDisclosure, useNotify} from "@/shared/lib";
 import {useNavigate} from "react-router-dom";
+import {useCartActions} from "@/entities/cart";
 
 
 export const CheckoutPage = () => {
     const activeOrderId = useGetCheckoutOrderId();
     const [order, setOrder] = useState<ExtendedOrder | null>(null);
     const {getOrderById, payOrder} = useOrderActions();
+    const {clearCart} = useCartActions();
     const [selectedGroup, setSelectedGroup] = useState<OrderPositionGroup | null>(null);
     const {isOpen, open, close} = useDisclosure();
     const navigate = useNavigate();
@@ -45,6 +47,7 @@ export const CheckoutPage = () => {
 
     const onPay = async (orderId: number) => {
         await payOrder(orderId);
+        await clearCart();
         notify("success", "Оплата прошла успешно");
         navigate("/");
     }
