@@ -11,7 +11,7 @@ public static class ApplicationBuilderExtensions
         app.ApplyMigrations()
             .WarmupDatabase();
     }
- 
+
     public static WebApplication UseApplicationPipeline(this WebApplication app)
     {
         app.UseCors("AllowAllOrigins");
@@ -39,14 +39,12 @@ public static class ApplicationBuilderExtensions
 
         return app;
     }
-    
+
     private static WebApplication AddSwagger(this WebApplication app)
     {
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        app.UseSwagger();
+
+        app.UseSwaggerUI();
 
         return app;
     }

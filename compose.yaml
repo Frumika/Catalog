@@ -19,6 +19,7 @@
   
   api-server:
     container_name: api-server
+    restart: always
     build:
       context: ./Backend/
       dockerfile: Dockerfile
@@ -65,8 +66,8 @@
     container_name: nginx
     restart: always
     build:
-      context: ./Infrastructure/Nginx
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./Infrastructure/Nginx/Dockerfile
     volumes:
       - ./Resources/ProductImages:/usr/share/nginx/static/images:ro
     networks:

@@ -13,7 +13,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.gitignore = ..\.gitignore
 		..\compose.yaml = ..\compose.yaml
 		Dockerfile = Dockerfile
-		.dockerignore = .dockerignore
+		..\.dockerignore = ..\.dockerignore
 	EndProjectSection
 EndProject
 Global

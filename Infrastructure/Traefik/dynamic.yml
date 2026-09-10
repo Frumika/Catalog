@@ -4,18 +4,22 @@ http:
       rule: PathPrefix(`/dashboard`)
       entryPoints: web
       service: api@internal
-    
+
     api:
       rule: PathPrefix(`/api`)
       entryPoints: web
       service: api-service
-      
+
+    swagger:
+      rule: PathPrefix(`/swagger`)
+      entryPoints: web
+      service: api-service
+
     nginx:
       rule: PathPrefix(`/images`) || PathPrefix(`/web`)
       entryPoints: web
       service: nginx
-  
-  
+
   services:
     api-service:
       loadBalancer:
@@ -26,8 +30,8 @@ http:
         servers:
           - url: "http://api-server:8001"
           - url: "http://host.docker.internal:8001"
-    
+
     nginx:
       loadBalancer:
         servers:
-          - url: "http://nginx"  
+          - url: "http://nginx"

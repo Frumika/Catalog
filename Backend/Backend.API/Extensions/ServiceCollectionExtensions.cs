@@ -169,6 +169,12 @@ public static class ServiceCollectionExtensions
     {
         services.AddSwaggerGen(options =>
         {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = "ApiServer",
+                Version = "v1"
+            });
+
             options.AddSecurityDefinition("Bearer",
                 new OpenApiSecurityScheme
                 {

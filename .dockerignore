@@ -1,0 +1,24 @@
+# Git и файлы редакторов
+.git
+.gitignore
+.idea
+.vscode
+**/*.user
+
+# Frontend
+**/node_modules
+**/dist
+**/.cache
+
+# Backend / .NET
+**/bin
+**/obj
+
+# Логи и временные файлы
+*.log
+**/npm-debug.log*
+
+# Docker файлы
+**/Dockerfile*
+**/docker-compose*
+**/.dockerignore
