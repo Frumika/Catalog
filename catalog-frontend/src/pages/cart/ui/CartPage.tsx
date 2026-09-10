@@ -11,17 +11,22 @@ import {CartSelectionProvider} from "@/features/cart-selection";
 import {useOrderActions, useSetActiveCheckoutOrder} from "@/entities/order";
 import {useCurrentPickupPoint} from "@/entities/pickup-point";
 import {useNavigate} from "react-router-dom";
+import {Button} from "@/shared/ui/button";
 
 
 export const CartPage = () => {
     const isAuthenticated = useIsAuthenticated();
     const totalQuantity = useCartTotalQuantity();
     const {cartPositions} = useExtendedCartPositions(isAuthenticated);
-
     const {makeOrder} = useOrderActions();
     const setActiveOrder = useSetActiveCheckoutOrder();
     const pickupPoint = useCurrentPickupPoint();
     const navigate = useNavigate();
+
+    const isCartEmpty = totalQuantity === 0
+    const displayedLabelText: string = isCartEmpty ? "Корзина пуста" : "Корзина";
+    const displayedQuantity: number | undefined = totalQuantity === 0 ? undefined : totalQuantity;
+
 
     const handleCheckout = async (productIds: number[]) => {
         if (!pickupPoint) return;
@@ -41,15 +46,30 @@ export const CartPage = () => {
             <main className={styles.main}>
                 <ContentContainer>
 
-                    <PageLabel className={styles.pageLabel} title={"Корзина"} quantity={totalQuantity}/>
+                    <PageLabel title={displayedLabelText} quantity={displayedQuantity}/>
 
-                    <CartSelectionProvider cartPositions={cartPositions}>
-                        <div className={styles.sectionSpacer}>
-                            <CartList cartPositions={cartPositions} onCheckout={handleCheckout}/>
-                            <CartSummary onCheckout={handleCheckout}/>
+                    {!isCartEmpty ?
+                        <CartSelectionProvider cartPositions={cartPositions}>
+                            <div className={styles.sectionSpacer}>
+                                <CartList cartPositions={cartPositions} onCheckout={handleCheckout}/>
+                                <CartSummary onCheckout={handleCheckout}/>
+                            </div>
+                        </CartSelectionProvider>
+                        :
+                        <div className={styles.plugContainer}>
+                            <p className={styles.plugText}>
+                                Что-бы что-то купить, это надо сначала положить в корзину
+                            </p>
+                            <Button
+                                className={styles.navigateButton}
+                                variant={"secondary"}
+                                size={"small"}
+                                onClick={() => navigate("/")}
+                            >
+                                Начать покупки
+                            </Button>
                         </div>
-                    </CartSelectionProvider>
-
+                    }
                 </ContentContainer>
             </main>
 
