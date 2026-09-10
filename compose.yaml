@@ -45,7 +45,7 @@
       - app-network
     volumes:
       - ./Infrastructure/Postgres/init:/docker-entrypoint-initdb.d
-      - catalog-postgres-data:/var/lib/postgresql/data
+      - marketplace-postgres-data:/var/lib/postgresql/data
   
   redis:
     container_name: redis
@@ -78,4 +78,4 @@ networks:
   app-network:
 
 volumes:
-  catalog-postgres-data:
+  marketplace-postgres-data:

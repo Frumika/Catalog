@@ -2,10 +2,10 @@
 FROM node:20-alpine AS frontend-build
 WORKDIR /app
 
-COPY catalog-frontend/package.json catalog-frontend/package-lock.json* ./
+COPY marketplace-frontend/package.json marketplace-frontend/package-lock.json* ./
 RUN npm install
 
-COPY catalog-frontend/ ./
+COPY marketplace-frontend/ ./
 RUN npm run build
 
 

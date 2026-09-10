@@ -91,14 +91,6 @@ DROP TABLE IF EXISTS public.categories;
 DROP TABLE IF EXISTS public.carts;
 DROP TABLE IF EXISTS public.cart_positions;
 DROP TABLE IF EXISTS public."__EFMigrationsHistory";
--- *not* dropping schema, since initdb creates it
---
--- Name: public; Type: SCHEMA; Schema: -; Owner: -
---
-
--- *not* creating schema, since initdb creates it
-
-
 --
 -- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: -
 --
@@ -603,16 +595,6 @@ INSERT INTO public.pickup_points (id, city, street_type, street_name, house, bui
 -- Data for Name: product_images; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (1, 1, 'images/iphone_15_pro_1.png', 1);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (2, 2, 'images/iphone_15_pro_2.png', 1);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (3, 1, 'images/samsung_s_24_ultra_1.png', 2);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (4, 2, 'images/samsung_s_24_ultra_2.png', 2);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (6, 1, 'images/apple_airpods_pro_1.png', 4);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (7, 2, 'images/apple_airpods_pro_2.png', 4);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (8, 1, 'images/t-shirt_cotton_black_1.png', 6);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (9, 1, 'images/nike_air_force_1.png', 11);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (11, 1, 'images/candle_1.png', 20);
-INSERT INTO public.product_images (id, "position", path, product_id) VALUES (10, 1, 'images/converse_chuck_taylor_all_star_1.png', 12);
 
 
 --
@@ -715,7 +697,6 @@ INSERT INTO public.products (id, name, description, price, discount_percent, qua
 -- Data for Name: refresh_token; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.refresh_token (id, token, expires_at, created_at, is_revoked, user_id) VALUES (27, 'n6GeBSbqRaQuXp/LJHBJp0zm5PhtR9Mf0XLignPCqeU=', '2026-09-09 10:17:17.787439+00', '2026-09-04 10:17:17.787647+00', false, 1);
 
 
 --
@@ -984,7 +965,7 @@ SELECT pg_catalog.setval('public.pickup_points_id_seq', 1, false);
 -- Name: product_images_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.product_images_id_seq', 11, true);
+SELECT pg_catalog.setval('public.product_images_id_seq', 1, false);
 
 
 --
