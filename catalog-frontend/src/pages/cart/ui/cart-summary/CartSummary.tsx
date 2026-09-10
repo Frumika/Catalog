@@ -25,6 +25,7 @@ export const CartSummary = (
 
     return (
         <Summary
+            className={styles.cartSummary}
             title="Ваша корзина"
             positions={selectedPositions}
             actionButton={

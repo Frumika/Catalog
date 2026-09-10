@@ -1,8 +1,8 @@
 .summary {
     position: sticky;
-    top: 24px;
+    top: var(--summary-top, 24px);
 
-    background: #fff;
+    background-color: var(--bgMain);
     border-radius: 20px;
     padding: 24px;
     box-shadow: 0 4px 32px rgba(0, 26, 51, 0.04);

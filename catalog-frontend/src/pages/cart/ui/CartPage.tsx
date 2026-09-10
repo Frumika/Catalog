@@ -40,7 +40,7 @@ export const CartPage = () => {
     }
 
     return (
-        <>
+        <div className={styles.pageWrapper}>
             <Header/>
 
             <main className={styles.main}>
@@ -74,6 +74,6 @@ export const CartPage = () => {
             </main>
 
             <Footer/>
-        </>
+        </div>
     );
 };

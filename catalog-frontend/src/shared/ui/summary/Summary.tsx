@@ -22,8 +22,9 @@ export const Summary = (
     const {totalBasePrice, totalDiscountAmount, totalDiscountedPrice} = getPositionsTotals(positions);
     const totalQuantity = getGoodsQuantity(positions);
 
+
     return (
-        <section className={`${styles.summary} ${className ?? ''}`}>
+        <section className={[styles.summary, className].filter(Boolean).join(' ')}>
             {actionButton}
 
             <div className={styles.summaryDetails}>

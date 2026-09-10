@@ -1,3 +1,7 @@
+.cartSummary {
+    --summary-top: 70px;
+}
+
 .checkoutButton {
     border-radius: 12px;
 }
