@@ -26,7 +26,7 @@ export const NavGroup = (
             <NavButton
                 displayMode={displayMode}
                 icon={<OrderIcon/>}
-                badgeValue={150}
+                badgeValue={0}
                 onClick={() => notify("warning", "Заказы пока не реализованы")}>
                 Заказы
             </NavButton>
