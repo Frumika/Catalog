@@ -74,24 +74,11 @@ public class SessionService
             await _codeStorage.RemoveCodeAsync(emailLower);
 
 
-            User? user = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == emailLower);
+            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == emailLower);
+            user ??= await CreateUser(emailLower);
             DateTime currentTime = DateTime.UtcNow;
-            if (user == null)
-            {
-                user = new User
-                {
-                    Email = emailLower,
-                    Login = $"User_{Guid.NewGuid():N}".Substring(0, 8),
-                    CreatedAt = currentTime,
-                    Cart = new Cart(),
-                    Wishlist = new Wishlist()
-                };
-                _dbContext.Users.Add(user);
-                await _dbContext.SaveChangesAsync();
-            }
-
             user.LastLoginAt = currentTime;
+
 
             string accessToken = _tokenGenerator.GenerateAccessToken(user);
             RefreshToken refreshToken = _tokenGenerator.GenerateRefreshToken(user);
@@ -122,25 +109,12 @@ public class SessionService
         {
             string emailLower = request.Email.ToLowerInvariant().Trim();
 
-            User? user = await _dbContext.Users
-                .FirstOrDefaultAsync(u => u.Email == emailLower);
-            DateTime currentTime = DateTime.UtcNow;
-            if (user == null)
-            {
-                user = new User
-                {
-                    Email = emailLower,
-                    Login = $"User_{Guid.NewGuid():N}".Substring(0, 8),
-                    CreatedAt = currentTime,
-                    Cart = new Cart(),
-                    Wishlist = new Wishlist()
-                };
-                _dbContext.Users.Add(user);
-                await _dbContext.SaveChangesAsync();
-            }
 
+            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == emailLower);
+            user ??= await CreateUser(emailLower);
+            DateTime currentTime = DateTime.UtcNow;
             user.LastLoginAt = currentTime;
-            
+
 
             string accessToken = _tokenGenerator.GenerateAccessToken(user);
             RefreshToken refreshToken = _tokenGenerator.GenerateRefreshToken(user);
@@ -237,5 +211,44 @@ public class SessionService
         {
             return Response.Fail(new UnknownError(), "Internal server error");
         }
+    }
+
+
+    private async Task<User> CreateUser(string email)
+    {
+        DateTime currentTime = DateTime.UtcNow;
+
+        User user = new User
+        {
+            Email = email,
+            Login = $"User_{Guid.NewGuid():N}".Substring(0, 8),
+            CreatedAt = currentTime,
+            Cart = new Cart(),
+            Wishlist = new Wishlist()
+        };
+
+        /*
+         * Пока нет функционала добавления ПВЗ при регистрации пользователя ему(пользователю)
+         * добавляются 3 случайных ПВЗ
+         */
+        List<PickupPoint> pickupPoints = await _dbContext.PickupPoints
+            .OrderBy(_ => EF.Functions.Random())
+            .Take(3)
+            .ToListAsync();
+
+        user.UserPickupPoints = pickupPoints
+            .Select(pp => new UserPickupPoint
+            {
+                User = user,
+                PickupPoint = pp,
+                SelectedAt = currentTime - TimeSpan.FromDays(Random.Shared.Next(1, 8)),
+                AddedAt = currentTime - TimeSpan.FromDays(Random.Shared.Next(8, 15))
+            })
+            .ToList();
+
+        _dbContext.Users.Add(user);
+        await _dbContext.SaveChangesAsync();
+
+        return user;
     }
 }
