@@ -10,7 +10,7 @@ export const SessionSync = () => {
 
     useEffect(() => {
         if (wasAuthenticated.current && !isAuthenticated) {
-            notify("error", "Сессия истекла, войдите снова");
+            notify("warning", "Сессия истекла, войдите снова");
         }
         wasAuthenticated.current = isAuthenticated;
     }, [isAuthenticated]);
