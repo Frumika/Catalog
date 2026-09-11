@@ -4,7 +4,7 @@ import type {RefObject} from "react";
 import {Button} from "@/shared/ui/button";
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react"
 import LeaveIcon from "@/shared/assets/icons/leave.svg?react"
-import {useSession} from "@/entities/session";
+import {useSessionActions} from "@/entities/session";
 
 
 interface ProfilePopoverProps {
@@ -20,7 +20,7 @@ export const ProfilePopover = (
         anchorRef,
     }: ProfilePopoverProps
 ) => {
-    const {logout} = useSession();
+    const {logout} = useSessionActions();
 
     return (
         <Popover

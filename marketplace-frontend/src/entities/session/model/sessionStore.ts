@@ -11,22 +11,31 @@ interface SessionActions {
     clearSession: () => void;
 }
 
-export const useSessionStore = create<SessionState & SessionActions>((set) => ({
-    isAuthenticated: !!tokenLocalStorage.getRefreshToken(),
 
-    setTokens: (accessToken: string, refreshToken: string) => {
-        tokenLocalStorage.setAccessToken(accessToken);
-        tokenLocalStorage.setRefreshToken(refreshToken);
-        set({isAuthenticated: true});
-    },
+const defineIsAuthenticated = () => !!tokenLocalStorage.getRefreshToken();
 
-    clearSession: () => {
-        tokenLocalStorage.clearStorage();
-        set({isAuthenticated: false});
-    },
-}));
+export const useSessionStore = create<SessionState & SessionActions>(
+    (set) => {
+        tokenLocalStorage.subscribe(() => set({isAuthenticated: defineIsAuthenticated()}));
 
-// Селекторы
+        return {
+            isAuthenticated: defineIsAuthenticated(),
+
+            setTokens: (accessToken: string, refreshToken: string) => {
+                tokenLocalStorage.setAccessToken(accessToken);
+                tokenLocalStorage.setRefreshToken(refreshToken);
+                set({isAuthenticated: true});
+            },
+
+            clearSession: () => {
+                tokenLocalStorage.clearStorage();
+                set({isAuthenticated: false});
+            },
+        }
+    }
+);
+
+
 export const useIsAuthenticated = () => useSessionStore((s) => s.isAuthenticated);
 export const useSetTokens = () => useSessionStore((s) => s.setTokens);
 export const useClearSession = () => useSessionStore((s) => s.clearSession);

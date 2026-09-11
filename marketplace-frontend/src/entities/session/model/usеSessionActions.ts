@@ -5,7 +5,7 @@ import {useClearSession, useSetTokens} from "./sessionStore.ts";
 import {useNotify} from "@/shared/lib";
 
 
-export const useSession = () => {
+export const useSessionActions = () => {
     const setTokens = useSetTokens();
     const clearSession = useClearSession();
     const notify = useNotify();

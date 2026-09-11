@@ -3,7 +3,7 @@ import styles from "./AuthModal.module.css"
 import {Button} from "@/shared/ui/button";
 import {Input} from "@/shared/ui/input";
 import {useState} from "react";
-import {useSession} from "@/entities/session";
+import {useSessionActions} from "@/entities/session";
 import {DemoButton} from "@/features/auth/ui/demo-button/DemoButton.tsx";
 import {useNotify} from "@/shared/lib";
 
@@ -21,7 +21,7 @@ export const AuthModal = (
 ) => {
     const [email, setEmail] = useState("");
     const [code, setCode] = useState("");
-    const {isCodeSend, sendCode, verify, demo} = useSession();
+    const {isCodeSend, sendCode, verify, demo} = useSessionActions();
     const notify = useNotify();
 
 
