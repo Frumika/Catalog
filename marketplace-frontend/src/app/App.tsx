@@ -1,9 +1,9 @@
 import {AppRoutes} from "./routes/AppRoutes.tsx";
-import {CartSync} from "./providers/CartSync.tsx";
-import {WishlistSync} from "./providers/WishlistSync.tsx";
-import {PickupPointSync} from "./providers/PickupPointSync.tsx";
-import {NotificationContainer} from "@/widgets/notification-container/ui/NotificationContainer.tsx";
-import {SessionSync} from "./providers/SessionSync.tsx";
+import {CartSync} from "@/app/sync/CartSync.tsx";
+import {WishlistSync} from "@/app/sync/WishlistSync.tsx";
+import {PickupPointSync} from "@/app/sync/PickupPointSync.tsx";
+import {SessionSync} from "@/app/sync/SessionSync.tsx";
+import {NotificationContainer} from "@/shared/ui/notification-container";
 
 
 function App() {
