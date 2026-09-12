@@ -1,7 +1,7 @@
 import styles from "./PositionsGroupCard.module.css";
 import type {OrderPositionGroup} from "@/entities/order";
-import {formatGoodsQuantity} from "@/shared/lib/formatGoodsQuantity.ts";
-import {formatDate} from "@/shared/lib/formatDate.ts";
+import {formatGoodsQuantity} from "@/shared/lib/format/formatGoodsQuantity.ts";
+import {formatDate} from "@/shared/lib/format/formatDate.ts";
 import {getGoodsQuantity} from "@/shared/lib";
 
 

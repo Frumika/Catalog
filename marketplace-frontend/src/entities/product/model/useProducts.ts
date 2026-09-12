@@ -1,6 +1,6 @@
 import {useCallback, useMemo} from "react";
 import {productApi} from "../api/productApi.ts";
-import {usePaginatedList} from "@/shared/lib/usePaginatedList.ts";
+import {usePaginatedList} from "@/shared/lib/hooks/usePaginatedList.ts";
 import type {ProductFilters} from "@/entities/product";
 
 
