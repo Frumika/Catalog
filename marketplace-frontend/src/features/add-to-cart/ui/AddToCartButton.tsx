@@ -2,7 +2,7 @@ import {useCartActions, useCartPositionQuantity} from "@/entities/cart";
 import {QuantityButton} from "@/shared/ui/quantity-button";
 import {Button} from "@/shared/ui/button";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
-import type {ComponentSize} from "@/shared/lib";
+import type {ComponentSize} from "@/shared/model";
 
 
 interface AddToCartButtonProps {

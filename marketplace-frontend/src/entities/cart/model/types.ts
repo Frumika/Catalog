@@ -1,5 +1,5 @@
 import type {CartPositionDto, CartPositionPreviewDto} from "../api/dto.ts";
-import type {PricedPosition} from "@/shared/types";
+import type {PricedPosition} from "@/shared/model";
 
 
 export interface CartPositionPreview extends CartPositionPreviewDto {

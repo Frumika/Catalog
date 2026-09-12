@@ -1,13 +1,10 @@
-import type {ProductPreview} from "../model/types.ts";
 import styles from "./ProductCard.module.css";
-
-import {formatPrice} from "@/shared/lib";
+import type {ProductPreview} from "../model/types.ts";
 import {Icon} from "@/shared/ui/icon";
-
 import StarIcon from "@/shared/assets/icons/star.svg?react";
 import ReviewIcon from "@/shared/assets/icons/message.svg?react";
-
 import type {ReactNode} from "react";
+import {formatPrice} from "@/shared/lib/format";
 
 
 interface ProductCardProps {

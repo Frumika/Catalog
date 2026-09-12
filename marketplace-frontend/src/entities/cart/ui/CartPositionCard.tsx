@@ -2,11 +2,13 @@ import type {CartPosition} from "../model/types.ts";
 import {useCartActions} from "@/entities/cart";
 import styles from "./CartPositionCard.module.css";
 import TrashcanIcon from "@/shared/assets/icons/trashcan.svg?react";
-import {formatPrice, getPositionTotals, useNotify} from "@/shared/lib";
 import {QuantityButton} from "@/shared/ui/quantity-button";
 import {Button} from "@/shared/ui/button";
 import {type ReactNode, useMemo} from "react";
 import {Checkbox} from "@/shared/ui/checkbox";
+import {useNotify} from "@/shared/lib/notification";
+import {getPositionTotals} from "@/shared/lib/totals";
+import {formatPrice} from "@/shared/lib/format";
 
 
 interface CartPositionCard {

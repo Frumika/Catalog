@@ -6,8 +6,10 @@ import {CategoryButton} from "./category-button/CategoryButton.tsx";
 import {ContentContainer} from "@/shared/ui/content-container";
 import {SelectPickupPoint} from "@/features/select-pickup-point/ui/SelectPickupPoint.tsx";
 import {NavGroup} from "./nav-group/NavGroup.tsx";
-import {type ComponentDisplayMode, useMediaQuery, useNotify} from "@/shared/lib";
 import styles from "./Header.module.css"
+import {useMediaQuery} from "@/shared/lib/hooks";
+import type {ComponentDisplayMode} from "@/shared/model";
+import {useNotify} from "@/shared/lib/notification";
 
 
 interface HeaderProps {

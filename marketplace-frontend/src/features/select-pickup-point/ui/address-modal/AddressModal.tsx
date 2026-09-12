@@ -4,7 +4,8 @@ import {Modal} from "@/shared/ui/modal";
 import {AddressCard} from "@/features/select-pickup-point/ui/address-card/AddressCard.tsx";
 import {Button} from "@/shared/ui/button";
 import {useCurrentPickupPoint, usePickupPointActions, usePickupPoints} from "@/entities/pickup-point";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
+
 
 
 export const AddressModal = (

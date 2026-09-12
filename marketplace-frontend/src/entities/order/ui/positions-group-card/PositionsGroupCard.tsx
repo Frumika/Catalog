@@ -2,7 +2,7 @@ import styles from "./PositionsGroupCard.module.css";
 import type {OrderPositionGroup} from "@/entities/order";
 import {formatGoodsQuantity} from "@/shared/lib/format/formatGoodsQuantity.ts";
 import {formatDate} from "@/shared/lib/format/formatDate.ts";
-import {getGoodsQuantity} from "@/shared/lib";
+import {getGoodsQuantity} from "@/shared/lib/totals";
 
 
 interface PositionsGroupCardProps {

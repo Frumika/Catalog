@@ -3,7 +3,7 @@ import type {CartPosition} from "./types.ts";
 import {useCartPositions} from "@/entities/cart";
 import {cartApi} from "../api/cartApi.ts";
 import {ApiError, toApiError} from "@/shared/api";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const useExtendedCartPositions = (isAuthenticated: boolean) => {

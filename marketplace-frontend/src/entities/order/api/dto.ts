@@ -1,4 +1,4 @@
-import type {PricedPosition} from "@/shared/types";
+import type {PricedPosition} from "@/shared/model";
 
 export interface OrderPositionDto extends PricedPosition {
     imageUrl: string | null;

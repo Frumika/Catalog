@@ -2,7 +2,7 @@ import {useState} from "react";
 import {sessionApi} from "../api/sessionApi.ts";
 import {ApiError, tokenLocalStorage, toApiError} from "@/shared/api";
 import {useClearSession, useSetTokens} from "./sessionStore.ts";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const useSessionActions = () => {

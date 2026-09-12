@@ -1,6 +1,6 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {ApiError, toApiError, type PagedResult} from '../../api';
-import {useNotify} from "@/shared/lib/notification/useNotificationStore.ts";
+import {useNotify} from "@/shared/lib/notification";
+import {ApiError, type PagedResult, toApiError} from "@/shared/api";
 
 
 type FetchPage<T> = (page: number, pageSize: number) => Promise<PagedResult<T>>;

@@ -1,6 +1,6 @@
 import {AddressButton} from "./address-button/AddressButton.tsx";
 import {AddressModal} from "./address-modal/AddressModal.tsx";
-import {useDisclosure} from "@/shared/lib";
+import {useDisclosure} from "@/shared/lib/hooks";
 
 
 export const SelectPickupPoint = () => {

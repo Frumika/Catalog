@@ -1,11 +1,12 @@
 import {NavButton} from "@/shared/ui/nav-button";
 import {type ButtonHTMLAttributes, type RefObject, useRef} from "react";
-import {type ComponentDisplayMode, useDisclosure} from "@/shared/lib";
 import ProfileIcon from "@/shared/assets/icons/profile.svg?react";
 import {useUser} from "@/entities/user/model/useUser.ts";
 import {useIsAuthenticated} from "@/entities/session";
 import {AuthModal} from "@/features/auth/ui/auth-modal/AuthModal.tsx";
 import {ProfilePopover} from "@/features/auth/ui/profile-popover/ProfilePopover.tsx";
+import type {ComponentDisplayMode} from "@/shared/model";
+import {useDisclosure} from "@/shared/lib/hooks";
 
 
 interface ProfileButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

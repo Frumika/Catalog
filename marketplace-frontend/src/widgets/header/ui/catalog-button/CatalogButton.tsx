@@ -1,7 +1,7 @@
 import type {CatalogButtonProps} from "@/widgets/header/ui/catalog-button/CatalogButton.types.ts";
 import {Button} from "@/shared/ui/button";
 import CatalogIcon from "@/shared/assets/icons/catalog.svg?react";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const CatalogButton = (

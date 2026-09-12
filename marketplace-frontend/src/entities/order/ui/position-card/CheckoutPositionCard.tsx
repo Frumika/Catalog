@@ -1,6 +1,6 @@
 import styles from "./PositionCard.module.css";
 import type {OrderPosition} from "@/entities/order";
-import {formatPrice} from "@/shared/lib";
+import {formatPrice} from "@/shared/lib/format";
 
 
 interface PositionCardProps {

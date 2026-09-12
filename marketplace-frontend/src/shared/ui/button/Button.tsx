@@ -1,7 +1,7 @@
 import styles from './Button.module.css';
 import {Icon} from "@/shared/ui/icon";
 import {type ButtonHTMLAttributes, type ReactNode, type RefObject} from "react";
-import type {ComponentSize} from "@/shared/lib";
+import type {ComponentSize} from "@/shared/model";
 
 
 export type ButtonVariant = 'primary' | 'secondaryGhost' | 'secondary' | 'ghost' | 'neutral' | 'popover';

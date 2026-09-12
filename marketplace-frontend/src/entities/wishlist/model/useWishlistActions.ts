@@ -1,7 +1,7 @@
 import {useAddWishedProduct, useRemoveWishedProduct} from "@/entities/wishlist/model/wishlistStore.ts";
 import {ApiError, toApiError} from "@/shared/api";
 import {wishlistApi} from "@/entities/wishlist/api/wishlistApi.ts";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const useWishlistActions = () => {

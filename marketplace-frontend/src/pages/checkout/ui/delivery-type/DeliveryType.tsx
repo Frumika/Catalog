@@ -2,9 +2,9 @@ import styles from "./DeliveryType.module.css";
 import {useCurrentPickupPoint} from "@/entities/pickup-point";
 import {useIsAuthenticated} from "@/entities/session";
 import {useUser} from "@/entities/user/model/useUser.ts";
-import {formatDays, formatPhone} from "@/shared/lib";
 import PlaceIcon from "@/shared/assets/icons/place.svg?react";
 import ProfileFillIcon from "@/shared/assets/icons/profile-fill.svg?react";
+import {formatDays, formatPhone} from "@/shared/lib/format";
 
 
 export const DeliveryType = () => {

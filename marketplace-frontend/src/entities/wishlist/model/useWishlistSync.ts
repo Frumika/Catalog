@@ -2,7 +2,7 @@ import {useClearWishlist, useSetWishedProducts} from "@/entities/wishlist/model/
 import {useEffect, useState} from "react";
 import {ApiError, toApiError} from "@/shared/api";
 import {wishlistApi} from "@/entities/wishlist/api/wishlistApi.ts";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const useWishlistSync = (isAuthenticated: boolean) => {

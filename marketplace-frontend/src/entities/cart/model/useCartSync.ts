@@ -1,7 +1,7 @@
 import {cartApi, useClearCartState, useSetCartPositions} from "@/entities/cart";
 import {useEffect, useState} from "react";
 import {ApiError, toApiError} from "@/shared/api";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const useCartSync = (isAuthenticated: boolean) => {

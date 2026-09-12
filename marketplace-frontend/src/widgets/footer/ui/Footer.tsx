@@ -7,7 +7,7 @@ import VkIcon from "@/shared/assets/icons/vk.svg?react";
 import TgIcon from "@/shared/assets/icons/tg.svg?react";
 import OkIcon from "@/shared/assets/icons/ok.svg?react";
 import GlassesIcon from "@/shared/assets/icons/glasses.svg?react";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const Footer = () => {

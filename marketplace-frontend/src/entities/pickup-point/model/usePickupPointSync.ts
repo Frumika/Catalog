@@ -2,7 +2,7 @@ import {useClearPickupPointsStore, useSetPickupPoints} from "@/entities/pickup-p
 import {useEffect, useState} from "react";
 import {ApiError, toApiError} from "@/shared/api";
 import {pickupPointApi} from "@/entities/pickup-point/api/pickupPointApi.ts";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const usePickupPointSync = (isAuthenticated: boolean) => {

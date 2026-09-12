@@ -1,6 +1,6 @@
 import {ApiError, toApiError} from "@/shared/api";
 import {cartApi, useApplyCartPositionUpdate, useClearCartState} from "@/entities/cart";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const useCartActions = () => {

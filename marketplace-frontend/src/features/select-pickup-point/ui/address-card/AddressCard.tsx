@@ -4,7 +4,8 @@ import styles from "./AddressCard.module.css";
 import {Button} from "@/shared/ui/button";
 import {CardPopover} from "../card-popover/CardPopover.tsx";
 import {useRef} from "react";
-import {formatDays, useDisclosure} from "@/shared/lib";
+import {formatDays} from "@/shared/lib/format";
+import {useDisclosure} from "@/shared/lib/hooks";
 
 
 interface AddressCardProps {

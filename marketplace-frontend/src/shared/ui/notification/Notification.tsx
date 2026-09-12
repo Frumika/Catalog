@@ -1,6 +1,6 @@
 import styles from "./Notification.module.css";
 import {CloseButton} from "@/shared/ui/close-button";
-import type {NotificationType} from "@/shared/lib";
+import type {NotificationType} from "@/shared/model";
 
 
 interface NotificationProps {

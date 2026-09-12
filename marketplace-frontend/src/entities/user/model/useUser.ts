@@ -2,7 +2,8 @@ import {useEffect, useState} from "react";
 import {ApiError, toApiError} from "@/shared/api";
 import type {User} from "@/entities/user";
 import {userApi} from "@/entities/user/api/userApi.ts";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
+
 
 export const useUser = (isAuthenticated: boolean) => {
     const [user, setUser] = useState<User | null>(null);

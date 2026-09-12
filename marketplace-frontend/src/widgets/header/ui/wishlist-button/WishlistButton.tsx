@@ -1,9 +1,9 @@
-import type {ComponentDisplayMode} from "@/shared/lib";
 import type {ButtonHTMLAttributes} from "react";
 import {useNavigate} from "react-router-dom";
 import {NavButton} from "@/shared/ui/nav-button";
 import WishIcon from "@/shared/assets/icons/wish.svg?react";
 import {useWishlistTotalQuantity} from "@/entities/wishlist/model/wishlistStore.ts";
+import type {ComponentDisplayMode} from "@/shared/model";
 
 
 interface WishlistButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

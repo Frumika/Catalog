@@ -1,8 +1,9 @@
 import styles from "./NotificationContainer.module.css";
 import {Notification} from "@/shared/ui/notification"
-import {type NotificationType, useGetNotifications, useRemoveNotification} from "@/shared/lib";
 import {useEffect, useState} from "react";
 import {createPortal} from "react-dom";
+import type {NotificationType} from "@/shared/model";
+import {useGetNotifications, useRemoveNotification} from "@/shared/lib/notification";
 
 
 interface WrapperProps {

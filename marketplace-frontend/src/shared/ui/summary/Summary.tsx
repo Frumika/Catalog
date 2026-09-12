@@ -1,7 +1,8 @@
 import styles from "./Summary.module.css";
-import type {PricedPosition} from "@/shared/types";
 import type {ReactNode} from "react";
-import {formatPrice, getPositionsTotals, getGoodsQuantity} from "@/shared/lib";
+import type {PricedPosition} from "@/shared/model";
+import {getGoodsQuantity, getPositionsTotals} from "@/shared/lib/totals";
+import {formatPrice} from "@/shared/lib/format";
 
 
 interface SummaryProps {

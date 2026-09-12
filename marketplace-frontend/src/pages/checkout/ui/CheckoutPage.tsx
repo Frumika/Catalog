@@ -9,9 +9,10 @@ import {CheckoutHeader} from "./checkout-header/CheckoutHeader.tsx";
 import {DeliveryType} from "./delivery-type/DeliveryType.tsx";
 import {PageLabel} from "@/shared/ui/page-label";
 import {CheckoutModal} from "./checkout-modal/CheckoutModal.tsx";
-import {useDisclosure, useNotify} from "@/shared/lib";
 import {useNavigate} from "react-router-dom";
 import {useCartActions} from "@/entities/cart";
+import {useDisclosure} from "@/shared/lib/hooks";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const CheckoutPage = () => {

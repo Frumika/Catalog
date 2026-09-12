@@ -1,4 +1,4 @@
-import type {PricedPosition} from "@/shared/types";
+import type {PricedPosition} from "@/shared/model";
 
 export interface CartResponse<T> {
     items: T[];

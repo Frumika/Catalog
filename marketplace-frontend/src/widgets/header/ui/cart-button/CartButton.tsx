@@ -1,9 +1,9 @@
 import {NavButton} from "@/shared/ui/nav-button";
 import CartIcon from "@/shared/assets/icons/cart.svg?react";
 import type {ButtonHTMLAttributes} from "react";
-import type {ComponentDisplayMode} from "@/shared/lib";
 import {useNavigate} from "react-router-dom";
 import {useCartTotalQuantity} from "@/entities/cart";
+import type {ComponentDisplayMode} from "@/shared/model";
 
 
 interface CartButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {

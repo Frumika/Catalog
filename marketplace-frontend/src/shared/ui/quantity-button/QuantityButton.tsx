@@ -1,8 +1,8 @@
-import type {ComponentSize} from "@/shared/lib";
 import {Button} from "@/shared/ui/button";
 import styles from "./QuantityButton.module.css"
 import MinusIcon from "@/shared/assets/icons/minus.svg?react";
 import PlusIcon from "@/shared/assets/icons/plus.svg?react";
+import type {ComponentSize} from "@/shared/model";
 
 
 type QuantityButtonVariant = 'secondary' | 'neutral';

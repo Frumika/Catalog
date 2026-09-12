@@ -1,7 +1,8 @@
 import styles from "./CheckoutModal.module.css";
 import {Modal} from "@/shared/ui/modal";
 import {CheckoutPositionCard, type OrderPositionGroup} from "@/entities/order";
-import {formatDate, formatGoodsQuantity, getGoodsQuantity} from "@/shared/lib";
+import {getGoodsQuantity} from "@/shared/lib/totals";
+import {formatDate, formatGoodsQuantity} from "@/shared/lib/format";
 
 
 interface CheckoutModalProps {

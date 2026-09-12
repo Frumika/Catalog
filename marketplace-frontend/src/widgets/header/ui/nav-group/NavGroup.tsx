@@ -1,10 +1,11 @@
 import styles from "./NavGroup.module.css";
 import OrderIcon from "@/shared/assets/icons/order.svg?react";
 import {NavButton} from "@/shared/ui/nav-button";
-import {type ComponentDisplayMode, useNotify} from "@/shared/lib";
 import {CartButton} from "../cart-button/CartButton.tsx";
 import {ProfileButton} from "@/features/auth";
 import {WishlistButton} from "../wishlist-button/WishlistButton.tsx";
+import type {ComponentDisplayMode} from "@/shared/model";
+import {useNotify} from "@/shared/lib/notification";
 
 
 interface NavGroupProps {

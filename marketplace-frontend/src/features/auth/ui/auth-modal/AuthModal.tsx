@@ -5,7 +5,7 @@ import {Input} from "@/shared/ui/input";
 import {useState} from "react";
 import {useSessionActions} from "@/entities/session";
 import {DemoButton} from "@/features/auth/ui/demo-button/DemoButton.tsx";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 interface AuthModalProps {

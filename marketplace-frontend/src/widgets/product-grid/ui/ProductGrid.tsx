@@ -2,7 +2,7 @@ import styles from "./ProductGrid.module.css";
 import {ProductCard, type ProductPreview} from "@/entities/product";
 import {AddToCartButton} from "@/features/add-to-cart";
 import {ToggleWishedButton} from "@/features/toggle-wished";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 interface ProductGridProps {

@@ -2,7 +2,7 @@ import styles from "./CartSummary.module.css";
 import {Button} from "@/shared/ui/button";
 import {useCartSelectionContext} from "@/features/cart-selection";
 import {Summary} from "@/shared/ui/summary";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 interface CartSummaryProps {

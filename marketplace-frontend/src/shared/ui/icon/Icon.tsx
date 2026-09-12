@@ -1,6 +1,6 @@
 import styles from './Icon.module.css';
 import type {ReactNode} from "react";
-import type {ComponentSize} from "@/shared/lib";
+import type {ComponentSize} from "@/shared/model";
 
 
 interface IconProps {

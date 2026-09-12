@@ -1,7 +1,7 @@
 import styles from "./CheckoutSummary.module.css";
 import {Button} from "@/shared/ui/button";
-import type {PricedPosition} from "@/shared/types";
 import {Summary} from "@/shared/ui/summary";
+import type {PricedPosition} from "@/shared/model";
 
 
 interface CheckoutSummaryProps {

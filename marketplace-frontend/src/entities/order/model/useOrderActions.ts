@@ -1,6 +1,6 @@
 import {ApiError, toApiError} from "@/shared/api";
 import {orderApi} from "@/entities/order/api/orderApi.ts";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 export const useOrderActions = () => {

@@ -1,12 +1,12 @@
 import styles from "./Dropdown.module.css";
 import type {Placement} from "@floating-ui/dom";
-import {useDisclosure} from "@/shared/lib";
 import {useRef, useState} from "react";
 import {Popover} from "@/shared/ui/popover";
 import {Icon} from "@/shared/ui/icon";
 import ArrowUpIcon from "@/shared/assets/icons/arrow-up.svg?react";
 import ArrowDownIcon from "@/shared/assets/icons/arrow-down.svg?react";
 import {DropdownRow} from "@/shared/ui/dropdown/DropdownRow.tsx";
+import {useDisclosure} from "@/shared/lib/hooks";
 
 
 export interface DropdownOption {

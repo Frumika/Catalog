@@ -1,7 +1,7 @@
 import {createContext, type ReactNode, useContext} from "react";
 import type {CartPosition} from "@/entities/cart";
 import {useCartSelection} from "./useCartSelection.ts";
-import {useNotify} from "@/shared/lib";
+import {useNotify} from "@/shared/lib/notification";
 
 
 type CartSelectionContextType = ReturnType<typeof useCartSelection>;
